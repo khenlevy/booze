@@ -7,4 +7,7 @@ Recommendation algo based user input
 Track drinking and grades
 Displays the tastes distribution ratios 
 
+## Product Goal
+Build the First top 5 important mobile screens.
+
 ## Technical Overview
