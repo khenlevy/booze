@@ -1,0 +1,39 @@
+{
+  "name": "@r-f-booze/dv-cd",
+  "version": "1.0.0",
+  "description": "Continuous Deployment tools for Buydy apps",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": "./bin/dv-cd-runner.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./bin": "./bin/dv-cd-runner.js"
+  },
+  "scripts": {
+    "deploy": "./bin/dv-cd-runner.js",
+    "prettier-lint": "dv-prettier-lint-runner"
+  },
+  "keywords": [
+    "dev",
+    "tools",
+    "deployment",
+    "cd",
+    "buydy",
+    "server"
+  ],
+  "author": "Buydy Team",
+  "license": "MIT",
+  "dependencies": {
+    "@r-f-booze/dv-disk": "workspace:*",
+    "@r-f-booze/dv-docker": "workspace:*",
+    "@r-f-booze/dv-env": "workspace:*",
+    "@r-f-booze/dv-files": "workspace:*",
+    "@r-f-booze/dv-monorepo": "workspace:*",
+    "@r-f-booze/dv-ssh": "workspace:*",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@r-f-booze/dv-prettier-lint": "workspace:*"
+  }
+}

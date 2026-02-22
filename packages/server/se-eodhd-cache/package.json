@@ -1,0 +1,27 @@
+{
+  "name": "@r-f-booze/se-eodhd-cache",
+  "version": "0.1.0",
+  "description": "EODHD API response caching package for Buydy server packages.",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./cacheMaintenanceJob": "./src/cacheMaintenanceJob.js"
+  },
+  "scripts": {
+    "prettier-lint": "dv-prettier-lint-runner"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@r-f-booze/se-db": "workspace:*",
+    "@r-f-booze/se-logger": "workspace:*",
+    "axios": "^1.12.2"
+  },
+  "devDependencies": {
+    "@r-f-booze/dv-prettier-lint": "workspace:*"
+  }
+}

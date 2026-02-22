@@ -1,4 +1,4 @@
-Booze allows you to find the best alcoholic drinks in budget.
+# Buydy
 
 ## Product Overview
 On boarding user - define base preferences
@@ -11,3 +11,11 @@ Displays the tastes distribution ratios
 Build the First top 5 important mobile screens.
 
 ## Technical Overview
+
+Monorepo with `apps/app-booze-mobile` (Expo/React Native) and shared packages.
+
+```bash
+yarn install
+yarn prettier-lint:all  # Format and lint all packages
+cd apps/app-booze-mobile && yarn start  # Start mobile app
+```

@@ -1,0 +1,25 @@
+{
+  "name": "@r-f-booze/dv-docker",
+  "version": "1.0.0",
+  "description": "Docker management utilities for remote servers",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "prettier-lint": "dv-prettier-lint-runner"
+  },
+  "keywords": [
+    "dev",
+    "tools",
+    "docker",
+    "remote",
+    "buydy"
+  ],
+  "author": "Buydy Team",
+  "license": "MIT",
+  "dependencies": {
+    "@r-f-booze/dv-ssh": "workspace:*"
+  },
+  "devDependencies": {
+    "@r-f-booze/dv-prettier-lint": "workspace:*"
+  }
+}
