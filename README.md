@@ -1,6 +1,6 @@
 Booze allows you to find the best alcoholic drinks in budget.
 
-**Product Overview
+** Product Overview
 On boarding user - define base preferences
 Reccomend alcohol to existing user
 Recommendation algo based user input
