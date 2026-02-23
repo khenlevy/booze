@@ -1,17 +1,17 @@
-# @r-f-booze/cl-select
+# @booze/cl-select
 
 Select dropdown component for Buydy web applications.
 
 ## Installation
 
 ```bash
-yarn add @r-f-booze/cl-select
+yarn add @booze/cl-select
 ```
 
 ## Usage
 
 ```javascript
-import { Select } from '@r-f-booze/cl-select';
+import { Select } from '@booze/cl-select';
 import { Building2 } from 'lucide-react';
 
 function MyComponent() {

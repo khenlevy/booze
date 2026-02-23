@@ -7,7 +7,7 @@ import {
   validateJobType,
 } from './index.js';
 
-console.log('🧪 Testing @r-f-booze/iso-business-job-types package...\n');
+console.log('🧪 Testing @booze/iso-business-job-types package...\n');
 
 // Test 1: Get all jobs
 console.log('1. Testing getJobs():');

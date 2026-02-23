@@ -1,4 +1,4 @@
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 /**
  * Forex API - Foreign exchange rates and currency data

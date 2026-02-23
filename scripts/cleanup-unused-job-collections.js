@@ -4,7 +4,7 @@ import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 
 // Load environment variables from the app directory
 const __filename = fileURLToPath(import.meta.url);

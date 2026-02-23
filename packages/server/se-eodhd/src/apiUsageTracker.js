@@ -1,6 +1,6 @@
-import { getModel } from "@r-f-booze/se-db";
-import { getEndpointTypeByPath } from "@r-f-booze/iso-business-types";
-import logger from "@r-f-booze/se-logger";
+import { getModel } from "@booze/se-db";
+import { getEndpointTypeByPath } from "@booze/iso-business-types";
+import logger from "@booze/se-logger";
 
 /**
  * EODHD API Usage Tracker

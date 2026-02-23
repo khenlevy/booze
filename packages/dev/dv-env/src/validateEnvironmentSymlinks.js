@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { findMonorepoRoot } from "@r-f-booze/dv-monorepo";
+import { findMonorepoRoot } from "@booze/dv-monorepo";
 
 const REQUIRED_ENV_FILES = [".env.dev", ".env.production"];
 

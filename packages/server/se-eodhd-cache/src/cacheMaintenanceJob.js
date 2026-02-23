@@ -7,8 +7,8 @@
  * 3. Providing cache health monitoring
  */
 
-import { getDatabase } from "@r-f-booze/se-db";
-import logger from "@r-f-booze/se-logger";
+import { getDatabase } from "@booze/se-db";
+import logger from "@booze/se-logger";
 
 export class CacheMaintenanceJob {
   constructor(options = {}) {

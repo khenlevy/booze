@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/iso-business-types",
+  "name": "@booze/iso-business-types",
   "version": "1.0.0",
   "description": "Centralized business type definitions for Buydy stocks system - job types and API endpoint types",
   "type": "module",
@@ -29,7 +29,7 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*",
+    "@booze/dv-prettier-lint": "workspace:*",
     "eslint": "^8.55.0"
   },
   "engines": {

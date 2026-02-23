@@ -1,4 +1,4 @@
-# @r-f-booze/dv-env
+# @booze/dv-env
 
 Environment validation and management for the Buydy monorepo.
 
@@ -28,7 +28,7 @@ yarn validate:env
 ### Programmatic Usage
 
 ```javascript
-import { validateEnvironmentSymlinks, getFixInstructions } from '@r-f-booze/dv-env';
+import { validateEnvironmentSymlinks, getFixInstructions } from '@booze/dv-env';
 
 const { allValid, results } = validateEnvironmentSymlinks();
 

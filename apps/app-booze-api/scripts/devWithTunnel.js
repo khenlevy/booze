@@ -84,7 +84,7 @@ async function ensureSshTunnel() {
   }
 
   // Determine SSH host alias from env or default
-  const sshHost = process.env.DO_DROPLET_HOST || process.env.SSH_HOST || 'r-f-booze-droplet';
+  const sshHost = process.env.DO_DROPLET_HOST || process.env.SSH_HOST || 'booze-droplet';
   const requestedLocalPort = Number(process.env.TUNNEL_LOCAL_PORT || process.env.MONGO_PORT || 27017);
   
   // This will throw an error if port is busy and not an SSH tunnel

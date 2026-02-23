@@ -1,18 +1,18 @@
 {
-  "name": "@r-f-booze/app-booze-db",
+  "name": "@booze/app-booze-db",
   "version": "1.0.0",
   "description": "MongoDB database service with automated backups",
   "type": "module",
   "scripts": {
     "release": "node release.js",
-    "restore": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && export MONGO_USERNAME=\"${MONGO_USERNAME}\" && export MONGO_PASSWORD=\"${MONGO_PASSWORD}\" && ./scripts/restore_mongo_robust.sh'",
-    "restore:list": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && ./scripts/restore_mongo_robust.sh --list'",
-    "restore:verify": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && export MONGO_USERNAME=\"${MONGO_USERNAME}\" && export MONGO_PASSWORD=\"${MONGO_PASSWORD}\" && ./scripts/restore_mongo_robust.sh --verify'",
-    "backup": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && export MONGO_USERNAME=\"${MONGO_USERNAME}\" && export MONGO_PASSWORD=\"${MONGO_PASSWORD}\" && ./scripts/backup_mongo.sh'",
-    "admin:ensure": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && ./scripts/ensure_admin_user.sh'",
-    "init:auth": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && ./scripts/init_mongo_with_auth.sh'",
-    "access:enable": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && ./scripts/configure-mongo-access.sh'",
-    "access:secure": "ssh root@r-f-booze-droplet 'cd /opt/app-booze-db && ./scripts/secure-mongo-access.sh'",
+    "restore": "ssh root@booze-droplet 'cd /opt/app-booze-db && export MONGO_USERNAME=\"${MONGO_USERNAME}\" && export MONGO_PASSWORD=\"${MONGO_PASSWORD}\" && ./scripts/restore_mongo_robust.sh'",
+    "restore:list": "ssh root@booze-droplet 'cd /opt/app-booze-db && ./scripts/restore_mongo_robust.sh --list'",
+    "restore:verify": "ssh root@booze-droplet 'cd /opt/app-booze-db && export MONGO_USERNAME=\"${MONGO_USERNAME}\" && export MONGO_PASSWORD=\"${MONGO_PASSWORD}\" && ./scripts/restore_mongo_robust.sh --verify'",
+    "backup": "ssh root@booze-droplet 'cd /opt/app-booze-db && export MONGO_USERNAME=\"${MONGO_USERNAME}\" && export MONGO_PASSWORD=\"${MONGO_PASSWORD}\" && ./scripts/backup_mongo.sh'",
+    "admin:ensure": "ssh root@booze-droplet 'cd /opt/app-booze-db && ./scripts/ensure_admin_user.sh'",
+    "init:auth": "ssh root@booze-droplet 'cd /opt/app-booze-db && ./scripts/init_mongo_with_auth.sh'",
+    "access:enable": "ssh root@booze-droplet 'cd /opt/app-booze-db && ./scripts/configure-mongo-access.sh'",
+    "access:secure": "ssh root@booze-droplet 'cd /opt/app-booze-db && ./scripts/secure-mongo-access.sh'",
     "indexes:create": "node ../../scripts/create-optimal-indexes.js",
     "prettier-lint": "dv-prettier-lint-runner"
   },
@@ -26,7 +26,7 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-cd": "workspace:*",
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-cd": "workspace:*",
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

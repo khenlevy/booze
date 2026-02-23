@@ -1,4 +1,4 @@
-# @r-f-booze/se-eodhd
+# @booze/se-eodhd
 
 Comprehensive EODHD API client for financial data access including stocks, options, forex, news, and more.
 
@@ -16,13 +16,13 @@ Comprehensive EODHD API client for financial data access including stocks, optio
 ## Installation
 
 ```bash
-yarn add @r-f-booze/se-eodhd
+yarn add @booze/se-eodhd
 ```
 
 ## Quick Start
 
 ```javascript
-import { EODHDClient } from '@r-f-booze/se-eodhd';
+import { EODHDClient } from '@booze/se-eodhd';
 
 const client = new EODHDClient({
   apiKey: 'your-eodhd-api-key',

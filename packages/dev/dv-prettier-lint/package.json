@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-prettier-lint",
+  "name": "@booze/dv-prettier-lint",
   "version": "1.0.0",
   "description": "Development tools for Buydy packages",
   "type": "module",

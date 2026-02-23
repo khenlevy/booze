@@ -74,7 +74,7 @@ yarn cache:cleanup --flush
 Add to `apps/app-stocks-scanner/src/index.js`:
 
 ```javascript
-import { CacheMaintenanceJob } from "@r-f-booze/se-eodhd-cache/cacheMaintenanceJob";
+import { CacheMaintenanceJob } from "@booze/se-eodhd-cache/cacheMaintenanceJob";
 
 // Initialize maintenance
 const cacheMaintenance = new CacheMaintenanceJob({

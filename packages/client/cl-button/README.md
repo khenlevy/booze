@@ -1,17 +1,17 @@
-# @r-f-booze/cl-button
+# @booze/cl-button
 
 Button component for Buydy web applications.
 
 ## Installation
 
 ```bash
-yarn add @r-f-booze/cl-button
+yarn add @booze/cl-button
 ```
 
 ## Usage
 
 ```javascript
-import { Button } from '@r-f-booze/cl-button';
+import { Button } from '@booze/cl-button';
 
 function MyComponent() {
   return (

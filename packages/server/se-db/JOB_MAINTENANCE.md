@@ -72,7 +72,7 @@ yarn jobs:health --details
 Add to `apps/app-stocks-scanner/src/index.js`:
 
 ```javascript
-import { JobMaintenanceJob } from "@r-f-booze/se-db/src/jobMaintenanceJob.js";
+import { JobMaintenanceJob } from "@booze/se-db/src/jobMaintenanceJob.js";
 
 // Initialize maintenance
 const jobMaintenance = new JobMaintenanceJob({
@@ -314,7 +314,7 @@ yarn jobs:health --details
 
 ```javascript
 // In apps/app-stocks-scanner/src/index.js
-import { JobMaintenanceJob } from "@r-f-booze/se-db/src/jobMaintenanceJob.js";
+import { JobMaintenanceJob } from "@booze/se-db/src/jobMaintenanceJob.js";
 
 const jobMaintenance = new JobMaintenanceJob();
 await jobMaintenance.initialize();

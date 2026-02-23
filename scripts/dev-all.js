@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { runDevelopmentServers } from '@r-f-booze/dv-monorepo';
+import { runDevelopmentServers } from '@booze/dv-monorepo';
 
 /**
  * Configuration for all development services

@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-list",
+  "name": "@booze/se-list",
   "version": "1.0.0",
   "description": "Cycled Linked List Manager - Singleton for endless async function execution with smart controls",
   "main": "src/index.js",
@@ -9,10 +9,10 @@
     "prettier-lint": "dv-prettier-lint-runner"
   },
   "dependencies": {
-    "@r-f-booze/se-logger": "workspace:*"
+    "@booze/se-logger": "workspace:*"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   },
   "keywords": [
     "cycled",

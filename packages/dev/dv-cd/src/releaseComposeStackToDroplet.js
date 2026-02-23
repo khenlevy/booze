@@ -2,9 +2,9 @@ import {
   createSSHConnection,
   executeRemoteCommands,
   executeRemoteCommand,
-} from "@r-f-booze/dv-ssh";
-import { ensureDocker } from "@r-f-booze/dv-docker";
-import { syncDirectory, syncFile } from "@r-f-booze/dv-files";
+} from "@booze/dv-ssh";
+import { ensureDocker } from "@booze/dv-docker";
+import { syncDirectory, syncFile } from "@booze/dv-files";
 import path from "path";
 
 /**
@@ -55,11 +55,11 @@ export async function releaseComposeStackToDroplet(config) {
     // Ensure Docker is installed and running
     await ensureDocker(conn);
 
-    // Ensure r-f-booze-network exists before compose deployment
+    // Ensure booze-network exists before compose deployment
     // Docker Compose requires external networks to exist before running
     await executeRemoteCommand(
       conn,
-      "docker network create r-f-booze-network --driver bridge 2>/dev/null || true"
+      "docker network create booze-network --driver bridge 2>/dev/null || true"
     );
 
     // Ensure Docker iptables chains are (re)created after any firewall changes

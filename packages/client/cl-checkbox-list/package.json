@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/cl-checkbox-list",
+  "name": "@booze/cl-checkbox-list",
   "version": "1.0.0",
   "description": "Checkbox list component with search for Buydy web applications",
   "type": "module",
@@ -23,6 +23,6 @@
     "react": "^18.0.0"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

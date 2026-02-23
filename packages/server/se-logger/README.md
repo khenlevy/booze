@@ -1,4 +1,4 @@
-# @r-f-booze/se-logger
+# @booze/se-logger
 
 High-performance structured logging system for Buydy backend Node.js services.
 
@@ -15,13 +15,13 @@ High-performance structured logging system for Buydy backend Node.js services.
 ## Installation
 
 ```bash
-yarn add @r-f-booze/se-logger
+yarn add @booze/se-logger
 ```
 
 ## Usage
 
 ```javascript
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 
 // Business logs - always active (production-safe)
 logger.business('Order placed', { orderId: 1039, userId: 'user_123' });
@@ -41,7 +41,7 @@ logger.business('Database connected', {
 logger.connection('MongoDB connected', 'mongodb://admin:secret@localhost:27017/db');
 
 // Named imports
-import { business, debug, safe, connection } from '@r-f-booze/se-logger';
+import { business, debug, safe, connection } from '@booze/se-logger';
 business('Payment processed', { amount: 99.99 });
 debug('Cache hit', { key: 'user:123' });
 ```
@@ -107,7 +107,7 @@ console.error('Failed to connect:', error);
 console.log('Query result:', result);
 
 // After
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 logger.business('Server started', { port: 3001 });
 logger.business('Failed to connect', { error: error.message });
 logger.debug('Query result', { result });

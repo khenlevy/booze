@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-disk",
+  "name": "@booze/dv-disk",
   "version": "1.0.0",
   "description": "Disk operations utilities for Buydy development tools - file sync, disk management, and cleanup operations",
   "type": "module",
@@ -21,6 +21,6 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

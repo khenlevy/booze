@@ -1,4 +1,4 @@
-import { getHttpClientSingleton, createHttpClient } from "@r-f-booze/iso-http-client";
+import { getHttpClientSingleton, createHttpClient } from "@booze/iso-http-client";
 import { StocksAPI } from "./apis/stocks.js";
 import { DividendsAPI } from "./apis/dividends.js";
 import { SearchAPI } from "./apis/search.js";
@@ -8,14 +8,14 @@ import { ForexAPI } from "./apis/forex.js";
 import { IndicesAPI } from "./apis/indices.js";
 import { TrackedEODHDClient, createTrackedEODHDClient } from "./trackedClient.js";
 import { eodhdApiUsageTracker } from "./apiUsageTracker.js";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 /**
  * EODHD API Client - Comprehensive financial data access
  *
  * @example
  * ```javascript
- * import { EODHDClient } from '@r-f-booze/se-eodhd';
+ * import { EODHDClient } from '@booze/se-eodhd';
  *
  * const client = new EODHDClient({
  *   apiKey: 'your-api-key',

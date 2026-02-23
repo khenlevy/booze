@@ -1,5 +1,5 @@
 /**
- * @r-f-booze/dv-files
+ * @booze/dv-files
  *
  * Node.js file operations utilities for Buydy development tools.
  * Provides file synchronization, directory management, and file system operations.

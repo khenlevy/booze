@@ -19,7 +19,7 @@
  * - Fully idempotent - safe to run multiple times
  */
 
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 import { indexRules } from "./indexRules.js";
 
 // Configuration constants

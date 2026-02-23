@@ -1,4 +1,4 @@
-# @r-f-booze/iso-auth-utils
+# @booze/iso-auth-utils
 
 Isomorphic authentication utilities for Buydy applications. These functions can run on both client and server.
 
@@ -28,7 +28,7 @@ Pure JavaScript utility functions organized by domain:
 ### Import individual functions
 
 ```javascript
-const { isValidEmailFormat, generateRandomAlphanumericString } = require('@r-f-booze/iso-auth-utils');
+const { isValidEmailFormat, generateRandomAlphanumericString } = require('@booze/iso-auth-utils');
 
 // Validate email
 const isValid = isValidEmailFormat('user@example.com');
@@ -43,7 +43,7 @@ const token = generateRandomAlphanumericString(32);
 ### Import all functions
 
 ```javascript
-const authUtils = require('@r-f-booze/iso-auth-utils');
+const authUtils = require('@booze/iso-auth-utils');
 
 // Check if object has all required fields
 const validation = authUtils.objectHasAllDefinedFields(data, ['email', 'password']);

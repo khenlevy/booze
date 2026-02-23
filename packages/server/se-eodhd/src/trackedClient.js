@@ -1,4 +1,4 @@
-import { getHttpClientSingleton, createHttpClient } from "@r-f-booze/iso-http-client";
+import { getHttpClientSingleton, createHttpClient } from "@booze/iso-http-client";
 import { StocksAPI } from "./apis/stocks.js";
 import { DividendsAPI } from "./apis/dividends.js";
 import { SearchAPI } from "./apis/search.js";
@@ -7,7 +7,7 @@ import { NewsAPI } from "./apis/news.js";
 import { ForexAPI } from "./apis/forex.js";
 import { IndicesAPI } from "./apis/indices.js";
 import { eodhdApiUsageTracker } from "./apiUsageTracker.js";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 /**
  * Base EODHD Client (copied to avoid circular imports)

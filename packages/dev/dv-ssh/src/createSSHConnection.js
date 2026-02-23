@@ -2,7 +2,7 @@ import { NodeSSH } from "node-ssh";
 import { readFileSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 /**
  * Parse SSH config file to resolve hostnames

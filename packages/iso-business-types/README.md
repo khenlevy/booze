@@ -1,4 +1,4 @@
-# @r-f-booze/iso-business-job-types
+# @booze/iso-business-job-types
 
 Centralized job type definitions for the Buydy stocks system. This package serves as the **single source of truth** for all job configurations, schedules, and metadata.
 
@@ -15,7 +15,7 @@ This package contains comprehensive definitions for all job types in the Buydy s
 
 ```bash
 # In your workspace
-yarn add @r-f-booze/iso-business-job-types
+yarn add @booze/iso-business-job-types
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ yarn add @r-f-booze/iso-business-job-types
 ### Basic Usage
 
 ```javascript
-import { getJobs, getJobById, getJobsMapByType } from '@r-f-booze/iso-business-job-types';
+import { getJobs, getJobById, getJobsMapByType } from '@booze/iso-business-job-types';
 
 // Get all job types
 const allJobs = getJobs();
@@ -46,7 +46,7 @@ import {
   getDailyJobs,
   getLargeCapJobs,
   getJobsInExecutionOrder
-} from '@r-f-booze/iso-business-job-types';
+} from '@booze/iso-business-job-types';
 
 // Get jobs by category
 const fundamentalsJobs = getJobsByCategory().fundamentals;
@@ -154,7 +154,7 @@ Each job type definition includes:
 
 ```javascript
 // In app-stocks-scanner/src/index.js
-import { getJobs, getJobsInExecutionOrder } from '@r-f-booze/iso-business-job-types';
+import { getJobs, getJobsInExecutionOrder } from '@booze/iso-business-job-types';
 
 const jobs = getJobsInExecutionOrder();
 jobs.forEach(job => {
@@ -169,7 +169,7 @@ jobs.forEach(job => {
 
 ```javascript
 // In app-stocks-api/src/controllers/jobsController.js
-import { getJobsMapByType } from '@r-f-booze/iso-business-job-types';
+import { getJobsMapByType } from '@booze/iso-business-job-types';
 
 const jobTypesMap = getJobsMapByType();
 // Use jobTypesMap for schedule information instead of hardcoded values
@@ -179,7 +179,7 @@ const jobTypesMap = getJobsMapByType();
 
 ```javascript
 // In app-stocks-web
-import { getJobs, getJobsByCategory } from '@r-f-booze/iso-business-job-types';
+import { getJobs, getJobsByCategory } from '@booze/iso-business-job-types';
 
 // Fetch job types from API endpoint
 const jobTypes = await fetch('/api/v1/job-types').then(r => r.json());
@@ -208,7 +208,7 @@ When adding new job types:
 Use the built-in validation function to ensure job definitions are correct:
 
 ```javascript
-import { validateJobType } from '@r-f-booze/iso-business-job-types';
+import { validateJobType } from '@booze/iso-business-job-types';
 
 const result = validateJobType(jobDefinition);
 if (!result.isValid) {

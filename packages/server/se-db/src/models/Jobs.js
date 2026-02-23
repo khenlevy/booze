@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import cron from "node-cron";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 /**
  * Jobs Schema

@@ -1,4 +1,4 @@
-# @r-f-booze/cl-http-priority-queue-client
+# @booze/cl-http-priority-queue-client
 
 Advanced HTTP client for browser applications with **multi-layer caching** (memory + localStorage), priority queue, request deduplication, and automatic retry logic. **Specifically designed to reduce EODHD API calls** by caching responses for 1 hour in persistent storage.
 
@@ -36,13 +36,13 @@ Savings: 66% reduction in API calls! 🎉
 ## 📦 Installation
 
 ```bash
-yarn add @r-f-booze/cl-http-priority-queue-client
+yarn add @booze/cl-http-priority-queue-client
 ```
 
 ## 🎬 Quick Start
 
 ```javascript
-import { QueuedHttpClient } from '@r-f-booze/cl-http-priority-queue-client';
+import { QueuedHttpClient } from '@booze/cl-http-priority-queue-client';
 
 // Create client with localStorage caching (1 hour default)
 const api = new QueuedHttpClient({
@@ -293,7 +293,7 @@ const stats = api.getStats();
 ## 🎯 Real-World Example
 
 ```javascript
-import { QueuedHttpClient } from '@r-f-booze/cl-http-priority-queue-client';
+import { QueuedHttpClient } from '@booze/cl-http-priority-queue-client';
 
 // Create optimized client for stock data
 const stockApi = new QueuedHttpClient({

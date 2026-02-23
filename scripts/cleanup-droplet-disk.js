@@ -12,7 +12,7 @@
  */
 
 import dotenv from "dotenv";
-import { createSSHConnection } from "@r-f-booze/dv-ssh";
+import { createSSHConnection } from "@booze/dv-ssh";
 import path from "path";
 import { fileURLToPath } from 'url';
 

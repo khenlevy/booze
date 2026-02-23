@@ -1,17 +1,17 @@
-# @r-f-booze/cl-checkbox-list
+# @booze/cl-checkbox-list
 
 Checkbox list component with search for Buydy web applications.
 
 ## Installation
 
 ```bash
-yarn add @r-f-booze/cl-checkbox-list
+yarn add @booze/cl-checkbox-list
 ```
 
 ## Usage
 
 ```javascript
-import { CheckboxList } from '@r-f-booze/cl-checkbox-list';
+import { CheckboxList } from '@booze/cl-checkbox-list';
 
 function MyComponent() {
   const [selectedItems, setSelectedItems] = useState([]);

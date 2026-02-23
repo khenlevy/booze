@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/iso-http-client",
+  "name": "@booze/iso-http-client",
   "version": "1.0.0",
   "private": true,
   "main": "src/index.js",

@@ -4,7 +4,7 @@
 
 import { EODHDClient, StocksAPI, DividendsAPI, SearchAPI, OptionsAPI, NewsAPI, ForexAPI, IndicesAPI } from './src/index.js';
 
-console.log('🧪 Testing @r-f-booze/se-eodhd package...\n');
+console.log('🧪 Testing @booze/se-eodhd package...\n');
 
 // Test that all exports are available
 console.log('✅ EODHDClient:', typeof EODHDClient);

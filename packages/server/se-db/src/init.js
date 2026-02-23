@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 export async function waitForMongo(uri, retries = 5, delay = 1000) {
   logger.business("🏥 Checking MongoDB connection...");

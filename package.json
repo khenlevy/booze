@@ -1,5 +1,5 @@
 {
-  "name": "r-f-booze-monorepo",
+  "name": "booze-monorepo",
   "private": true,
   "type": "module",
   "workspaces": [

@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/cl-buttons",
+  "name": "@booze/cl-buttons",
   "version": "1.0.0",
   "description": "Button components for Buydy client applications",
   "type": "module",
@@ -19,6 +19,6 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

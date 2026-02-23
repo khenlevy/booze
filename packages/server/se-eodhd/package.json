@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-eodhd",
+  "name": "@booze/se-eodhd",
   "version": "0.1.0",
   "description": "EODHD API client for comprehensive financial data access including stocks, options, forex, and news",
   "main": "src/index.js",
@@ -18,12 +18,12 @@
     "directory": "packages/server/se-eodhd"
   },
   "dependencies": {
-    "@r-f-booze/iso-business-types": "workspace:*",
-    "@r-f-booze/se-logger": "workspace:*",
+    "@booze/iso-business-types": "workspace:*",
+    "@booze/se-logger": "workspace:*",
     "axios": "^1.6.7"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   },
   "keywords": [
     "eodhd",

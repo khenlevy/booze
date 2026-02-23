@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-monorepo",
+  "name": "@booze/dv-monorepo",
   "version": "1.0.0",
   "description": "Monorepo utilities for Buydy development tools",
   "type": "module",
@@ -17,6 +17,6 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

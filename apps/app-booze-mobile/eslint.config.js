@@ -14,7 +14,7 @@ const expoConfig = require('eslint-config-expo/flat');
 
 // Base config from dv-prettier-lint (client)
 const baseConfig = compat.config(
-  require('@r-f-booze/dv-prettier-lint/config/client/.eslintrc.cjs'),
+  require('@booze/dv-prettier-lint/config/client/.eslintrc.cjs'),
 );
 
 module.exports = defineConfig([

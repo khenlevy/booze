@@ -11,7 +11,7 @@ export function getAppName() {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
     const fullName = packageJson.name || "unknown-app";
 
-    // Extract app name from scoped package name (e.g., "@r-f-booze/app-server-api" -> "app-server-api")
+    // Extract app name from scoped package name (e.g., "@booze/app-server-api" -> "app-server-api")
     const appName = fullName.includes("/") ? fullName.split("/")[1] : fullName;
     return appName;
   } catch (error) {

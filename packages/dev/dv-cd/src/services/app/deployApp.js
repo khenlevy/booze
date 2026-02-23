@@ -5,10 +5,10 @@ export async function deployApp(conn, basePath, releasePath, imageName) {
   // Stop/remove old container if running
   await conn.execCommand(`docker rm -f ${containerName} || true`);
 
-  // Ensure r-f-booze-network exists before deployment
+  // Ensure booze-network exists before deployment
   // This prevents iptables chain errors when Docker tries to attach containers
   await conn.execCommand(`
-    docker network create r-f-booze-network --driver bridge 2>/dev/null || true
+    docker network create booze-network --driver bridge 2>/dev/null || true
   `);
 
   // Verify Docker iptables chains exist (critical for networking)
@@ -74,7 +74,7 @@ export async function deployApp(conn, basePath, releasePath, imageName) {
     docker run -d \
       --name ${containerName} \
       --restart always \
-      --network r-f-booze-network \
+      --network booze-network \
       --memory="${memoryLimit}" \
       --memory-swap="${memorySwap}" \
       -p ${portBinding} \

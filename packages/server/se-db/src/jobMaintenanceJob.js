@@ -10,7 +10,7 @@
  */
 
 import { getDatabase, getModel } from "./index.js";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 export class JobMaintenanceJob {
   constructor(options = {}) {

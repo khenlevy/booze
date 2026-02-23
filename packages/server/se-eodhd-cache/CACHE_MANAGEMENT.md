@@ -33,7 +33,7 @@ The EODHD cache uses a multi-layered approach to ensure data doesn't stay foreve
 **Available methods:**
 
 ```javascript
-import { EODHDCacheClient } from "@r-f-booze/se-eodhd-cache";
+import { EODHDCacheClient } from "@booze/se-eodhd-cache";
 
 const client = new EODHDCacheClient({ apiKey: "..." });
 
@@ -64,7 +64,7 @@ console.log(`Cleared ${cleared} entries`);
 
 ```javascript
 // In your app startup (e.g., apps/app-stocks-scanner/src/index.js)
-import { CacheMaintenanceJob } from "@r-f-booze/se-eodhd-cache/src/cacheMaintenanceJob.js";
+import { CacheMaintenanceJob } from "@booze/se-eodhd-cache/src/cacheMaintenanceJob.js";
 
 const cacheMaintenance = new CacheMaintenanceJob({
   maxCacheSizeMB: 500,        // Max 500 MB
@@ -227,7 +227,7 @@ node scripts/monitor-cache-health.js --flush
 
 ```javascript
 // In syncMetricsLargeCap or other jobs
-import { CacheMaintenanceJob } from "@r-f-booze/se-eodhd-cache/src/cacheMaintenanceJob.js";
+import { CacheMaintenanceJob } from "@booze/se-eodhd-cache/src/cacheMaintenanceJob.js";
 
 // Run cleanup after heavy API usage
 const maintenance = new CacheMaintenanceJob();

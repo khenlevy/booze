@@ -61,7 +61,7 @@ yarn backup
 
 ```bash
 # SSH into production server
-ssh root@r-f-booze-droplet
+ssh root@booze-droplet
 
 # Navigate to app-db directory
 cd /opt/app-db
@@ -166,30 +166,30 @@ yarn backup
 
 ```bash
 # Check container status
-ssh root@r-f-booze-droplet "docker compose -f /opt/app-db/docker/docker-compose.yml ps"
+ssh root@booze-droplet "docker compose -f /opt/app-db/docker/docker-compose.yml ps"
 
 # Start MongoDB container
-ssh root@r-f-booze-droplet "cd /opt/app-db/docker && docker compose up -d mongo"
+ssh root@booze-droplet "cd /opt/app-db/docker && docker compose up -d mongo"
 ```
 
 #### 3. Restore Fails All Attempts
 
 ```bash
 # Check restore logs
-ssh root@r-f-booze-droplet "tail -f /var/log/mongo_restore.log"
+ssh root@booze-droplet "tail -f /var/log/mongo_restore.log"
 
 # Verify backup integrity
-ssh root@r-f-booze-droplet "cd /opt/app-db && ./scripts/restore_mongo_robust.sh --list"
+ssh root@booze-droplet "cd /opt/app-db && ./scripts/restore_mongo_robust.sh --list"
 ```
 
 #### 4. Rollback to Pre-Restore State
 
 ```bash
 # Find pre-restore backup
-ssh root@r-f-booze-droplet "ls -la /var/backups/mongo/pre_restore_backup_*.gz"
+ssh root@booze-droplet "ls -la /var/backups/mongo/pre_restore_backup_*.gz"
 
 # Restore from pre-restore backup
-ssh root@r-f-booze-droplet "cd /opt/app-db && export MONGO_INITDB_ROOT_USERNAME='admin' && export MONGO_INITDB_ROOT_PASSWORD='your_password' && ./scripts/restore_mongo_robust.sh /var/backups/mongo/pre_restore_backup_YYYY-MM-DD_HHMMSS.gz"
+ssh root@booze-droplet "cd /opt/app-db && export MONGO_INITDB_ROOT_USERNAME='admin' && export MONGO_INITDB_ROOT_PASSWORD='your_password' && ./scripts/restore_mongo_robust.sh /var/backups/mongo/pre_restore_backup_YYYY-MM-DD_HHMMSS.gz"
 ```
 
 ## Safety Features
@@ -224,13 +224,13 @@ ssh root@r-f-booze-droplet "cd /opt/app-db && export MONGO_INITDB_ROOT_USERNAME=
 
 ```bash
 # View recent backup activity
-ssh root@r-f-booze-droplet "tail -20 /var/log/mongo_backup.log"
+ssh root@booze-droplet "tail -20 /var/log/mongo_backup.log"
 
 # View recent restore activity
-ssh root@r-f-booze-droplet "tail -20 /var/log/mongo_restore.log"
+ssh root@booze-droplet "tail -20 /var/log/mongo_restore.log"
 
 # Check cron job status
-ssh root@r-f-booze-droplet "crontab -l | grep mongo"
+ssh root@booze-droplet "crontab -l | grep mongo"
 ```
 
 ### Verify Database State
@@ -240,7 +240,7 @@ ssh root@r-f-booze-droplet "crontab -l | grep mongo"
 yarn restore:verify
 
 # Detailed database info
-ssh root@r-f-booze-droplet "docker exec mongo mongosh --authenticationDatabase admin -u admin -p your_password --eval 'db.adminCommand(\"listCollections\")'"
+ssh root@booze-droplet "docker exec mongo mongosh --authenticationDatabase admin -u admin -p your_password --eval 'db.adminCommand(\"listCollections\")'"
 ```
 
 ## Best Practices
@@ -263,7 +263,7 @@ ssh root@r-f-booze-droplet "docker exec mongo mongosh --authenticationDatabase a
 
 ### Manual Restore from Specific Backup
 
-1. SSH into production: `ssh root@r-f-booze-droplet`
+1. SSH into production: `ssh root@booze-droplet`
 2. Navigate to app-db: `cd /opt/app-db`
 3. Set environment variables
 4. Run restore: `./scripts/restore_mongo_robust.sh /var/backups/mongo/backup_file.gz`

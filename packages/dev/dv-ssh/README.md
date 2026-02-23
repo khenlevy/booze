@@ -17,7 +17,7 @@ This package provides a clean, reusable API for SSH connections and remote comma
 ## Installation
 
 ```bash
-yarn add -D @r-f-booze/dv-ssh
+yarn add -D @booze/dv-ssh
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ yarn add -D @r-f-booze/dv-ssh
 ### Create SSH Connection
 
 ```javascript
-import { createSSHConnection } from "@r-f-booze/dv-ssh";
+import { createSSHConnection } from "@booze/dv-ssh";
 
 const conn = await createSSHConnection({
   host: "example.com", // or SSH config alias
@@ -40,7 +40,7 @@ conn.dispose();
 ### Execute Single Command
 
 ```javascript
-import { executeRemoteCommand } from "@r-f-booze/dv-ssh";
+import { executeRemoteCommand } from "@booze/dv-ssh";
 
 const result = await executeRemoteCommand(conn, "ls -la");
 console.log(result.stdout);
@@ -55,7 +55,7 @@ await executeRemoteCommand(conn, "echo hello", {
 ### Execute Multiple Commands
 
 ```javascript
-import { executeRemoteCommands } from "@r-f-booze/dv-ssh";
+import { executeRemoteCommands } from "@booze/dv-ssh";
 
 await executeRemoteCommands(conn, [
   "mkdir -p /opt/myapp",
@@ -124,7 +124,7 @@ Executes multiple commands sequentially.
 
 ## Used By
 
-- `@r-f-booze/dv-cd` - Continuous deployment tools
-- `@r-f-booze/dv-file-sync` - File synchronization utilities
-- `@r-f-booze/dv-docker` - Docker management utilities
+- `@booze/dv-cd` - Continuous deployment tools
+- `@booze/dv-file-sync` - File synchronization utilities
+- `@booze/dv-docker` - Docker management utilities
 

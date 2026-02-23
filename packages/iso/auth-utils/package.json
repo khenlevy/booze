@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/iso-auth-utils",
+  "name": "@booze/iso-auth-utils",
   "version": "1.0.0",
   "description": "Isomorphic authentication utilities for Buydy applications",
   "type": "module",
@@ -20,6 +20,6 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

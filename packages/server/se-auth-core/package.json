@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-auth-core",
+  "name": "@booze/se-auth-core",
   "version": "0.1.0",
   "description": "Core authentication utilities for Buydy server packages.",
   "main": "src/index.js",
@@ -13,6 +13,6 @@
     "access": "public"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

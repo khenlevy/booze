@@ -19,7 +19,7 @@ Finds the monorepo root directory by looking for package.json, apps, and package
 
 **Example:**
 ```javascript
-import { findMonorepoRoot } from '@r-f-booze/dv-monorepo';
+import { findMonorepoRoot } from '@booze/dv-monorepo';
 
 const monorepoRoot = findMonorepoRoot(process.cwd());
 console.log(`Monorepo root: ${monorepoRoot}`);
@@ -39,7 +39,7 @@ Checks if a file should be excluded based on patterns.
 
 **Example:**
 ```javascript
-import { shouldExcludeFile } from '@r-f-booze/dv-monorepo';
+import { shouldExcludeFile } from '@booze/dv-monorepo';
 
 const shouldExclude = shouldExcludeFile('/path/to/file.js', '/base/dir', ['node_modules', '*.log']);
 ```
@@ -59,7 +59,7 @@ Recursively gets all files from a directory, excluding specified patterns.
 
 **Example:**
 ```javascript
-import { getAllFiles } from '@r-f-booze/dv-monorepo';
+import { getAllFiles } from '@booze/dv-monorepo';
 
 const files = getAllFiles('/path/to/dir', '/base/dir', ['node_modules', '.git']);
 ```
@@ -73,9 +73,9 @@ Gets the app name from the current package.json.
 
 **Example:**
 ```javascript
-import { getAppName } from '@r-f-booze/dv-monorepo';
+import { getAppName } from '@booze/dv-monorepo';
 
-const appName = getAppName(); // Returns "app-server-api" from "@r-f-booze/app-server-api"
+const appName = getAppName(); // Returns "app-server-api" from "@booze/app-server-api"
 ```
 
 ## Usage

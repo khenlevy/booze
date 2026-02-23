@@ -1,5 +1,5 @@
 import { OAuth2Client } from "google-auth-library";
-import { generateRandomAlphanumericString } from "@r-f-booze/iso-auth-utils";
+import { generateRandomAlphanumericString } from "@booze/iso-auth-utils";
 
 class GoogleAuthService {
   constructor(clientId, clientSecret, dbClient) {

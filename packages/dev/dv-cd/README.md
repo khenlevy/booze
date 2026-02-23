@@ -39,7 +39,7 @@ packages/dev/dv-cd/
 Add this package to your app's `devDependencies`:
 
 ```bash
-yarn add -D @r-f-booze/dv-cd
+yarn add -D @booze/dv-cd
 ```
 
 ## Setup
@@ -77,7 +77,7 @@ Add a release script to your app's `package.json`:
     "release": "cp .env.production .env && dv-cd release"
   },
   "devDependencies": {
-    "@r-f-booze/dv-cd": "workspace:*"
+    "@booze/dv-cd": "workspace:*"
   }
 }
 ```
@@ -231,7 +231,7 @@ These patterns are built into the deployment service and cannot be customized.
 ## Dependencies
 
 This package depends on:
-- `@r-f-booze/dv-monorepo` - For monorepo root detection
+- `@booze/dv-monorepo` - For monorepo root detection
 - `ssh2` - For SSH connections
 - `dotenv` - For environment variable loading
 - `commander` - For CLI interface

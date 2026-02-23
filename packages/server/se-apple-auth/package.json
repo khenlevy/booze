@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-apple-auth",
+  "name": "@booze/se-apple-auth",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -20,14 +20,14 @@
     "test:coverage": "echo 'No tests yet'"
   },
   "dependencies": {
-    "@r-f-booze/iso-auth-utils": "workspace:*",
-    "@r-f-booze/se-db": "workspace:*",
+    "@booze/iso-auth-utils": "workspace:*",
+    "@booze/se-db": "workspace:*",
     "axios": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.5"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:^",
+    "@booze/dv-prettier-lint": "workspace:^",
     "eslint": "^8.57.0"
   },
   "peerDependencies": {

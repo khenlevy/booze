@@ -1,7 +1,7 @@
-import { EODHDClient } from "@r-f-booze/se-eodhd";
-import { getDatabase } from "@r-f-booze/se-db";
+import { EODHDClient } from "@booze/se-eodhd";
+import { getDatabase } from "@booze/se-db";
 import crypto from "crypto";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 class EODHDCacheClient {
   constructor({ apiKey, baseURL, timeout, axiosConfig, cacheExpirationHours = 24 }) {

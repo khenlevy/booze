@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Button } from '@r-f-booze/cl-button';
-import { Select } from '@r-f-booze/cl-select';
-import { PriceRangeFilters } from '@r-f-booze/cl-slider';
+import { Button } from '@booze/cl-button';
+import { Select } from '@booze/cl-select';
+import { PriceRangeFilters } from '@booze/cl-slider';
 import SectorFilter from './SectorFilter';
 import IndustryFilter from './IndustryFilter';
 

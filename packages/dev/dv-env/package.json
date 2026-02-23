@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-env",
+  "name": "@booze/dv-env",
   "version": "1.0.0",
   "description": "Environment validation and management for Buydy monorepo",
   "type": "module",
@@ -20,9 +20,9 @@
   "author": "Buydy Team",
   "license": "MIT",
   "dependencies": {
-    "@r-f-booze/dv-monorepo": "workspace:*"
+    "@booze/dv-monorepo": "workspace:*"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

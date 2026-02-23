@@ -2,7 +2,7 @@
  * Shared authentication utilities for Buydy server packages
  */
 
-import { formatUserDisplayName, generateRandomAlphanumericString } from "@r-f-booze/iso-auth-utils";
+import { formatUserDisplayName, generateRandomAlphanumericString } from "@booze/iso-auth-utils";
 
 /**
  * Base authentication service class with common functionality

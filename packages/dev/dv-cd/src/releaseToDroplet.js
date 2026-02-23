@@ -1,14 +1,14 @@
 import dotenv from "dotenv";
 import path from "path";
-import { findMonorepoRoot, getAppName } from "@r-f-booze/dv-monorepo";
+import { findMonorepoRoot, getAppName } from "@booze/dv-monorepo";
 import {
   ensureEnvironmentSymlinks,
   validateEnvironmentSymlinks,
   getFixInstructions,
-} from "@r-f-booze/dv-env";
-import { createSSHConnection } from "@r-f-booze/dv-ssh";
-import { ensureDocker } from "@r-f-booze/dv-docker";
-import logger from "@r-f-booze/se-logger";
+} from "@booze/dv-env";
+import { createSSHConnection } from "@booze/dv-ssh";
+import { ensureDocker } from "@booze/dv-docker";
+import logger from "@booze/se-logger";
 import {
   deployApp,
   cleanupRemoteDocker,
@@ -17,7 +17,7 @@ import {
   cleanupLocalTar,
   cleanupLocalDocker,
 } from "./services/app/index.js";
-import { checkDiskSpaceAndCleanup } from "@r-f-booze/dv-disk";
+import { checkDiskSpaceAndCleanup } from "@booze/dv-disk";
 
 /**
  * Get the current user's public IP address

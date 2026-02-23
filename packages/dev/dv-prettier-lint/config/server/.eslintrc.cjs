@@ -9,7 +9,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    // Prevent console usage - use @r-f-booze/se-logger instead
+    // Prevent console usage - use @booze/se-logger instead
     "no-console": "error",
     "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
   },

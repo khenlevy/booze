@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/cl-select",
+  "name": "@booze/cl-select",
   "version": "1.0.0",
   "description": "Select dropdown components for Buydy web applications",
   "type": "module",
@@ -23,7 +23,7 @@
     "react": "^18.0.0"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   },
   "dependencies": {
     "react-select": "^5.10.2"

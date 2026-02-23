@@ -1,5 +1,5 @@
 /**
- * @r-f-booze/se-list
+ * @booze/se-list
  * Cycled Linked List Manager - Singleton for endless job execution
  */
 

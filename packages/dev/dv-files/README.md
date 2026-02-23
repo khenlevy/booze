@@ -1,4 +1,4 @@
-# @r-f-booze/dv-files
+# @booze/dv-files
 
 Node.js file operations utilities for Buydy development tools. This package provides file synchronization, directory management, and file system operations.
 
@@ -18,7 +18,7 @@ This package provides a clean, reusable API for file and directory synchronizati
 ## Installation
 
 ```bash
-yarn add -D @r-f-booze/dv-files
+yarn add -D @booze/dv-files
 ```
 
 ## Prerequisites
@@ -31,7 +31,7 @@ yarn add -D @r-f-booze/dv-files
 ### Sync a Single File
 
 ```javascript
-import { syncFile } from "@r-f-booze/dv-files";
+import { syncFile } from "@booze/dv-files";
 
 await syncFile({
   localFilePath: "/path/to/local/file.txt",
@@ -44,7 +44,7 @@ await syncFile({
 ### Sync a Directory
 
 ```javascript
-import { syncDirectory } from "@r-f-booze/dv-files";
+import { syncDirectory } from "@booze/dv-files";
 
 await syncDirectory({
   localPath: "/path/to/local/dir",
@@ -79,7 +79,7 @@ await syncDirectory({
 ### Advanced: Direct Rsync Execution
 
 ```javascript
-import { executeRsync } from "@r-f-booze/dv-files";
+import { executeRsync } from "@booze/dv-files";
 
 // Full control over rsync arguments
 await executeRsync([
@@ -142,7 +142,7 @@ Low-level rsync execution wrapper.
 ### Deployment Scenario
 
 ```javascript
-import { syncDirectory, syncFile } from "@r-f-booze/dv-files";
+import { syncDirectory, syncFile } from "@booze/dv-files";
 
 // Sync application code
 await syncDirectory({
@@ -167,7 +167,7 @@ await syncFile({
 
 ## Used By
 
-- `@r-f-booze/dv-cd` - Continuous deployment tools
+- `@booze/dv-cd` - Continuous deployment tools
 
 ## Notes
 

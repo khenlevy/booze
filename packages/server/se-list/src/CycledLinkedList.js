@@ -4,7 +4,7 @@
  */
 
 import { LinkedList } from "./LinkedList.js";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 export class CycledLinkedList {
   constructor() {

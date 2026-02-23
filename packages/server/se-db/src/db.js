@@ -1,7 +1,7 @@
 // src/db.js
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 import { ensureIndexes } from "./indexes/index.js";
 
 let clientPromise = null;

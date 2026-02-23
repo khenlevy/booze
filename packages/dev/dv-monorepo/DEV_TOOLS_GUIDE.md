@@ -32,7 +32,7 @@ Checks that all apps have proper `.env.dev` and `.env.production` symlinks.
 
 ## 📦 Development Packages
 
-### `@r-f-booze/dv-env`
+### `@booze/dv-env`
 Environment validation and management.
 
 ```bash
@@ -40,12 +40,12 @@ Environment validation and management.
 dv-env-validate
 
 # Programmatic
-import { validateEnvironmentSymlinks } from '@r-f-booze/dv-env';
+import { validateEnvironmentSymlinks } from '@booze/dv-env';
 
 const { allValid, results } = validateEnvironmentSymlinks();
 ```
 
-### `@r-f-booze/dv-cd`
+### `@booze/dv-cd`
 Continuous deployment tools.
 
 ```bash
@@ -61,11 +61,11 @@ yarn reset-docker
 yarn cleanup-docker
 ```
 
-### `@r-f-booze/dv-monorepo`
+### `@booze/dv-monorepo`
 Monorepo utilities including dev server runner.
 
 ```javascript
-import { runDevelopmentServers } from '@r-f-booze/dv-monorepo';
+import { runDevelopmentServers } from '@booze/dv-monorepo';
 
 runDevelopmentServers({
   title: 'My Dev Environment',
@@ -84,7 +84,7 @@ Edit `package.json` and add to the include list:
 
 ```json
 {
-  "dev:all": "yarn workspaces foreach -pi --include '{@r-f-booze/app-stocks-api,@r-f-booze/app-stocks-web,@r-f-booze/app-stocks-scanner}' run dev"
+  "dev:all": "yarn workspaces foreach -pi --include '{@booze/app-stocks-api,@booze/app-stocks-web,@booze/app-stocks-scanner}' run dev"
 }
 ```
 
@@ -94,13 +94,13 @@ That's it! Super simple.
 
 ```bash
 # Specific apps (recommended)
-yarn workspaces foreach -pi --include '{@r-f-booze/app-stocks-api,@r-f-booze/app-stocks-web}' run dev
+yarn workspaces foreach -pi --include '{@booze/app-stocks-api,@booze/app-stocks-web}' run dev
 
 # All apps (wildcard)
-yarn workspaces foreach -pi --include '@r-f-booze/app-*' run dev
+yarn workspaces foreach -pi --include '@booze/app-*' run dev
 
 # Single app
-yarn workspace @r-f-booze/app-stocks-api dev
+yarn workspace @booze/app-stocks-api dev
 ```
 
 ### Flags

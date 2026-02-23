@@ -3,7 +3,7 @@
  * Provides core linked list functionality that can be composed into other classes
  */
 
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 export class LinkedList {
   constructor() {

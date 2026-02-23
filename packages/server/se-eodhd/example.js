@@ -1,5 +1,5 @@
 /**
- * Example usage of @r-f-booze/se-eodhd
+ * Example usage of @booze/se-eodhd
  * 
  * This file demonstrates how to use the EODHD API client
  * for various financial data operations.

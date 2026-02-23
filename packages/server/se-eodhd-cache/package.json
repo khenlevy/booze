@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-eodhd-cache",
+  "name": "@booze/se-eodhd-cache",
   "version": "0.1.0",
   "description": "EODHD API response caching package for Buydy server packages.",
   "main": "src/index.js",
@@ -17,11 +17,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@r-f-booze/se-db": "workspace:*",
-    "@r-f-booze/se-logger": "workspace:*",
+    "@booze/se-db": "workspace:*",
+    "@booze/se-logger": "workspace:*",
     "axios": "^1.12.2"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

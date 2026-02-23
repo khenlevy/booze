@@ -3,9 +3,9 @@
 import { program } from 'commander';
 import { releaseToDroplet } from '../src/releaseToDroplet.js';
 import { cleanupRemoteDocker } from '../src/services/app/index.js';
-import { createSSHConnection } from '@r-f-booze/dv-ssh';
-import { installDocker } from '@r-f-booze/dv-docker';
-import { getAppName, findMonorepoRoot } from '@r-f-booze/dv-monorepo';
+import { createSSHConnection } from '@booze/dv-ssh';
+import { installDocker } from '@booze/dv-docker';
+import { getAppName, findMonorepoRoot } from '@booze/dv-monorepo';
 import dotenv from 'dotenv';
 import path from 'path';
 

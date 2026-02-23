@@ -12,8 +12,8 @@ import {
   TrendingDown,
 } from 'lucide-react';
 import stocksService from '../services/stocksService';
-import { Select } from '@r-f-booze/cl-select';
-import { DualSlider } from '@r-f-booze/cl-slider';
+import { Select } from '@booze/cl-select';
+import { DualSlider } from '@booze/cl-slider';
 
 const StockFilters = ({ filters, onFiltersChange, onClearFilters }) => {
   const [filterOptions, setFilterOptions] = useState({

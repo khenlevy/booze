@@ -114,7 +114,7 @@ logger.connection('MongoDB connected', 'mongodb://admin:secret@localhost:27017/d
 
 ### Basic Logging (Automatic Filtering)
 ```javascript
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 
 // All sensitive data automatically filtered
 logger.business('User authentication', {

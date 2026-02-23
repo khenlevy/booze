@@ -17,7 +17,7 @@ This package provides utilities for managing Docker installations on remote serv
 ## Installation
 
 ```bash
-yarn add -D @r-f-booze/dv-docker
+yarn add -D @booze/dv-docker
 ```
 
 ## Usage
@@ -25,8 +25,8 @@ yarn add -D @r-f-booze/dv-docker
 ### Ensure Docker is Installed
 
 ```javascript
-import { createSSHConnection } from "@r-f-booze/dv-ssh";
-import { ensureDocker } from "@r-f-booze/dv-docker";
+import { createSSHConnection } from "@booze/dv-ssh";
+import { ensureDocker } from "@booze/dv-docker";
 
 const conn = await createSSHConnection({
   host: "example.com",
@@ -42,7 +42,7 @@ conn.dispose();
 ### Check Docker Installation
 
 ```javascript
-import { checkDocker } from "@r-f-booze/dv-docker";
+import { checkDocker } from "@booze/dv-docker";
 
 const isInstalled = await checkDocker(conn);
 if (isInstalled) {
@@ -53,7 +53,7 @@ if (isInstalled) {
 ### Install Docker
 
 ```javascript
-import { installDocker } from "@r-f-booze/dv-docker";
+import { installDocker } from "@booze/dv-docker";
 
 // Fresh installation
 await installDocker(conn);
@@ -98,7 +98,7 @@ The package includes `scripts/install-docker.sh` which:
 Ensures Docker is installed on the remote server. Checks first, installs only if needed.
 
 **Parameters:**
-- `conn` (NodeSSH) - SSH connection from `@r-f-booze/dv-ssh`
+- `conn` (NodeSSH) - SSH connection from `@booze/dv-ssh`
 
 **Returns:** Promise<void>
 
@@ -128,8 +128,8 @@ Installs or manages Docker on the remote server.
 ### Deployment Workflow
 
 ```javascript
-import { createSSHConnection } from "@r-f-booze/dv-ssh";
-import { ensureDocker } from "@r-f-booze/dv-docker";
+import { createSSHConnection } from "@booze/dv-ssh";
+import { ensureDocker } from "@booze/dv-docker";
 
 async function deploy() {
   const conn = await createSSHConnection({
@@ -152,7 +152,7 @@ async function deploy() {
 ### Reset Docker Installation
 
 ```javascript
-import { installDocker } from "@r-f-booze/dv-docker";
+import { installDocker } from "@booze/dv-docker";
 
 // Useful for troubleshooting or starting fresh
 await installDocker(conn, { reset: true });
@@ -166,7 +166,7 @@ await installDocker(conn, { reset: true });
 
 ## Used By
 
-- `@r-f-booze/dv-cd` - Continuous deployment tools
+- `@booze/dv-cd` - Continuous deployment tools
 
 ## Notes
 

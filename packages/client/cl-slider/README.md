@@ -1,11 +1,11 @@
-# @r-f-booze/cl-slider
+# @booze/cl-slider
 
 Slider components (single and dual-handle) for Buydy web applications.
 
 ## Installation
 
 ```bash
-yarn add @r-f-booze/cl-slider
+yarn add @booze/cl-slider
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ yarn add @r-f-booze/cl-slider
 ### Single Handle Slider
 
 ```javascript
-import { Slider } from '@r-f-booze/cl-slider';
+import { Slider } from '@booze/cl-slider';
 import { DollarSign } from 'lucide-react';
 
 function MyComponent() {
@@ -37,7 +37,7 @@ function MyComponent() {
 ### Dual Handle Slider
 
 ```javascript
-import { DualSlider } from '@r-f-booze/cl-slider';
+import { DualSlider } from '@booze/cl-slider';
 import { DollarSign } from 'lucide-react';
 
 function MyComponent() {

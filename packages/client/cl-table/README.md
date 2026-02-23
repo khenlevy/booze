@@ -1,17 +1,17 @@
-# @r-f-booze/cl-table
+# @booze/cl-table
 
 Flexible table component for Buydy web applications.
 
 ## Installation
 
 ```bash
-yarn add @r-f-booze/cl-table
+yarn add @booze/cl-table
 ```
 
 ## Usage
 
 ```javascript
-import { Table } from '@r-f-booze/cl-table';
+import { Table } from '@booze/cl-table';
 
 function MyComponent() {
   const columns = [

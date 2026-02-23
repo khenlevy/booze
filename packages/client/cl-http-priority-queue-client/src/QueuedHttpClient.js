@@ -1,5 +1,5 @@
-import { createHttpClient } from '@r-f-booze/iso-http-client';
-import { AsyncQueueManager } from '@r-f-booze/dv-async-priority-queue';
+import { createHttpClient } from '@booze/iso-http-client';
+import { AsyncQueueManager } from '@booze/dv-async-priority-queue';
 import { generateCacheKeyForRequest } from './generateCacheKeyForRequest.js';
 import { LocalStorageCacheManager } from './LocalStorageCacheManager.js';
 

@@ -1,4 +1,4 @@
-# @r-f-booze/se-list
+# @booze/se-list
 
 **Cycled Linked List Manager** - A singleton system for endless async function execution with smart controls and internal cancellation support.
 
@@ -44,7 +44,7 @@ Instead of stateless cron jobs, we built a **cycled linked list execution engine
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    @r-f-booze/se-list                           │
+│                    @booze/se-list                           │
 ├─────────────────────────────────────────────────────────────┤
 │  Core Classes                                              │
 │  ├── CycledLinkedList  ← Main singleton for endless cycles │
@@ -72,7 +72,7 @@ Instead of stateless cron jobs, we built a **cycled linked list execution engine
 ### Basic Usage
 
 ```javascript
-import { getCycledList } from '@r-f-booze/se-list';
+import { getCycledList } from '@booze/se-list';
 
 const cycledList = getCycledList();
 
@@ -323,7 +323,7 @@ setInterval(() => {
 **Debug Mode**:
 ```javascript
 // Enable detailed logging
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 logger.setLevel('debug');
 ```
 

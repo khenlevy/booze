@@ -1,5 +1,5 @@
-import { ensureConnected, Jobs } from '@r-f-booze/se-db';
-import logger from '@r-f-booze/se-logger';
+import { ensureConnected, Jobs } from '@booze/se-db';
+import logger from '@booze/se-logger';
 
 async function checkDatabase() {
   try {

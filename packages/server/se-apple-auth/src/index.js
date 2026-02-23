@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import jwkToPem from "jwk-to-pem";
-import { generateRandomAlphanumericString } from "@r-f-booze/iso-auth-utils";
+import { generateRandomAlphanumericString } from "@booze/iso-auth-utils";
 
 class AppleAuthService {
   constructor(clientId, teamId, keyId, privateKey, dbClient) {

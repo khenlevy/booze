@@ -6,7 +6,7 @@ A MongoDB-based caching layer for EODHD API responses to reduce costs and improv
 
 - **Automatic Caching**: All API responses are automatically cached
 - **Configurable Expiration**: Default 24-hour cache expiration (configurable)
-- **MongoDB Integration**: Uses the existing `@r-f-booze/se-db` package
+- **MongoDB Integration**: Uses the existing `@booze/se-db` package
 - **Performance Optimized**: Includes database indexes for fast lookups
 - **Cache Management**: Built-in methods for cache cleanup and statistics
 - **Error Resilient**: Caching failures don't break API calls
@@ -14,13 +14,13 @@ A MongoDB-based caching layer for EODHD API responses to reduce costs and improv
 ## Installation
 
 ```bash
-yarn add @r-f-booze/se-eodhd-cache
+yarn add @booze/se-eodhd-cache
 ```
 
 ## Usage
 
 ```javascript
-import { EODHDCacheClient } from "@r-f-booze/se-eodhd-cache";
+import { EODHDCacheClient } from "@booze/se-eodhd-cache";
 
 const cacheClient = new EODHDCacheClient({
   apiKey: "your_eodhd_api_token",

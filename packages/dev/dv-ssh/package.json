@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-ssh",
+  "name": "@booze/dv-ssh",
   "version": "1.0.0",
   "description": "SSH connection and remote command execution utilities for Buydy",
   "type": "module",
@@ -20,6 +20,6 @@
     "node-ssh": "^13.0.0"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table } from '@r-f-booze/cl-table';
+import { Table } from '@booze/cl-table';
 
 const TopCompaniesTable = ({ topCompanies, optimizationMethodName }) => {
   if (!topCompanies || topCompanies.length === 0) {

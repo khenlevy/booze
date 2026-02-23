@@ -1,13 +1,13 @@
-import { releaseComposeStackToDroplet } from '@r-f-booze/dv-cd';
-import { syncFile } from '@r-f-booze/dv-files';
-import { executeRemoteCommand } from '@r-f-booze/dv-ssh';
+import { releaseComposeStackToDroplet } from '@booze/dv-cd';
+import { syncFile } from '@booze/dv-files';
+import { executeRemoteCommand } from '@booze/dv-ssh';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { writeFileSync, readFileSync } from 'fs';
-import { getAppName, findMonorepoRoot } from '@r-f-booze/dv-monorepo';
-import { createSSHConnection } from '@r-f-booze/dv-ssh';
+import { getAppName, findMonorepoRoot } from '@booze/dv-monorepo';
+import { createSSHConnection } from '@booze/dv-ssh';
 import dotenv from 'dotenv';
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 
 /**
  * Get the current user's public IP address

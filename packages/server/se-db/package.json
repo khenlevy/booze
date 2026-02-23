@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-db",
+  "name": "@booze/se-db",
   "version": "0.1.0",
   "description": "Isolated MongoDB CRUD library for Buydy server packages. All config is injected from the top app.",
   "main": "src/index.js",
@@ -21,6 +21,6 @@
     "mongodb": "^6.10.0"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

@@ -1,4 +1,4 @@
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 
 export const errorHandler = (err, req, res, _next) => {
   logger.business('Error', {

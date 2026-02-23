@@ -1,5 +1,5 @@
-import { Table } from '@r-f-booze/cl-table';
-import { Button } from '@r-f-booze/cl-button';
+import { Table } from '@booze/cl-table';
+import { Button } from '@booze/cl-button';
 import TopCompaniesTable from '../components/TopCompaniesTable';
 
 const HeatMapContent = ({

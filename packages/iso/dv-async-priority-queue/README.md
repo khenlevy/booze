@@ -19,7 +19,7 @@ Async queue manager with concurrency control and priority support for Buydy appl
 ## Installation
 
 ```bash
-yarn add @r-f-booze/dv-async-priority-queue
+yarn add @booze/dv-async-priority-queue
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ yarn add @r-f-booze/dv-async-priority-queue
 ### Basic Queue (FIFO)
 
 ```javascript
-import { AsyncQueueManager } from '@r-f-booze/dv-async-priority-queue';
+import { AsyncQueueManager } from '@booze/dv-async-priority-queue';
 
 // Create a queue with max 10 concurrent tasks
 const queue = new AsyncQueueManager({
@@ -141,8 +141,8 @@ console.log('Summary:', summary);
 ### Real-World Example: API Rate Limiting
 
 ```javascript
-import { AsyncQueueManager } from '@r-f-booze/dv-async-priority-queue';
-import { EODHDClient } from '@r-f-booze/se-eodhd';
+import { AsyncQueueManager } from '@booze/dv-async-priority-queue';
+import { EODHDClient } from '@booze/se-eodhd';
 
 const client = new EODHDClient({ apiKey: process.env.API_KEY });
 

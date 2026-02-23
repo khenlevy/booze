@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 import { promisify } from "util";
-import { getAppName } from "@r-f-booze/dv-monorepo";
+import { getAppName } from "@booze/dv-monorepo";
 import path from "path";
 import { mkdir, access, unlink } from "fs/promises";
 

@@ -1,4 +1,4 @@
-import { QueuedHttpClient } from '@r-f-booze/cl-http-priority-queue-client';
+import { QueuedHttpClient } from '@booze/cl-http-priority-queue-client';
 
 // API Base URL
 // Priority: Vite env var -> dev proxy relative path -> production relative path -> localhost fallback

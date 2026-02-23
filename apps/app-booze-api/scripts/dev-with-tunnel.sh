@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Determine local forward port: TUNNEL_LOCAL_PORT > MONGO_PORT > 27017
 PORT="${TUNNEL_LOCAL_PORT:-${MONGO_PORT:-27017}}"
-SSH_HOST="${DO_DROPLET_HOST:-${SSH_HOST:-r-f-booze-droplet}}"
+SSH_HOST="${DO_DROPLET_HOST:-${SSH_HOST:-booze-droplet}}"
 
 echo "[dev-with-tunnel] Using local port $PORT for SSH tunnel to $SSH_HOST:27017"
 

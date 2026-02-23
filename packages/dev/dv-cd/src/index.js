@@ -1,4 +1,4 @@
-// Main library exports for @r-f-booze/dv-cd
+// Main library exports for @booze/dv-cd
 // This file provides programmatic access to deployment functions
 
 export { releaseToDroplet } from "./releaseToDroplet.js";

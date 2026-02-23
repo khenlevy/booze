@@ -6,7 +6,7 @@ services:
     # Enforce authentication at runtime; admin user is provisioned by init script
     command: ['--auth', '--wiredTigerCacheSizeGB', '0.25']
     networks:
-      - r-f-booze-network
+      - booze-network
     env_file:
       - .env.production
     # Note: MONGO_* variables loaded from .env.production via env_file
@@ -28,7 +28,7 @@ services:
           memory: 384m
 
 networks:
-  r-f-booze-network:
+  booze-network:
     external: true
 
 volumes:

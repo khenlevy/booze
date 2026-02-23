@@ -1,4 +1,4 @@
-# @r-f-booze/se-db
+# @booze/se-db
 
 A minimal, modern MongoDB CRUD library for Buydy server packages. All database configuration (URL, credentials, options) is injected from the top-level app—this package is agnostic to environment and credentials.
 
@@ -11,7 +11,7 @@ A minimal, modern MongoDB CRUD library for Buydy server packages. All database c
 ## Usage
 
 ```js
-import { MongoDbClient } from '@r-f-booze/se-db';
+import { MongoDbClient } from '@booze/se-db';
 
 // Inject config from your app
 const db = new MongoDbClient({
@@ -23,10 +23,10 @@ const db = new MongoDbClient({
 await db.connect();
 
 // CRUD example
-const user = await db.create('users', { email: 'test@r-f-booze.com' });
-const found = await db.findOne('users', { email: 'test@r-f-booze.com' });
-await db.update('users', { email: 'test@r-f-booze.com' }, { $set: { name: 'Test' } });
-await db.delete('users', { email: 'test@r-f-booze.com' });
+const user = await db.create('users', { email: 'test@booze.com' });
+const found = await db.findOne('users', { email: 'test@booze.com' });
+await db.update('users', { email: 'test@booze.com' }, { $set: { name: 'Test' } });
+await db.delete('users', { email: 'test@booze.com' });
 
 await db.disconnect();
 ```

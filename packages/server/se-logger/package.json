@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/se-logger",
+  "name": "@booze/se-logger",
   "version": "1.0.0",
   "description": "High-performance structured logger for Buydy backend services",
   "type": "module",

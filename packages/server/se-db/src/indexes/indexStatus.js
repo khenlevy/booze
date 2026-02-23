@@ -4,7 +4,7 @@
  * Provides visibility into index status - which indexes exist and which are missing.
  */
 
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 import { indexRules } from "./indexRules.js";
 
 /**

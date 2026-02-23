@@ -1,6 +1,6 @@
-import { getAppName } from "@r-f-booze/dv-monorepo";
-import { syncFile } from "@r-f-booze/dv-files";
-import { executeRemoteCommand } from "@r-f-booze/dv-ssh";
+import { getAppName } from "@booze/dv-monorepo";
+import { syncFile } from "@booze/dv-files";
+import { executeRemoteCommand } from "@booze/dv-ssh";
 import {
   cleanupLocalDocker,
   checkDiskSpace,

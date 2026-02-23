@@ -6,7 +6,7 @@
  */
 
 import fetch from 'node-fetch';
-import logger from '@r-f-booze/se-logger';
+import logger from '@booze/se-logger';
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3001';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/iso-js",
+  "name": "@booze/iso-js",
   "version": "1.0.0",
   "description": "Isomorphic JavaScript utility functions",
   "type": "module",

@@ -1,4 +1,4 @@
-import { CheckboxListSelect } from '@r-f-booze/cl-select';
+import { CheckboxListSelect } from '@booze/cl-select';
 
 const SectorFilter = ({
   sectors = [],

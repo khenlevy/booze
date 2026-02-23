@@ -1,4 +1,4 @@
-import { executeRemoteCommand } from "@r-f-booze/dv-ssh";
+import { executeRemoteCommand } from "@booze/dv-ssh";
 
 /**
  * Checks if Docker is already installed on the remote server

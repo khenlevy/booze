@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-async-priority-queue",
+  "name": "@booze/dv-async-priority-queue",
   "version": "1.0.0",
   "description": "Async queue manager with concurrency control and optional priority support",
   "type": "module",
@@ -23,6 +23,6 @@
   "author": "Buydy Team",
   "license": "MIT",
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

@@ -42,9 +42,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@booze/dv-prettier-lint": "workspace:*",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^10.0.1",
-    "@r-f-booze/dv-prettier-lint": "workspace:*",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "eslint-config-prettier": "^10.1.8",

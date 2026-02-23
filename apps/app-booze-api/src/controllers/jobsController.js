@@ -1,6 +1,6 @@
-import { Jobs, getModel } from '@r-f-booze/se-db';
-import { getJobsMapByType } from '@r-f-booze/iso-business-types';
-import logger from '@r-f-booze/se-logger';
+import { Jobs, getModel } from '@booze/se-db';
+import { getJobsMapByType } from '@booze/iso-business-types';
+import logger from '@booze/se-logger';
 
 /**
  * Get all jobs with optional filtering and pagination
@@ -274,11 +274,11 @@ export const runJob = async (req, res, next) => {
     try {
       // Import makeJob from the scanner package
       const { makeJob } =
-        await import('@r-f-booze/app-booze-scanner/src/jobs/makeJob.js');
+        await import('@booze/app-booze-scanner/src/jobs/makeJob.js');
 
       // Get the job function from the job function map
       const { getJobsMapByType } =
-        await import('@r-f-booze/iso-business-types');
+        await import('@booze/iso-business-types');
       const jobsMap = getJobsMapByType();
       const jobType = jobsMap[existingJob.name];
 

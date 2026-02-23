@@ -1,4 +1,4 @@
-# @r-f-booze/dv-disk
+# @booze/dv-disk
 
 Disk management utilities for Buydy development tools. This package provides disk space monitoring, cleanup operations, and disk resource management.
 
@@ -19,7 +19,7 @@ This package provides disk management utilities for monitoring disk space, perfo
 ## Installation
 
 ```bash
-yarn add -D @r-f-booze/dv-disk
+yarn add -D @booze/dv-disk
 ```
 
 ## Prerequisites
@@ -32,7 +32,7 @@ yarn add -D @r-f-booze/dv-disk
 ### Sync a Single File
 
 ```javascript
-import { syncFile } from "@r-f-booze/dv-file-sync";
+import { syncFile } from "@booze/dv-file-sync";
 
 await syncFile({
   localFilePath: "/path/to/local/file.txt",
@@ -45,7 +45,7 @@ await syncFile({
 ### Sync a Directory
 
 ```javascript
-import { syncDirectory } from "@r-f-booze/dv-file-sync";
+import { syncDirectory } from "@booze/dv-file-sync";
 
 await syncDirectory({
   localPath: "/path/to/local/dir",
@@ -80,7 +80,7 @@ await syncDirectory({
 ### Advanced: Direct Rsync Execution
 
 ```javascript
-import { executeRsync } from "@r-f-booze/dv-file-sync";
+import { executeRsync } from "@booze/dv-file-sync";
 
 // Full control over rsync arguments
 await executeRsync([
@@ -143,7 +143,7 @@ Low-level rsync execution wrapper.
 ### Deployment Scenario
 
 ```javascript
-import { syncDirectory, syncFile } from "@r-f-booze/dv-file-sync";
+import { syncDirectory, syncFile } from "@booze/dv-file-sync";
 
 // Sync application code
 await syncDirectory({
@@ -168,7 +168,7 @@ await syncFile({
 
 ## Used By
 
-- `@r-f-booze/dv-cd` - Continuous deployment tools
+- `@booze/dv-cd` - Continuous deployment tools
 
 ## Notes
 

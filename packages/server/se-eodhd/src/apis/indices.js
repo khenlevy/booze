@@ -1,4 +1,4 @@
-import logger from "@r-f-booze/se-logger";
+import logger from "@booze/se-logger";
 
 /**
  * Indices API - Stock indices, ETFs, and market benchmarks

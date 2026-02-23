@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/cl-slider",
+  "name": "@booze/cl-slider",
   "version": "1.0.0",
   "description": "Slider components (single and dual-handle) for Buydy web applications",
   "type": "module",
@@ -26,6 +26,6 @@
     "rc-slider": "^10.0.0"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }

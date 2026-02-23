@@ -1,5 +1,5 @@
 {
-  "name": "@r-f-booze/dv-docker",
+  "name": "@booze/dv-docker",
   "version": "1.0.0",
   "description": "Docker management utilities for remote servers",
   "type": "module",
@@ -17,9 +17,9 @@
   "author": "Buydy Team",
   "license": "MIT",
   "dependencies": {
-    "@r-f-booze/dv-ssh": "workspace:*"
+    "@booze/dv-ssh": "workspace:*"
   },
   "devDependencies": {
-    "@r-f-booze/dv-prettier-lint": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
   }
 }
