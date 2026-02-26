@@ -1,233 +1,438 @@
-# Stocks API - Jobs Collection Backend
+# app-booze-api
 
-A simple, clean Express.js API for managing the Jobs collection from the Buydy stocks scanner system.
+A RESTful Express.js API for the Booze monorepo. Manages Jobs, stocks data, and related collections with MongoDB via the `@booze/se-db` package.
 
 ## Features
 
-- **RESTful API** for Jobs collection CRUD operations
-- **Real-time job monitoring** with status tracking
-- **Job statistics** and analytics
-- **MongoDB integration** using the se-db package
-- **Error handling** and validation
-- **CORS enabled** for frontend integration
+- **RESTful API** with versioned routes (`/api/v1/`)
+- **MongoDB integration** via `@booze/se-db`
+- **Error handling** with consistent JSON responses
+- **CORS** for frontend integration
 - **Health checks** for monitoring
+- **Graceful shutdown** on SIGTERM/SIGINT
 
-## API Endpoints
+---
 
-### Jobs Management
+## API Endpoints Reference
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/jobs` | Get all jobs with filtering and pagination |
-| `GET` | `/api/v1/jobs/:id` | Get a specific job by ID |
-| `POST` | `/api/v1/jobs` | Create a new job |
-| `PUT` | `/api/v1/jobs/:id` | Update job status, progress, or add logs |
-| `DELETE` | `/api/v1/jobs/:id` | Delete a job |
+| Resource | Base Path | Description |
+|----------|-----------|-------------|
+| Jobs | `/api/v1/jobs` | CRUD, stats, recent, running, failed, history |
+| Health | `/health` | Service health check |
 
-### Specialized Endpoints
+See `docs/API_DOCUMENTATION.md` for full endpoint details, request/response examples, and query parameters.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/jobs/stats` | Get job statistics (total, running, completed, failed) |
-| `GET` | `/api/v1/jobs/recent` | Get recent jobs (last 24 hours) |
-| `GET` | `/api/v1/jobs/running` | Get currently running jobs |
-| `GET` | `/api/v1/jobs/failed` | Get failed jobs (optionally since a date) |
-| `GET` | `/api/v1/jobs/history/:name` | Get job history for a specific job name |
+---
 
-### Health Check
+## Project Structure
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/health` | API health status |
+```
+src/
+├── config/
+│   └── envLoader.js         # Environment loading (.env.dev, .env.production)
+├── controllers/             # Business logic per resource
+│   └── jobsController.js
+├── middlewares/
+│   └── errorHandler.js      # Global error handler (must be last)
+├── routes/                  # Express route definitions
+│   └── jobs.js
+├── index.js                 # App entry, middleware setup, route mounting
+└── checkDatabase.js         # DB utilities
+```
 
-## Job Document Structure
+---
 
-Based on the se-db Jobs model:
+## How to Create a New API Endpoint
+
+### 1. Add a Controller Function
+
+Create or extend a controller in `src/controllers/`.
+
+**Controller conventions:**
+
+- Use `async` handler functions
+- Accept `(req, res, next)`
+- Pass errors to `next(error)` — never swallow or rethrow
+- Return `res.status().json()` for all responses
+- Use `return` for early exits (e.g. validation, 404)
 
 ```javascript
-{
-  _id: ObjectId,
-  name: String,              // Job name/identifier (required)
-  status: String,            // "scheduled", "running", "completed", "failed"
-  scheduledAt: Date,         // When job was scheduled
-  startedAt: Date,           // When job started executing
-  endedAt: Date,             // When job finished
-  progress: Number,          // Progress (0.0 to 1.0)
-  result: Mixed,             // Job execution result
-  error: String,             // Error message (on failure)
-  logs: [{                   // Job execution logs
-    ts: Date,
-    level: "info" | "warn" | "error",
-    msg: String
-  }],
-  metadata: Mixed            // Job metadata
-}
-```
+// src/controllers/exampleController.js
+import { getModel } from '@booze/se-db';
+import logger from '@booze/se-logger';
 
-## Query Parameters
+/**
+ * Get all items with optional filtering and pagination
+ */
+export const getAllItems = async (req, res, next) => {
+  try {
+    const { limit = 50, skip = 0 } = req.query;
 
-### GET /api/v1/jobs
-- `status` - Filter by job status
-- `name` - Filter by job name (partial match)
-- `limit` - Number of results (default: 50)
-- `skip` - Number of results to skip (default: 0)
-- `sortBy` - Field to sort by (default: "scheduledAt")
-- `sortOrder` - Sort order: "asc" or "desc" (default: "desc")
+    const Model = getModel('example');
+    const items = await Model.find({})
+      .limit(parseInt(limit))
+      .skip(parseInt(skip))
+      .lean();
 
-### GET /api/v1/jobs/failed
-- `since` - ISO date string to filter failed jobs since
+    const total = await Model.countDocuments();
 
-### GET /api/v1/jobs/history/:name
-- `limit` - Number of historical jobs to return (default: 20)
-
-## Request/Response Examples
-
-### Create a Job
-```bash
-POST /api/v1/jobs
-Content-Type: application/json
-
-{
-  "name": "Large Cap Analysis",
-  "metadata": {
-    "priority": "high",
-    "type": "analysis"
+    res.json({
+      items,
+      pagination: {
+        total,
+        limit: parseInt(limit),
+        skip: parseInt(skip),
+        hasMore: parseInt(skip) + parseInt(limit) < total,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
-}
-```
+};
 
-### Update Job Progress
-```bash
-PUT /api/v1/jobs/64f7b8c9d1234567890abcde
-Content-Type: application/json
+/**
+ * Get a single item by ID
+ */
+export const getItemById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const Model = getModel('example');
+    const item = await Model.findById(id).lean();
 
-{
-  "progress": 0.75,
-  "logMessage": "Processing 75% complete",
-  "logLevel": "info"
-}
-```
+    if (!item) {
+      return res.status(404).json({
+        error: 'Not found',
+        message: `Item with ID ${id} does not exist`,
+      });
+    }
 
-### Mark Job as Completed
-```bash
-PUT /api/v1/jobs/64f7b8c9d1234567890abcde
-Content-Type: application/json
-
-{
-  "status": "completed",
-  "result": {
-    "processed": 1250,
-    "success": 1200,
-    "failed": 50
+    res.json({ item });
+  } catch (error) {
+    next(error);
   }
+};
+
+/**
+ * Create a new item
+ */
+export const createItem = async (req, res, next) => {
+  try {
+    const { name, metadata = {} } = req.body;
+
+    if (!name) {
+      return res.status(400).json({
+        error: 'Validation Error',
+        message: 'Name is required',
+      });
+    }
+
+    const Model = getModel('example');
+    const item = new Model({ name, metadata });
+    await item.save();
+
+    res.status(201).json({ item });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### 2. Create or Extend Routes
+
+Create a route file in `src/routes/` or add to an existing one.
+
+**Route order matters:** place more specific routes before parameterized ones (`/:id`).
+
+```javascript
+// src/routes/example.js
+import express from 'express';
+import {
+  getAllItems,
+  getItemById,
+  createItem,
+} from '../controllers/exampleController.js';
+
+const router = express.Router();
+
+// Specific routes first (e.g. /stats, /recent)
+router.get('/stats', getStats);
+
+// CRUD
+router.get('/', getAllItems);
+router.get('/:id', getItemById);
+router.post('/', createItem);
+router.put('/:id', updateItem);
+router.delete('/:id', deleteItem);
+
+export default router;
+```
+
+### 3. Mount the Route in `index.js`
+
+```javascript
+// src/index.js
+import exampleRoutes from './routes/example.js';
+
+// API routes
+app.use('/api/v1/example', exampleRoutes);
+```
+
+### 4. Document the Endpoint
+
+Add the endpoint to this README and to `docs/API_DOCUMENTATION.md` with:
+
+- Method and path
+- Query params
+- Request body
+- Response shape
+- Error responses
+
+---
+
+## Routes Conventions
+
+### Route Order
+
+- Static paths first: `/stats`, `/recent`, `/running`, `/failed`
+- Then parameterized: `/:id`, `/:name`
+- Avoid `/all` conflicting with `/:id` — use `/all` before `/:id` or a different path
+
+### Naming
+
+- Use kebab-case for URLs: `/api/v1/job-types`, `/api/v1/eodhd-usage`
+- Use plural nouns for collections: `/jobs`, `/stocks`
+- Use camelCase for controller functions: `getAllJobs`, `getJobById`
+
+### URL Structure
+
+```
+/api/v1/{resource}           # Collection
+/api/v1/{resource}/:id       # Single item
+/api/v1/{resource}/stats     # Aggregations
+/api/v1/{resource}/:id/run   # Sub-resource actions
+```
+
+---
+
+## Middlewares
+
+### When to Use Middleware
+
+| Use case | Where | Example |
+|----------|-------|---------|
+| Global auth | `index.js` before routes | `app.use(authenticate)` |
+| Route-specific auth | `router.get('/admin', auth, adminHandler)` | `app.use('/api/v1/admin', authMiddleware, adminRoutes)` |
+| Request validation | Per route | `router.post('/', validateBody(schema), createHandler)` |
+| Logging | `index.js` | `app.use(morgan('combined'))` |
+| Error handling | `index.js` last | `app.use(errorHandler)` |
+
+### Global Middleware Order (index.js)
+
+1. `helmet()` — security headers
+2. `cors()` — CORS
+3. `morgan()` — request logging
+4. `express.json()` — body parsing
+5. Routes
+6. 404 handler
+7. `errorHandler` — must be last
+
+### Creating a New Middleware
+
+```javascript
+// src/middlewares/validateBody.js
+export const validateBody = (schema) => (req, res, next) => {
+  try {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        error: 'Validation Error',
+        message: error.details.map((d) => d.message).join(', '),
+      });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+```
+
+Usage:
+
+```javascript
+router.post('/', validateBody(createJobSchema), createJob);
+```
+
+---
+
+## Error Handling
+
+### Controller Pattern
+
+Always use `try/catch` and `next(error)`:
+
+```javascript
+export const myHandler = async (req, res, next) => {
+  try {
+    // ... logic
+    res.json({ data });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### Returning Errors in Controllers
+
+For validation or 404, return early and do not call `next`:
+
+```javascript
+if (!name) {
+  return res.status(400).json({
+    error: 'Validation Error',
+    message: 'Name is required',
+  });
+}
+
+if (!job) {
+  return res.status(404).json({
+    error: 'Not found',
+    message: `Job with ID ${id} does not exist`,
+  });
 }
 ```
 
-### Get Job Statistics
-```bash
-GET /api/v1/jobs/stats
-```
+For unexpected errors, use `next(error)` so the global error handler can respond.
 
-Response:
+### Error Response Format
+
+All errors go through `errorHandler.js` and return:
+
 ```json
 {
-  "stats": {
-    "total": 1234,
-    "scheduled": 5,
-    "running": 3,
-    "completed": 1200,
-    "failed": 26
-  },
-  "recentActivity": 45
+  "error": "Error message",
+  "details": "Optional details (dev only in production)",
+  "timestamp": "2025-02-26T12:00:00.000Z",
+  "path": "/api/v1/jobs"
 }
 ```
+
+### Handled Error Types
+
+| Error | Status | Notes |
+|-------|--------|-------|
+| `ValidationError` (Mongoose) | 400 | Validation Error |
+| `CastError` (invalid ObjectId) | 400 | Invalid ID format |
+| `err.code === 11000` | 409 | Duplicate entry |
+| `err.statusCode` | Custom | Use `err.statusCode` |
+| Other | 500 | Internal Server Error (details hidden in production) |
+
+### Custom Status Codes
+
+Throw errors with `statusCode`:
+
+```javascript
+const err = new Error('Job already running');
+err.statusCode = 409;
+next(err);
+```
+
+---
+
+## API Standards
+
+### Response Shapes
+
+- **Single item:** `{ item }` or `{ job }`
+- **List:** `{ items }` or `{ jobs }`
+- **Paginated:** `{ items, pagination: { total, limit, skip, hasMore } }`
+- **Stats:** `{ stats: {...}, recentActivity?: number }`
+
+### HTTP Status Codes
+
+- `200` — Success
+- `201` — Created
+- `400` — Bad Request (validation)
+- `404` — Not Found
+- `409` — Conflict (duplicate, already running)
+- `500` — Internal Server Error
+
+### Query Parameters
+
+- `limit` — default 50
+- `skip` — default 0
+- `sortBy` — default by resource
+- `sortOrder` — `asc` / `desc`
+
+---
 
 ## Environment Variables
 
-Create a `.env` file in the root directory:
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `API_PORT` | Server port | `3001` |
+| `NODE_ENV` | `development` / `production` | `development` |
+| `MONGO_URL` | MongoDB connection string | — |
+| `MONGO_DATABASE` | Database name | — |
+| `FRONTEND_URL` | CORS origin | `http://localhost:3000` |
 
-```env
-# Server Configuration
-API_PORT=3001
-NODE_ENV=development
+Env files: `.env.dev` (development), `.env.production` (production), `.env` fallback.
 
-# Database Configuration (uses se-db defaults)
-MONGO_URL=mongodb://localhost:27017
-MONGO_DATABASE=buydy_db
-MONGO_HOST=localhost
-MONGO_PORT=27017
-MONGO_USERNAME=
-MONGO_PASSWORD=
-
-# Frontend URL for CORS
-FRONTEND_URL=http://localhost:3000
-```
+---
 
 ## Getting Started
 
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or cloud)
-- Access to the Buydy monorepo
-
-### Installation
-
-1. Install dependencies:
 ```bash
 yarn install
+yarn dev   # Development
+yarn start # Production
 ```
 
-2. Set up environment variables (see above)
+Health check: `GET http://localhost:3001/health`
 
-3. Start the development server:
-```bash
-yarn dev
-```
+---
 
-4. The API will be available at `http://localhost:3001`
+## For AI Coding Agents
 
-### Production
+### Before Starting
 
-```bash
-yarn start
-```
+1. Read this README
+2. Check `docs/API_DOCUMENTATION.md` for existing endpoints
+3. Inspect `src/controllers/` and `src/routes/` for patterns
 
-## Integration with Frontend
+### When Adding Endpoints
 
-This API is designed to work with the `app-stocks-web` React application:
+1. Add controller in `src/controllers/{resource}Controller.js`
+2. Add route in `src/routes/{resource}.js` (order: specific before `/:id`)
+3. Mount `app.use('/api/v1/{resource}', routes)` in `index.js`
+4. Update `docs/API_DOCUMENTATION.md` and this README
 
-1. **CORS** is configured to allow requests from `http://localhost:3000`
-2. **Error handling** returns consistent JSON error responses
-3. **Pagination** is built-in for large job lists
-4. **Real-time updates** can be achieved by polling the `/running` endpoint
+### When Adding Middleware
 
-## Development
+1. Create in `src/middlewares/`
+2. Use `(req, res, next)` signature
+3. Call `next()` or `next(error)` for errors
+4. Global middleware: add in `index.js` before routes
+5. Route-specific: pass as second arg, e.g. `router.get('/path', middleware, handler)`
 
-### Project Structure
-```
-src/
-├── controllers/
-│   └── jobsController.js    # Job CRUD operations
-├── routes/
-│   └── jobs.js             # Job API routes
-├── middlewares/
-│   └── errorHandler.js     # Error handling middleware
-└── index.js                # Express app setup
-```
+### Error Handling Rules
 
-### Adding New Endpoints
+- Always `try/catch` in async controllers
+- Use `next(error)` for unexpected errors
+- Use `return res.status(404).json(...)` for validation/not-found
+- Do not add custom error handling in routes; let `errorHandler` format responses
 
-1. Add controller function in `jobsController.js`
-2. Add route in `routes/jobs.js`
-3. Update this README with endpoint documentation
+### Code Style
 
-## Monitoring
+- Use `@booze/se-logger` for logging
+- Use `@booze/se-db` for models (`getModel`, `Jobs`, etc.)
+- Use `.lean()` for read-only queries
+- Use JSDoc for exported functions
 
-- Health check endpoint: `GET /health`
-- Error logging to console
-- Graceful shutdown handling
-- Database connection monitoring
+### Checklist for New Features
 
-## License
-
-Part of the Buydy monorepo.
+- [ ] Controller in `controllers/`
+- [ ] Route in `routes/`
+- [ ] Route mounted in `index.js`
+- [ ] Docs updated
+- [ ] Error cases handled (404, 400, 409)
+- [ ] Pagination for list endpoints
