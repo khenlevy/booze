@@ -277,8 +277,7 @@ export const runJob = async (req, res, next) => {
         await import('@booze/app-booze-scanner/src/jobs/makeJob.js');
 
       // Get the job function from the job function map
-      const { getJobsMapByType } =
-        await import('@booze/iso-business-types');
+      const { getJobsMapByType } = await import('@booze/iso-business-types');
       const jobsMap = getJobsMapByType();
       const jobType = jobsMap[existingJob.name];
 
