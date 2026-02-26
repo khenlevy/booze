@@ -4989,6 +4989,7 @@ __metadata:
     concurrently: "npm:^8.2.2"
     husky: "npm:^9.1.7"
     mongoose: "npm:^8.18.2"
+    node-cron: "npm:^4.2.1"
     node-ssh: "npm:^13.2.1"
   languageName: unknown
   linkType: soft
@@ -10146,6 +10147,13 @@ __metadata:
   version: 2.0.1
   resolution: "nested-error-stacks@npm:2.0.1"
   checksum: 10c0/125049632bc3ca2252e994ca07f27d795c0e6decc4077f0f4163348d30d7cb95409ceff6184284c95396aa5ea8ff5010673063db7674058b966b4f0228d4981c
+  languageName: node
+  linkType: hard
+
+"node-cron@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "node-cron@npm:4.2.1"
+  checksum: 10c0/804df01df230e96fd2f8ffcde004f4d5af953bccdf3ccf993dc450526dd65f553a2f2ad4bc0faf55c90c38cbc99c9ddbb88ee16cba3fc6bc74e606da6efb249e
   languageName: node
   linkType: hard
 

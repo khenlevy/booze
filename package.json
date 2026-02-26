@@ -8,6 +8,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.27.6",
+    "node-cron": "^4.2.1",
     "node-ssh": "^13.2.1"
   },
   "devDependencies": {
