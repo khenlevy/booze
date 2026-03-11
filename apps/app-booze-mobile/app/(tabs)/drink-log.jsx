@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
 import DrinkLogEntryForm from '@/components/DrinkLogEntryForm';
 import { validateDrinkLogForm } from '@/utils/formValidation';
+import { createDrinkLog, retryWithBackoff } from '@/utils/drinkLogApi';
 
 export default function DrinkLogScreen() {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ export default function DrinkLogScreen() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     // Validate form
     const validation = validateDrinkLogForm(formData);
     
@@ -53,7 +54,8 @@ export default function DrinkLogScreen() {
     try {
       // Construct the payload
       const payload = {
-        drinkId: formData.drinkId,
+        userId: 'user-123', // TODO: Replace with actual user ID from auth context
+        drinkId: formData.drinkId || null,
         drinkName: formData.drinkName,
         consumedAt: new Date(
           formData.date.getFullYear(),
@@ -70,15 +72,12 @@ export default function DrinkLogScreen() {
 
       console.log('Submitting drink log entry:', payload);
       
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/drink-logs', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(payload),
-      // });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use retry logic for API call
+      await retryWithBackoff(
+        () => createDrinkLog(payload),
+        3, // maxRetries
+        1000 // delay in ms
+      );
       
       Alert.alert('Success', 'Drink logged successfully!');
       
@@ -95,12 +94,19 @@ export default function DrinkLogScreen() {
       });
       setValidationErrors({});
     } catch (error) {
-      Alert.alert('Error', 'Failed to log drink. Please try again.');
       console.error('Error submitting drink log:', error);
+      
+      // Provide user-friendly error message
+      let errorMessage = 'Failed to log drink. Please try again.';
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [formData, validationErrors]);
 
   return (
     <SafeAreaView style={styles.container}>
