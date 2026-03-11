@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useState } from 'react';
 import { colors, typography } from '@/constants/parcus-theme';
+import { MaterialIcons } from '@expo/vector-icons';
 import DrinkSelector from './form/DrinkSelector';
 import DateTimePicker from './form/DateTimePicker';
 import QuantityInput from './form/QuantityInput';
@@ -20,12 +21,26 @@ export default function DrinkLogEntryForm({
   onFormChange,
   isSubmitting,
   onSubmit,
+  validationErrors = {},
 }) {
+  const getErrorMessage = (fieldName) => {
+    return validationErrors[fieldName] || null;
+  };
+
+  const hasError = (fieldName) => {
+    return !!validationErrors[fieldName];
+  };
+
   return (
     <View style={styles.container}>
       {/* Drink Selection */}
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Select Drink *</Text>
+        <View style={styles.labelRow}>
+          <Text style={styles.sectionLabel}>Select Drink *</Text>
+          {hasError('drinkId') && (
+            <Text style={styles.errorText}>{getErrorMessage('drinkId')}</Text>
+          )}
+        </View>
         <DrinkSelector
           selectedDrinkId={formData.drinkId}
           selectedDrinkName={formData.drinkName}
@@ -33,37 +48,58 @@ export default function DrinkLogEntryForm({
             onFormChange('drinkId', drinkId);
             onFormChange('drinkName', drinkName);
           }}
+          hasError={hasError('drinkId')}
         />
       </View>
 
       {/* Date & Time */}
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>When did you drink it? *</Text>
+        <View style={styles.labelRow}>
+          <Text style={styles.sectionLabel}>When did you drink it? *</Text>
+          {(hasError('date') || hasError('time')) && (
+            <Text style={styles.errorText}>
+              {getErrorMessage('date') || getErrorMessage('time')}
+            </Text>
+          )}
+        </View>
         <DateTimePicker
           date={formData.date}
           time={formData.time}
           onDateChange={(date) => onFormChange('date', date)}
           onTimeChange={(time) => onFormChange('time', time)}
+          hasError={hasError('date') || hasError('time')}
         />
       </View>
 
       {/* Quantity */}
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Quantity *</Text>
+        <View style={styles.labelRow}>
+          <Text style={styles.sectionLabel}>Quantity *</Text>
+          {hasError('quantity') && (
+            <Text style={styles.errorText}>{getErrorMessage('quantity')}</Text>
+          )}
+        </View>
         <QuantityInput
           quantity={formData.quantity}
           unit={formData.quantityUnit}
           onQuantityChange={(quantity) => onFormChange('quantity', quantity)}
           onUnitChange={(unit) => onFormChange('quantityUnit', unit)}
+          hasError={hasError('quantity')}
         />
       </View>
 
       {/* Rating */}
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>How would you rate it? *</Text>
+        <View style={styles.labelRow}>
+          <Text style={styles.sectionLabel}>How would you rate it? *</Text>
+          {hasError('rating') && (
+            <Text style={styles.errorText}>{getErrorMessage('rating')}</Text>
+          )}
+        </View>
         <RatingSelector
           rating={formData.rating}
           onRatingChange={(rating) => onFormChange('rating', rating)}
+          hasError={hasError('rating')}
         />
       </View>
 
@@ -108,11 +144,21 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 24,
   },
+  labelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   sectionLabel: {
     ...typography.label,
     color: colors.text.primary,
-    marginBottom: 12,
     fontWeight: '600',
+  },
+  errorText: {
+    ...typography.caption,
+    color: colors.error || '#FF6B6B',
+    fontWeight: '500',
   },
   notesInput: {
     borderWidth: 1,

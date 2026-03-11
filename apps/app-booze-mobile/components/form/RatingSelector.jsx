@@ -10,10 +10,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 export default function RatingSelector({
   rating,
   onRatingChange,
+  hasError = false,
 }) {
   const renderStars = () => {
     return (
-      <View style={styles.starsContainer}>
+      <View style={[styles.starsContainer, hasError && styles.starsContainerError]}>
         {[1, 2, 3, 4, 5].map(star => (
           <TouchableOpacity
             key={star}
@@ -88,6 +89,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
     marginBottom: 16,
+  },
+  starsContainerError: {
+    opacity: 0.7,
   },
   starButton: {
     padding: 8,

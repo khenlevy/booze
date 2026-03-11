@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
 import DrinkLogEntryForm from '@/components/DrinkLogEntryForm';
+import { validateDrinkLogForm } from '@/utils/formValidation';
 
 export default function DrinkLogScreen() {
   const [formData, setFormData] = useState({
@@ -18,32 +19,39 @@ export default function DrinkLogScreen() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleFormChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
+    // Clear error for this field when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handleSubmit = async () => {
-    // Validation
-    if (!formData.drinkId) {
-      Alert.alert('Error', 'Please select a drink');
-      return;
-    }
-    if (!formData.quantity || parseFloat(formData.quantity) <= 0) {
-      Alert.alert('Error', 'Please enter a valid quantity');
-      return;
-    }
-    if (formData.rating === 0) {
-      Alert.alert('Error', 'Please rate the drink');
+    // Validate form
+    const validation = validateDrinkLogForm(formData);
+    
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      
+      // Show first error as alert
+      const firstError = Object.values(validation.errors)[0];
+      Alert.alert('Validation Error', firstError);
       return;
     }
 
     setIsSubmitting(true);
     try {
-      // TODO: Integrate with API to submit drink log entry
+      // Construct the payload
       const payload = {
         drinkId: formData.drinkId,
         drinkName: formData.drinkName,
@@ -57,10 +65,17 @@ export default function DrinkLogScreen() {
         quantity: parseFloat(formData.quantity),
         quantityUnit: formData.quantityUnit,
         rating: formData.rating,
-        notes: formData.notes,
+        notes: formData.notes || '',
       };
 
       console.log('Submitting drink log entry:', payload);
+      
+      // TODO: Replace with actual API call
+      // const response = await fetch('/api/drink-logs', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(payload),
+      // });
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -78,6 +93,7 @@ export default function DrinkLogScreen() {
         rating: 0,
         notes: '',
       });
+      setValidationErrors({});
     } catch (error) {
       Alert.alert('Error', 'Failed to log drink. Please try again.');
       console.error('Error submitting drink log:', error);
@@ -103,6 +119,7 @@ export default function DrinkLogScreen() {
           onFormChange={handleFormChange}
           isSubmitting={isSubmitting}
           onSubmit={handleSubmit}
+          validationErrors={validationErrors}
         />
       </ScrollView>
       <BottomBar />

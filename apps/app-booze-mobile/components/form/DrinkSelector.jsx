@@ -28,6 +28,7 @@ export default function DrinkSelector({
   selectedDrinkId,
   selectedDrinkName,
   onSelectDrink,
+  hasError = false,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +63,7 @@ export default function DrinkSelector({
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.selector}
+        style={[styles.selector, hasError && styles.selectorError]}
         onPress={() => setModalVisible(true)}
       >
         <View style={styles.selectorContent}>
@@ -182,6 +183,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     backgroundColor: colors.background.secondary,
+  },
+  selectorError: {
+    borderColor: colors.error || '#FF6B6B',
   },
   selectorContent: {
     flex: 1,

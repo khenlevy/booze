@@ -25,6 +25,7 @@ export default function QuantityInput({
   unit,
   onQuantityChange,
   onUnitChange,
+  hasError = false,
 }) {
   const [isUnitPickerVisible, setUnitPickerVisible] = useState(false);
 
@@ -34,7 +35,7 @@ export default function QuantityInput({
     <View style={styles.container}>
       <View style={styles.inputRow}>
         {/* Quantity Input */}
-        <View style={styles.quantityInputContainer}>
+        <View style={[styles.quantityInputContainer, hasError && styles.inputError]}>
           <TextInput
             style={styles.quantityInput}
             placeholder="0"
@@ -48,7 +49,7 @@ export default function QuantityInput({
 
         {/* Unit Selector */}
         <TouchableOpacity
-          style={styles.unitButton}
+          style={[styles.unitButton, hasError && styles.unitButtonError]}
           onPress={() => setUnitPickerVisible(true)}
         >
           <Text style={styles.unitText}>{selectedUnit?.label || 'ml'}</Text>
@@ -179,6 +180,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.secondary,
     justifyContent: 'center',
   },
+  inputError: {
+    borderColor: colors.error || '#FF6B6B',
+  },
   quantityInput: {
     paddingHorizontal: 12,
     paddingVertical: 12,
@@ -197,6 +201,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: colors.background.secondary,
     minWidth: 100,
+  },
+  unitButtonError: {
+    borderColor: colors.error || '#FF6B6B',
   },
   unitText: {
     ...typography.body,

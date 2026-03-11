@@ -16,6 +16,7 @@ export default function DateTimePicker({
   time,
   onDateChange,
   onTimeChange,
+  hasError = false,
 }) {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
@@ -58,10 +59,6 @@ export default function DateTimePicker({
     });
   };
 
-  const getDaysInMonth = (year, month) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
   const getDateRange = () => {
     const today = new Date();
     const dates = [];
@@ -90,7 +87,7 @@ export default function DateTimePicker({
       {/* Date Picker */}
       <View style={styles.pickerRow}>
         <TouchableOpacity
-          style={styles.pickerButton}
+          style={[styles.pickerButton, hasError && styles.pickerButtonError]}
           onPress={() => setDatePickerVisible(true)}
         >
           <MaterialIcons
@@ -114,7 +111,7 @@ export default function DateTimePicker({
       {/* Time Picker */}
       <View style={styles.pickerRow}>
         <TouchableOpacity
-          style={styles.pickerButton}
+          style={[styles.pickerButton, hasError && styles.pickerButtonError]}
           onPress={() => setTimePickerVisible(true)}
         >
           <MaterialIcons
@@ -250,6 +247,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     backgroundColor: colors.background.secondary,
+  },
+  pickerButtonError: {
+    borderColor: colors.error || '#FF6B6B',
   },
   pickerIcon: {
     marginRight: 12,
