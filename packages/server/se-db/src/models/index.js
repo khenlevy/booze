@@ -16,6 +16,7 @@ import { Metrics } from "./Metrics.js";
 import { symbolSchema } from "./Symbol.js";
 import { CachedResponseEodhd } from "./CachedResponseEodhd.js";
 import { CycledListStatus } from "./CycledListStatus.js";
+import { DrinkLog } from "./DrinkLog.js";
 
 // Export all models
 export {
@@ -29,6 +30,7 @@ export {
   symbolSchema,
   CachedResponseEodhd,
   CycledListStatus,
+  DrinkLog,
 };
 
 // Export as default object for convenience
@@ -43,6 +45,7 @@ export default {
   symbolSchema,
   CachedResponseEodhd,
   CycledListStatus,
+  DrinkLog,
 };
 
 /**
@@ -133,6 +136,29 @@ export const ModelRegistry = {
       description: "Cached EODHD API responses for usage tracking and analytics",
       fields: ["cacheKey", "apiEndpoint", "params", "data", "expiresAt", "createdAt", "updatedAt"],
     },
+    drink_logs: {
+      model: DrinkLog,
+      description: "User drink consumption log entries",
+      fields: [
+        "userId",
+        "drinkId",
+        "drinkName",
+        "consumedAt",
+        "quantity",
+        "quantityUnit",
+        "rating",
+        "notes",
+        "abv",
+        "tasteTags",
+        "location",
+        "socialContext",
+        "mood",
+        "photoUrl",
+        "isArchived",
+        "createdAt",
+        "updatedAt",
+      ],
+    },
   },
 
   // Relationships
@@ -211,6 +237,19 @@ export const ModelRegistry = {
       required: ["symbol", "exchange", "currency", "metrics", "lastUpdated", "fetchedAt"],
       unique: ["symbol"],
       indexes: ["symbol", "exchange", "lastUpdated", "exchange+lastUpdated", "symbol+lastUpdated"],
+    },
+    drink_logs: {
+      required: ["userId", "drinkName", "consumedAt", "quantity", "rating"],
+      unique: [],
+      indexes: [
+        "userId",
+        "consumedAt",
+        "rating",
+        "isArchived",
+        "userId+consumedAt",
+        "userId+rating",
+        "userId+isArchived",
+      ],
     },
   },
 
