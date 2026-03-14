@@ -1,415 +1,362 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  Platform,
+  FlatList,
   TouchableOpacity,
   Modal,
   ScrollView,
-  Switch,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { colors, typography } from '@/constants/parcus-theme';
-import BottomBar from '@/components/parcus/BottomBar';
-import DrinkHistoryList from '@/components/DrinkHistoryList';
+import { useFocusEffect } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { parcusTheme } from '../constants/parcus-theme';
+import { DrinkHistoryList } from '../components/DrinkHistoryList';
 
-/**
- * Drink History Screen
- * Displays user's drink history with filtering and sorting options
- */
 export default function DrinkHistoryScreen() {
-  const router = useRouter();
-  const [userId] = useState('user-123'); // TODO: Get from auth context
-  const [showFilters, setShowFilters] = useState(false);
-  const [sortBy, setSortBy] = useState('consumedAt');
-  const [sortOrder, setSortOrder] = useState('desc');
-  const [filters, setFilters] = useState({
-    startDate: null,
-    endDate: null,
-    minRating: null,
-    maxRating: null,
-  });
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [sortBy, setSortBy] = useState('newest');
+  const [selectedRating, setSelectedRating] = useState(null);
+  const [selectedDateRange, setSelectedDateRange] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const drinkHistoryListRef = useRef(null);
 
-  /**
-   * Handle edit drink
-   */
-  const handleEditDrink = useCallback((drinkLog) => {
-    // Navigate to edit screen or open edit modal
-    router.push({
-      pathname: '/drink-log',
-      params: { drinkLogId: drinkLog._id, mode: 'edit' },
-    });
-  }, [router]);
+  const sortOptions = [
+    { label: 'Newest First', value: 'newest' },
+    { label: 'Oldest First', value: 'oldest' },
+    { label: 'Highest Rated', value: 'highest-rated' },
+    { label: 'Lowest Rated', value: 'lowest-rated' },
+  ];
 
-  /**
-   * Handle drink press
-   */
-  const handleDrinkPress = useCallback((drinkLog) => {
-    // Navigate to detail screen
-    router.push({
-      pathname: '/drink-detail',
-      params: { drinkLogId: drinkLog._id },
-    });
-  }, [router]);
+  const ratingFilters = [
+    { label: '4+ Stars', value: 4 },
+    { label: '3+ Stars', value: 3 },
+    { label: '2+ Stars', value: 2 },
+    { label: '1+ Stars', value: 1 },
+  ];
 
-  /**
-   * Toggle filter visibility
-   */
-  const toggleFilters = useCallback(() => {
-    setShowFilters(!showFilters);
-  }, [showFilters]);
+  const dateRangeFilters = [
+    { label: 'Last 7 Days', value: 7 },
+    { label: 'Last 30 Days', value: 30 },
+    { label: 'Last 3 Months', value: 90 },
+    { label: 'All Time', value: null },
+  ];
 
-  /**
-   * Reset filters
-   */
-  const resetFilters = useCallback(() => {
-    setFilters({
-      startDate: null,
-      endDate: null,
-      minRating: null,
-      maxRating: null,
-    });
-    setSortBy('consumedAt');
-    setSortOrder('desc');
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    if (drinkHistoryListRef.current) {
+      drinkHistoryListRef.current.refresh().finally(() => {
+        setRefreshing(false);
+      });
+    }
   }, []);
 
-  /**
-   * Update filter
-   */
-  const updateFilter = useCallback((key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value,
-    }));
-  }, []);
+  const handleApplyFilters = () => {
+    if (drinkHistoryListRef.current) {
+      drinkHistoryListRef.current.applyFilters({
+        sortBy,
+        minRating: selectedRating,
+        daysBack: selectedDateRange,
+      });
+    }
+    setFilterModalVisible(false);
+  };
+
+  const handleResetFilters = () => {
+    setSortBy('newest');
+    setSelectedRating(null);
+    setSelectedDateRange(null);
+    if (drinkHistoryListRef.current) {
+      drinkHistoryListRef.current.applyFilters({
+        sortBy: 'newest',
+        minRating: null,
+        daysBack: null,
+      });
+    }
+    setFilterModalVisible(false);
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: parcusTheme.colors.background }}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Drink History</Text>
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={toggleFilters}
+      <View
+        style={{
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          backgroundColor: parcusTheme.colors.surface,
+          borderBottomWidth: 1,
+          borderBottomColor: parcusTheme.colors.border.light,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '700',
+            color: parcusTheme.colors.text.primary,
+          }}
         >
-          <Text style={styles.filterButtonText}>⚙️ Filters</Text>
+          Drink History
+        </Text>
+        <TouchableOpacity
+          onPress={() => setFilterModalVisible(true)}
+          style={{
+            padding: 8,
+            borderRadius: 8,
+            backgroundColor: parcusTheme.colors.primary,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="filter-variant"
+            size={24}
+            color={parcusTheme.colors.text.inverse}
+          />
         </TouchableOpacity>
       </View>
 
-      {/* Filter Panel */}
-      <Modal
-        visible={showFilters}
-        transparent
-        animationType="slide"
-        onRequestClose={toggleFilters}
-      >
-        <SafeAreaView style={styles.filterModal}>
-          <View style={styles.filterHeader}>
-            <Text style={styles.filterTitle}>Filters & Sorting</Text>
-            <TouchableOpacity onPress={toggleFilters}>
-              <Text style={styles.closeButton}>✕</Text>
-            </TouchableOpacity>
-          </View>
+      {/* Drink History List */}
+      <DrinkHistoryList
+        ref={drinkHistoryListRef}
+        sortBy={sortBy}
+        minRating={selectedRating}
+        daysBack={selectedDateRange}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={parcusTheme.colors.primary}
+          />
+        }
+      />
 
-          <ScrollView style={styles.filterContent}>
-            {/* Sort By */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterSectionTitle}>Sort By</Text>
-              <View style={styles.sortOptions}>
-                {[
-                  { label: 'Date (Newest)', value: 'consumedAt', order: 'desc' },
-                  { label: 'Date (Oldest)', value: 'consumedAt', order: 'asc' },
-                  { label: 'Rating (Highest)', value: 'rating', order: 'desc' },
-                  { label: 'Rating (Lowest)', value: 'rating', order: 'asc' },
-                  { label: 'Name (A-Z)', value: 'drinkName', order: 'asc' },
-                ].map(option => (
-                  <TouchableOpacity
-                    key={`${option.value}-${option.order}`}
-                    style={[
-                      styles.sortOption,
-                      sortBy === option.value && sortOrder === option.order
-                        ? styles.sortOptionActive
-                        : null,
-                    ]}
-                    onPress={() => {
-                      setSortBy(option.value);
-                      setSortOrder(option.order);
+      {/* Filter Modal */}
+      <Modal
+        visible={filterModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setFilterModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: parcusTheme.colors.surface,
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              paddingHorizontal: 16,
+              paddingVertical: 20,
+              maxHeight: '80%',
+            }}
+          >
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {/* Sort Section */}
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: '600',
+                  color: parcusTheme.colors.text.primary,
+                  marginBottom: 12,
+                  marginTop: 8,
+                }}
+              >
+                Sort By
+              </Text>
+              {sortOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  onPress={() => setSortBy(option.value)}
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 12,
+                    marginBottom: 8,
+                    borderRadius: 8,
+                    backgroundColor:
+                      sortBy === option.value
+                        ? parcusTheme.colors.primary
+                        : parcusTheme.colors.background,
+                    borderWidth: 1,
+                    borderColor:
+                      sortBy === option.value
+                        ? parcusTheme.colors.primary
+                        : parcusTheme.colors.border.default,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color:
+                        sortBy === option.value
+                          ? parcusTheme.colors.text.inverse
+                          : parcusTheme.colors.text.primary,
+                      fontWeight: '500',
                     }}
                   >
-                    <Text
-                      style={[
-                        styles.sortOptionText,
-                        sortBy === option.value && sortOrder === option.order
-                          ? styles.sortOptionTextActive
-                          : null,
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+
+              {/* Rating Filter Section */}
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: '600',
+                  color: parcusTheme.colors.text.primary,
+                  marginBottom: 12,
+                  marginTop: 20,
+                }}
+              >
+                Minimum Rating
+              </Text>
+              {ratingFilters.map((filter) => (
+                <TouchableOpacity
+                  key={filter.value}
+                  onPress={() =>
+                    setSelectedRating(
+                      selectedRating === filter.value ? null : filter.value
+                    )
+                  }
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 12,
+                    marginBottom: 8,
+                    borderRadius: 8,
+                    backgroundColor:
+                      selectedRating === filter.value
+                        ? parcusTheme.colors.primary
+                        : parcusTheme.colors.background,
+                    borderWidth: 1,
+                    borderColor:
+                      selectedRating === filter.value
+                        ? parcusTheme.colors.primary
+                        : parcusTheme.colors.border.default,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color:
+                        selectedRating === filter.value
+                          ? parcusTheme.colors.text.inverse
+                          : parcusTheme.colors.text.primary,
+                      fontWeight: '500',
+                    }}
+                  >
+                    {filter.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+
+              {/* Date Range Filter Section */}
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: '600',
+                  color: parcusTheme.colors.text.primary,
+                  marginBottom: 12,
+                  marginTop: 20,
+                }}
+              >
+                Date Range
+              </Text>
+              {dateRangeFilters.map((filter) => (
+                <TouchableOpacity
+                  key={filter.value || 'all-time'}
+                  onPress={() =>
+                    setSelectedDateRange(
+                      selectedDateRange === filter.value ? null : filter.value
+                    )
+                  }
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 12,
+                    marginBottom: 8,
+                    borderRadius: 8,
+                    backgroundColor:
+                      selectedDateRange === filter.value
+                        ? parcusTheme.colors.primary
+                        : parcusTheme.colors.background,
+                    borderWidth: 1,
+                    borderColor:
+                      selectedDateRange === filter.value
+                        ? parcusTheme.colors.primary
+                        : parcusTheme.colors.border.default,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color:
+                        selectedDateRange === filter.value
+                          ? parcusTheme.colors.text.inverse
+                          : parcusTheme.colors.text.primary,
+                      fontWeight: '500',
+                    }}
+                  >
+                    {filter.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+
+              {/* Action Buttons */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: 12,
+                  marginTop: 24,
+                  marginBottom: 20,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handleResetFilters}
+                  style={{
+                    flex: 1,
+                    paddingVertical: 12,
+                    borderRadius: 8,
+                    backgroundColor: parcusTheme.colors.background,
+                    borderWidth: 1,
+                    borderColor: parcusTheme.colors.border.default,
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: parcusTheme.colors.text.primary,
+                      fontWeight: '600',
+                    }}
+                  >
+                    Reset
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleApplyFilters}
+                  style={{
+                    flex: 1,
+                    paddingVertical: 12,
+                    borderRadius: 8,
+                    backgroundColor: parcusTheme.colors.primary,
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: parcusTheme.colors.text.inverse,
+                      fontWeight: '600',
+                    }}
+                  >
+                    Apply
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </View>
-
-            {/* Rating Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterSectionTitle}>Rating Range</Text>
-              <View style={styles.ratingFilterRow}>
-                <View style={styles.ratingFilterItem}>
-                  <Text style={styles.ratingFilterLabel}>Min Rating</Text>
-                  <View style={styles.ratingButtons}>
-                    {[null, 1, 2, 3, 4, 5].map(rating => (
-                      <TouchableOpacity
-                        key={`min-${rating}`}
-                        style={[
-                          styles.ratingButton,
-                          filters.minRating === rating
-                            ? styles.ratingButtonActive
-                            : null,
-                        ]}
-                        onPress={() => updateFilter('minRating', rating)}
-                      >
-                        <Text
-                          style={[
-                            styles.ratingButtonText,
-                            filters.minRating === rating
-                              ? styles.ratingButtonTextActive
-                              : null,
-                          ]}
-                        >
-                          {rating === null ? 'Any' : rating}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-
-                <View style={styles.ratingFilterItem}>
-                  <Text style={styles.ratingFilterLabel}>Max Rating</Text>
-                  <View style={styles.ratingButtons}>
-                    {[null, 1, 2, 3, 4, 5].map(rating => (
-                      <TouchableOpacity
-                        key={`max-${rating}`}
-                        style={[
-                          styles.ratingButton,
-                          filters.maxRating === rating
-                            ? styles.ratingButtonActive
-                            : null,
-                        ]}
-                        onPress={() => updateFilter('maxRating', rating)}
-                      >
-                        <Text
-                          style={[
-                            styles.ratingButtonText,
-                            filters.maxRating === rating
-                              ? styles.ratingButtonTextActive
-                              : null,
-                          ]}
-                        >
-                          {rating === null ? 'Any' : rating}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Reset Button */}
-            <TouchableOpacity
-              style={styles.resetButton}
-              onPress={resetFilters}
-            >
-              <Text style={styles.resetButtonText}>Reset Filters</Text>
-            </TouchableOpacity>
-          </ScrollView>
-
-          {/* Close Button */}
-          <TouchableOpacity
-            style={styles.applyButton}
-            onPress={toggleFilters}
-          >
-            <Text style={styles.applyButtonText}>Apply & Close</Text>
-          </TouchableOpacity>
-        </SafeAreaView>
+            </ScrollView>
+          </View>
+        </View>
       </Modal>
-
-      {/* Drink History List */}
-      <View style={styles.listContainer}>
-        <DrinkHistoryList
-          userId={userId}
-          onEditDrink={handleEditDrink}
-          onDrinkPress={handleDrinkPress}
-          filters={filters}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-        />
-      </View>
-
-      {/* Bottom Navigation */}
-      <BottomBar />
-    </SafeAreaView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: colors.background.secondary,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
-  },
-  title: {
-    ...typography.h2,
-    color: colors.text.primary,
-  },
-  filterButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: colors.brand.primary,
-    borderRadius: 6,
-  },
-  filterButtonText: {
-    ...typography.button,
-    fontSize: 14,
-    color: colors.text.inverse,
-  },
-  listContainer: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  filterModal: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  filterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: colors.background.secondary,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
-  },
-  filterTitle: {
-    ...typography.h2,
-    color: colors.text.primary,
-  },
-  closeButton: {
-    fontSize: 24,
-    color: colors.text.secondary,
-  },
-  filterContent: {
-    flex: 1,
-    padding: 16,
-  },
-  filterSection: {
-    marginBottom: 24,
-  },
-  filterSectionTitle: {
-    ...typography.h2,
-    fontSize: 16,
-    color: colors.text.primary,
-    marginBottom: 12,
-  },
-  sortOptions: {
-    gap: 8,
-  },
-  sortOption: {
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#E8E8E8',
-    backgroundColor: colors.background.secondary,
-  },
-  sortOptionActive: {
-    backgroundColor: colors.brand.primary,
-    borderColor: colors.brand.primary,
-  },
-  sortOptionText: {
-    ...typography.body2,
-    color: colors.text.primary,
-  },
-  sortOptionTextActive: {
-    color: colors.text.inverse,
-    fontWeight: '600',
-  },
-  ratingFilterRow: {
-    gap: 16,
-  },
-  ratingFilterItem: {
-    marginBottom: 12,
-  },
-  ratingFilterLabel: {
-    ...typography.body2,
-    color: colors.text.secondary,
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  ratingButtons: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  ratingButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#E8E8E8',
-    backgroundColor: colors.background.secondary,
-  },
-  ratingButtonActive: {
-    backgroundColor: colors.brand.primary,
-    borderColor: colors.brand.primary,
-  },
-  ratingButtonText: {
-    ...typography.body2,
-    fontSize: 12,
-    color: colors.text.primary,
-  },
-  ratingButtonTextActive: {
-    color: colors.text.inverse,
-    fontWeight: '600',
-  },
-  resetButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.state.error,
-    backgroundColor: 'transparent',
-    marginBottom: 16,
-  },
-  resetButtonText: {
-    ...typography.button,
-    fontSize: 14,
-    color: colors.state.error,
-    textAlign: 'center',
-  },
-  applyButton: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 8,
-    backgroundColor: colors.brand.primary,
-  },
-  applyButtonText: {
-    ...typography.button,
-    color: colors.text.inverse,
-    textAlign: 'center',
-  },
-});
