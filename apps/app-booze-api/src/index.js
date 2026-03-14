@@ -14,6 +14,7 @@ import stocksRoutes from './routes/stocks.js';
 import eodhdUsageRoutes from './routes/eodhdUsage.js';
 import heatmapRoutes from './routes/heatmap.js';
 import rankingRoutes from './routes/ranking.js';
+import drinkSearchRoutes from './routes/drinkSearch.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -47,6 +48,7 @@ app.use('/api/v1/stocks', stocksRoutes);
 app.use('/api/v1/eodhd-usage', eodhdUsageRoutes);
 app.use('/api/v1/metrics/heatmap', heatmapRoutes);
 app.use('/api/v1/ranking', rankingRoutes);
+app.use('/api/v1/drinks', drinkSearchRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -98,6 +100,9 @@ async function startServer() {
       );
       logger.business(
         `📊 Ranking API available at http://localhost:${API_PORT}/api/v1/ranking`,
+      );
+      logger.business(
+        `🍷 Drink Search API available at http://localhost:${API_PORT}/api/v1/drinks/search`,
       );
       logger.business(`🏥 Health check at http://localhost:${API_PORT}/health`);
     });
