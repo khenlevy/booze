@@ -179,4 +179,113 @@ export const ModelRegistry = {
       ],
     },
   },
+
+  // Relationships
+  relationships: {
+    "Exchange -> ExchangeSymbols": {
+      type: "one-to-one",
+      localField: "code",
+      foreignField: "exchangeCode",
+      description: "Each exchange has one symbols document",
+    },
+    "ExchangeSymbols -> Symbol": {
+      type: "one-to-many",
+      localField: "symbols",
+      foreignField: "embedded",
+      description: "Each exchange symbols document contains many symbol objects",
+    },
+    "Fundamentals -> Symbol": {
+      type: "one-to-one",
+      localField: "symbol",
+      foreignField: "Code",
+      description: "Each fundamentals document corresponds to one symbol",
+    },
+    "Dividends -> Symbol": {
+      type: "one-to-one",
+      localField: "symbol",
+      foreignField: "Code",
+      description: "Each dividends document corresponds to one symbol",
+    },
+    "Technicals -> Symbol": {
+      type: "one-to-one",
+      localField: "symbol",
+      foreignField: "Code",
+      description: "Each technicals document corresponds to one symbol",
+    },
+    "Metrics -> Symbol": {
+      type: "one-to-one",
+      localField: "symbol",
+      foreignField: "Code",
+      description: "Each metrics document corresponds to one symbol",
+    },
+  },
+
+  // Business Rules
+  businessRules: {
+    exchanges: {
+      required: ["code", "Code", "Country", "Currency", "Name"],
+      unique: ["code"],
+      indexes: ["code", "Country", "Currency", "fetchedAt"],
+    },
+    exchange_symbols: {
+      required: ["exchangeCode", "symbols"],
+      unique: ["exchangeCode"],
+      indexes: ["exchangeCode", "fetchedAt", "symbols.Code", "symbols.Type"],
+    },
+    fundamentals: {
+      required: ["symbol", "market", "fundamentals"],
+      unique: ["symbol"],
+      indexes: ["symbol", "market", "fetchedAt"],
+    },
+    jobs: {
+      required: ["name", "status", "scheduledAt"],
+      unique: [],
+      indexes: ["name", "status", "scheduledAt", "name+scheduledAt", "status+scheduledAt"],
+    },
+    dividends: {
+      required: ["symbol", "exchange", "currency", "lastUpdated", "fetchedAt"],
+      unique: ["symbol"],
+      indexes: ["symbol", "exchange", "lastUpdated", "exchange+lastUpdated", "symbol+lastUpdated"],
+    },
+    technicals: {
+      required: ["symbol", "exchange", "currency", "indicators", "lastUpdated", "fetchedAt"],
+      unique: ["symbol"],
+      indexes: ["symbol", "exchange", "lastUpdated", "exchange+lastUpdated", "symbol+lastUpdated"],
+    },
+    metrics: {
+      required: ["symbol", "exchange", "currency", "metrics", "lastUpdated", "fetchedAt"],
+      unique: ["symbol"],
+      indexes: ["symbol", "exchange", "lastUpdated", "exchange+lastUpdated", "symbol+lastUpdated"],
+    },
+    drink_logs: {
+      required: ["userId", "drinkName", "consumedAt", "quantity", "rating"],
+      unique: [],
+      indexes: [
+        "userId",
+        "consumedAt",
+        "rating",
+        "isArchived",
+        "userId+consumedAt",
+        "userId+rating",
+        "userId+isArchived",
+        "userId+tasteTags",
+        "drinkName+rating",
+      ],
+    },
+  },
+
+  // Data Flow
+  dataFlow: {
+    syncExchangesAndSymbols: {
+      creates: ["exchanges", "exchange_symbols"],
+      updates: ["exchanges", "exchange_symbols"],
+      description: "Syncs exchange and symbol data from EODHD API",
+    },
+    syncFundamentalsWhitelist: {
+      creates: ["fundamentals"],
+      updates: ["fundamentals"],
+      reads: ["exchanges", "exchange_symbols"],
+      description: "Syncs fundamental data for whitelisted symbols",
+    },
+  },
 };

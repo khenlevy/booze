@@ -37,7 +37,7 @@ const drinkLogSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Quantity of the drink consumed
+    // Quantity of the drink of the drink consumed
     quantity: {
       type: Number,
       required: true,
@@ -48,8 +48,16 @@ const drinkLogSchema = new mongoose.Schema(
         },
         message: 'Quantity must be greater than 0',
       },
+      min: 0.1,
+      validate: {
+        validator: function (v) {
+          return v > 0;
+        },
+        message: 'Quantity must be greater than 0',
+      },
     },
 
+    // Unit of measurement for quantity
     // Unit of measurement for quantity
     quantityUnit: {
       type: String,
@@ -73,9 +81,11 @@ const drinkLogSchema = new mongoose.Schema(
     },
 
     // Additional notes about the drink
+    // Additional notes about the drink
     notes: {
       type: String,
       default: null,
+      trim: true,
       maxlength: 1000,
     },
 
@@ -153,6 +163,8 @@ drinkLogSchema.index({ userId: 1, isArchived: 1 });
 
 /**
  * Helper method: Get average rating for a user
+ * @param {string} userId - User ID
+ * @returns {Promise<number>} - Average rating
  */
 drinkLogSchema.statics.getAverageRating = async function (userId) {
   try {
@@ -170,6 +182,10 @@ drinkLogSchema.statics.getAverageRating = async function (userId) {
 
 /**
  * Helper method: Get drinks by date range
+ * @param {string} userId - User ID
+ * @param {Date} startDate - Start date
+ * @param {Date} endDate - End date
+ * @returns {Promise<Array>} - Drinks in date range
  */
 drinkLogSchema.statics.getByDateRange = async function (userId, startDate, endDate) {
   try {
@@ -186,6 +202,25 @@ drinkLogSchema.statics.getByDateRange = async function (userId, startDate, endDa
 
 /**
  * Helper method: Get top-rated drinks for a user
+ * @param {string} userId - User ID
+ * @param {number} limit - Number of drinks to return
+ * @returns {Promise<Array>} - Top-rated drinks
+ */
+drinkLogSchema.statics.getByDateRange = async function (userId, startDate, endDate) {
+  try {
+    return await this.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      consumedAt: { $gte: startDate, $lte: endDate },
+      isArchived: false,
+    }).sort({ consumedAt: -1 });
+  } catch (error) {
+    logger.error('Error fetching drinks by date range:', error);
+    throw error;
+  }
+};
+
+/**
+ * Helper method: Helper method: Get top-rated drinks for a user
  */
 drinkLogSchema.statics.getTopRatedDrinks = async function (userId, limit = 10) {
   try {
@@ -202,7 +237,9 @@ drinkLogSchema.statics.getTopRatedDrinks = async function (userId, limit = 10) {
 };
 
 /**
- * Helper method: Soft delete (archive) a drink log entry
+ * Helper method: Get rating statistics for a user
+ * @param {string} userId - User ID
+ * @returns {Promise<Object>} - Rating statistics
  */
 drinkLogSchema.methods.archive = async function () {
   try {
@@ -216,6 +253,42 @@ drinkLogSchema.methods.archive = async function () {
 
 /**
  * Helper method: Restore an archived drink log entry
+ */
+drinkLogSchema.methods.restore = async function () {
+  try {
+    this.isArchived = false;
+    return await this.save();
+  } catch (error) {
+    logger.error('Error restoring drink log:', error);
+    throw error;
+  }
+};
+
+/**
+ * Virtual for days since consumption
+ */
+drinkLogSchema.virtual('daysSinceConsumption').get(function () {
+  const now = new Date();
+  const diff = now - this.consumedAt;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+});
+
+// Create and export the model
+export /**
+ * Instance method: Soft delete (archive) a drink log entry
+ */
+drinkLogSchema.methods.archive = async function () {
+  try {
+    this.isArchived = true;
+    return await this.save();
+  } catch (error) {
+    logger.error('Error archiving drink log:', error);
+    throw error;
+  }
+};
+
+/**
+ * Instance method: Restore an archived drink log entry
  */
 drinkLogSchema.methods.restore = async function () {
   try {
