@@ -4,6 +4,8 @@
  */
 
 export const colors = {
+  primary: '#5572C3',
+  error: '#F44336',
   brand: {
     primary: '#5572C3',
     background: '#F9F6FF',
@@ -11,12 +13,18 @@ export const colors = {
   text: {
     primary: '#32253C',
     secondary: '#666666',
+    tertiary: '#999999',
     inverse: '#ffffff',
   },
   background: {
     primary: '#F9F6FF',
     secondary: '#ffffff',
     card: '#ffffff',
+  },
+  surface: '#ffffff',
+  border: {
+    default: '#E0E0E0',
+    light: '#F0F0F0',
   },
   state: {
     success: '#4CAF50',
@@ -44,6 +52,24 @@ export const typography = {
     fontWeight: '600',
     color: colors.text.primary,
   },
+  h3: {
+    fontSize: 20,
+    lineHeight: 28,
+    fontWeight: '600',
+    color: colors.text.primary,
+  },
+  subtitle: {
+    fontSize: 18,
+    lineHeight: 26,
+    fontWeight: '500',
+    color: colors.text.secondary,
+  },
+  body: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '400',
+    color: colors.text.secondary,
+  },
   body1: {
     fontSize: 16,
     lineHeight: 24,
@@ -56,10 +82,27 @@ export const typography = {
     fontWeight: '400',
     color: colors.text.secondary,
   },
+  label: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
+    color: colors.text.primary,
+  },
+  caption: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: colors.text.tertiary,
+  },
   button: {
     fontSize: 16,
     lineHeight: 24,
     fontWeight: '600',
     color: colors.text.inverse,
   },
+};
+
+export const parcusTheme = {
+  colors,
+  typography,
 };

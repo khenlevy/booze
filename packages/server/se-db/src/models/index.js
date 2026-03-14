@@ -102,9 +102,7 @@ export const ModelRegistry = {
         "progress",
         "result",
         "error",
-        "retryCount",
-        "maxRetries",
-        "nextRetryAt",
+        "logs",
         "metadata",
         "createdAt",
         "updatedAt",
@@ -123,21 +121,21 @@ export const ModelRegistry = {
     metrics: {
       model: Metrics,
       description: "Calculated metrics for symbols",
-      fields: ["symbol", "market", "metrics", "calculatedAt", "updatedAt"],
+      fields: ["symbol", "market", "metrics", "fetchedAt", "updatedAt"],
     },
-    cached_responses_eodhd: {
+    cached_response_eodhd: {
       model: CachedResponseEodhd,
       description: "Cached API responses from EODHD",
-      fields: ["endpoint", "params", "response", "fetchedAt", "expiresAt", "updatedAt"],
+      fields: ["endpoint", "params", "response", "fetchedAt", "expiresAt"],
     },
-    cycled_list_statuses: {
+    cycled_list_status: {
       model: CycledListStatus,
-      description: "Status tracking for cycled list operations",
-      fields: ["listName", "lastCycledAt", "status", "itemsProcessed", "updatedAt"],
+      description: "Status of cycled list processing",
+      fields: ["listName", "isPaused", "lastProcessedAt", "updatedAt"],
     },
     drink_logs: {
       model: DrinkLog,
-      description: "User drink consumption logs",
+      description: "User drink consumption logs with ratings",
       fields: [
         "userId",
         "drinkId",
@@ -169,8 +167,8 @@ export const ModelRegistry = {
     dividends: ["symbol", "market"],
     technicals: ["symbol", "market"],
     metrics: ["symbol", "market"],
-    cached_responses_eodhd: ["endpoint", "expiresAt"],
-    cycled_list_statuses: ["listName"],
+    cached_response_eodhd: ["endpoint", "expiresAt"],
+    cycled_list_status: ["listName"],
     drink_logs: ["userId", "consumedAt", "rating", "isArchived"],
   },
 
