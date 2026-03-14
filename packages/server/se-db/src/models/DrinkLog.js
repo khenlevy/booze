@@ -3,7 +3,7 @@ import logger from '@booze/se-logger';
 
 /**
  * DrinkLog Schema
- * Represents a user's drink consumption log entry
+ * Represents a user's drink consumption log entry with ratings
  */
 const drinkLogSchema = new mongoose.Schema(
   {
@@ -37,7 +37,7 @@ const drinkLogSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Quantity of the drink of the drink consumed
+    // Quantity consumed
     quantity: {
       type: Number,
       required: true,
@@ -48,40 +48,31 @@ const drinkLogSchema = new mongoose.Schema(
         },
         message: 'Quantity must be greater than 0',
       },
-      min: 0.1,
-      validate: {
-        validator: function (v) {
-          return v > 0;
-        },
-        message: 'Quantity must be greater than 0',
-      },
     },
 
-    // Unit of measurement for quantity
-    // Unit of measurement for quantity
+    // Unit of measurement (ml, oz, shot, glass, pint, bottle)
     quantityUnit: {
       type: String,
-      enum: ['ml', 'oz', 'shot', 'glass', 'pint', 'bottle'],
       default: 'ml',
+      enum: ['ml', 'oz', 'l', 'shot', 'glass', 'pint', 'bottle'],
     },
 
-    // User's rating of the drink (1-5)
+    // User's rating of the drink (1-5 stars)
     rating: {
       type: Number,
       required: true,
       min: 1,
       max: 5,
+      index: true,
       validate: {
         validator: function (v) {
           return Number.isInteger(v) && v >= 1 && v <= 5;
         },
         message: 'Rating must be an integer between 1 and 5',
       },
-      index: true,
     },
 
-    // Additional notes about the drink
-    // Additional notes about the drink
+    // User's notes about the drink
     notes: {
       type: String,
       default: null,
@@ -89,7 +80,7 @@ const drinkLogSchema = new mongoose.Schema(
       maxlength: 1000,
     },
 
-    // Alcohol by volume percentage
+    // ABV (Alcohol by Volume) if available
     abv: {
       type: Number,
       default: null,
@@ -107,6 +98,7 @@ const drinkLogSchema = new mongoose.Schema(
     tasteTags: {
       type: [String],
       default: [],
+      index: true,
     },
 
     // Location where the drink was consumed
@@ -116,21 +108,21 @@ const drinkLogSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Social context (alone, with friends, at bar, etc.)
+    // Social context (alone, with friends, at event, etc.)
     socialContext: {
       type: String,
+      enum: ['alone', 'with_friends', 'at_event', 'at_bar', 'at_home', null],
       default: null,
-      trim: true,
     },
 
-    // User's mood when consuming the drink
+    // User's mood when consuming
     mood: {
       type: String,
       default: null,
       trim: true,
     },
 
-    // URL to a photo of the drink
+    // Photo URL if user uploaded one
     photoUrl: {
       type: String,
       default: null,
@@ -145,35 +137,42 @@ const drinkLogSchema = new mongoose.Schema(
     },
   },
   {
-    // Collection name
-    collection: 'drink_logs',
-
-    // Enable automatic timestamps
     timestamps: true,
-
-    // Ensure indexes
+    collection: 'drink_logs',
     autoIndex: true,
-  }
+  },
 );
 
-// Compound indexes for better query performance
+// Compound indexes for common queries
 drinkLogSchema.index({ userId: 1, consumedAt: -1 });
 drinkLogSchema.index({ userId: 1, rating: -1 });
 drinkLogSchema.index({ userId: 1, isArchived: 1 });
+drinkLogSchema.index({ userId: 1, tasteTags: 1 });
+drinkLogSchema.index({ drinkName: 1, rating: -1 });
 
 /**
- * Helper method: Get average rating for a user
+ * Get average rating for a user
  * @param {string} userId - User ID
  * @returns {Promise<number>} - Average rating
  */
 drinkLogSchema.statics.getAverageRating = async function (userId) {
   try {
     const result = await this.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(userId), isArchived: false } },
-      { $group: { _id: null, avgRating: { $avg: '$rating' } } },
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          isArchived: false,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' },
+        },
+      },
     ]);
 
-    return result.length > 0 ? result[0].avgRating : 0;
+    return result.length > 0 ? result[0].averageRating : 0;
   } catch (error) {
     logger.error('Error calculating average rating:', error);
     throw error;
@@ -181,7 +180,44 @@ drinkLogSchema.statics.getAverageRating = async function (userId) {
 };
 
 /**
- * Helper method: Get drinks by date range
+ * Get top-rated drinks for a user (aggregated by drink name)
+ * @param {string} userId - User ID
+ * @param {number} limit - Number of drinks to return
+ * @returns {Promise<Array>} - Top-rated drinks
+ */
+drinkLogSchema.statics.getTopRatedDrinks = async function (userId, limit = 10) {
+  try {
+    return await this.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          isArchived: false,
+        },
+      },
+      {
+        $group: {
+          _id: '$drinkName',
+          drinkId: { $first: '$drinkId' },
+          averageRating: { $avg: '$rating' },
+          count: { $sum: 1 },
+          lastConsumed: { $max: '$consumedAt' },
+        },
+      },
+      {
+        $sort: { averageRating: -1, count: -1 },
+      },
+      {
+        $limit: limit,
+      },
+    ]);
+  } catch (error) {
+    logger.error('Error fetching top-rated drinks:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get drinks by date range
  * @param {string} userId - User ID
  * @param {Date} startDate - Start date
  * @param {Date} endDate - End date
@@ -201,80 +237,6 @@ drinkLogSchema.statics.getByDateRange = async function (userId, startDate, endDa
 };
 
 /**
- * Helper method: Get top-rated drinks for a user
- * @param {string} userId - User ID
- * @param {number} limit - Number of drinks to return
- * @returns {Promise<Array>} - Top-rated drinks
- */
-drinkLogSchema.statics.getByDateRange = async function (userId, startDate, endDate) {
-  try {
-    return await this.find({
-      userId: new mongoose.Types.ObjectId(userId),
-      consumedAt: { $gte: startDate, $lte: endDate },
-      isArchived: false,
-    }).sort({ consumedAt: -1 });
-  } catch (error) {
-    logger.error('Error fetching drinks by date range:', error);
-    throw error;
-  }
-};
-
-/**
- * Helper method: Helper method: Get top-rated drinks for a user
- */
-drinkLogSchema.statics.getTopRatedDrinks = async function (userId, limit = 10) {
-  try {
-    return await this.find({
-      userId: new mongoose.Types.ObjectId(userId),
-      isArchived: false,
-    })
-      .sort({ rating: -1, consumedAt: -1 })
-      .limit(limit);
-  } catch (error) {
-    logger.error('Error fetching top-rated drinks:', error);
-    throw error;
-  }
-};
-
-/**
- * Helper method: Get rating statistics for a user
- * @param {string} userId - User ID
- * @returns {Promise<Object>} - Rating statistics
- */
-drinkLogSchema.methods.archive = async function () {
-  try {
-    this.isArchived = true;
-    return await this.save();
-  } catch (error) {
-    logger.error('Error archiving drink log:', error);
-    throw error;
-  }
-};
-
-/**
- * Helper method: Restore an archived drink log entry
- */
-drinkLogSchema.methods.restore = async function () {
-  try {
-    this.isArchived = false;
-    return await this.save();
-  } catch (error) {
-    logger.error('Error restoring drink log:', error);
-    throw error;
-  }
-};
-
-/**
- * Virtual for days since consumption
- */
-drinkLogSchema.virtual('daysSinceConsumption').get(function () {
-  const now = new Date();
-  const diff = now - this.consumedAt;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-});
-
-// Create and export the model
-export /**
  * Instance method: Soft delete (archive) a drink log entry
  */
 drinkLogSchema.methods.archive = async function () {
@@ -309,7 +271,6 @@ drinkLogSchema.virtual('daysSinceConsumption').get(function () {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 });
 
-// Create and export the model
-export const DrinkLog = mongoose.model('DrinkLog', drinkLogSchema);
+const DrinkLog = mongoose.model('DrinkLog', drinkLogSchema);
 
 export default DrinkLog;

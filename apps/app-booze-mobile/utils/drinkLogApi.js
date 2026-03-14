@@ -276,7 +276,8 @@ export const getDrinkLogStats = async (userId, options = {}) => {
 export const getAverageRating = async (userId) => {
   try {
     const stats = await getDrinkLogStats(userId);
-    return stats?.averageRating || 0;
+    const summary = stats?.summary;
+    return summary?.averageRating ?? 0;
   } catch (error) {
     console.error('Error getting average rating:', error);
     return 0;
@@ -292,7 +293,8 @@ export const getAverageRating = async (userId) => {
 export const getTopRatedDrinks = async (userId, limit = 10) => {
   try {
     const stats = await getDrinkLogStats(userId);
-    return (stats?.topRatedDrinks || []).slice(0, limit);
+    const topDrinks = stats?.topDrinks || [];
+    return topDrinks.slice(0, limit);
   } catch (error) {
     console.error('Error getting top-rated drinks:', error);
     return [];

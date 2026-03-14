@@ -107,9 +107,11 @@ async function startServer() {
       );
       logger.business(
         `🍺 Drink Logs API available at http://localhost:${API_PORT}/api/v1/drink-logs`,
+      );
+      logger.business(
         `🍷 Drink Search API available at http://localhost:${API_PORT}/api/v1/drinks/search`,
       );
-      logger.business(`🏥 Health check at http://localhost:${API_PORT}/health`);
+      logger.business(
         `🍹 Recommendations API available at http://localhost:${API_PORT}/api/v1/recommendations`,
       );
     });

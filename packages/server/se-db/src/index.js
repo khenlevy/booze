@@ -8,6 +8,7 @@ import {
   Metrics,
   CachedResponseEodhd,
   CycledListStatus,
+  DrinkLog,
 } from "./models/index.js";
 
 export { getDatabase, closeDatabase, ensureConnected } from "./db.js";
@@ -39,6 +40,7 @@ export function getModel(collectionName) {
     metrics: Metrics,
     cached_response_eodhistoricaldata: CachedResponseEodhd,
     cycled_list_status: CycledListStatus,
+    drink_logs: DrinkLog,
   };
 
   const model = models[collectionName];
