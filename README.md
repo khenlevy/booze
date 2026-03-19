@@ -10,7 +10,8 @@
 
 ## Product Goal
 
-Build the first top 5 important mobile screens.
+Build the first top 5 important mobile screens aligns with the product overview.
+Nothing old or legacy not serving the vision should be present.
 
 ---
 
