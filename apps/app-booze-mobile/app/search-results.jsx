@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
-import { MOCK_SEARCH_DATA } from '@/data/search-mock';
+import { MOCK_SEARCH_DATA } from '../data/search-mock';
 
 export default function SearchResultsScreen() {
   const { id } = useLocalSearchParams();

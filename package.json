@@ -18,7 +18,8 @@
     "mongoose": "^8.18.2"
   },
   "scripts": {
-    "prettier-lint:all": "FORCE_COLOR=1 yarn workspaces foreach --all --interlaced --verbose run prettier-lint"
+    "prettier-lint:all": "FORCE_COLOR=1 yarn workspaces foreach --all --interlaced --verbose run prettier-lint",
+    "start:mobile": "lsof -ti:8081 | xargs kill -9 2>/dev/null; sleep 1 && yarn workspace app-booze-mobile run ios"
   },
   "packageManager": "yarn@4.9.2"
 }

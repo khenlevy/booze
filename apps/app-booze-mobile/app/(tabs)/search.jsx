@@ -17,7 +17,7 @@ import { colors, typography } from '@/constants/parcus-theme';
 import TagLoading from '@/assets/svg/TagLoading';
 import BottomBar from '@/components/parcus/BottomBar';
 import { useDebounce } from '@/hooks/useDebounce';
-import { searchItems } from '@/data/search-mock';
+import { searchItems } from '../../data/search-mock';
 import ShopIcon from '@/assets/icons/ShopIcon';
 import MoneyIcon from '@/assets/icons/MoneyIcon';
 import TicketIcon from '@/assets/icons/TicketIcon';

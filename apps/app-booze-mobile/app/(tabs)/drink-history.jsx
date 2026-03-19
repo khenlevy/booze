@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { parcusTheme } from '../constants/parcus-theme';
-import { DrinkHistoryList } from '../components/DrinkHistoryList';
+import { parcusTheme } from '../../constants/parcus-theme';
+import { DrinkHistoryList } from '../../components/DrinkHistoryList';
 
 export default function DrinkHistoryScreen() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
