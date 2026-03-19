@@ -4,12 +4,46 @@
  * Centralized design system tokens including colors, typography, spacing,
  * shadows, and other design constants. Supports light and dark themes.
  * 
+ * Usage:
+ * ```typescript
+ * import { colors, typography, spacing, shadows, zIndex } from '@/constants/designTokens';
+ * 
+ * // Use in StyleSheet
+ * const styles = StyleSheet.create({
+ *   container: {
+ *     backgroundColor: colors.background.primary,
+ *     padding: spacing[4],
+ *     borderRadius: borderRadius.md,
+ *     ...shadows.md,
+ *   },
+ *   text: {
+ *     color: colors.text.primary,
+ *     fontSize: typography.fontSize.base,
+ *     fontWeight: typography.fontWeight.medium,
+ *     lineHeight: typography.lineHeight.normal,
+ *   },
+ * });
+ * ```
+ * 
  * @module constants/designTokens
  */
 
 /**
  * Color palette for the application
  * Organized by semantic purpose with light and dark theme variants
+ * 
+ * @example
+ * // Primary brand color
+ * const primaryColor = colors.primary.light; // '#6366F1'
+ * 
+ * // Semantic colors
+ * const successColor = colors.success.light; // '#10B981'
+ * 
+ * // Text colors
+ * const textColor = colors.text.primary; // '#111827'
+ * 
+ * // Neutral grayscale
+ * const borderColor = colors.neutral[300]; // '#D1D5DB'
  */
 export const colors = {
   // Primary brand colors
@@ -88,6 +122,19 @@ export const colors = {
 /**
  * Typography scale
  * Defines font families, sizes, weights, and line heights
+ * 
+ * @example
+ * // Font size
+ * const fontSize = typography.fontSize.base; // 16
+ * 
+ * // Font weight
+ * const fontWeight = typography.fontWeight.semibold; // '600'
+ * 
+ * // Line height
+ * const lineHeight = typography.lineHeight.normal; // 1.5
+ * 
+ * // Letter spacing
+ * const letterSpacing = typography.letterSpacing.wide; // 0.5
  */
 export const typography = {
   // Font families
@@ -137,6 +184,16 @@ export const typography = {
 /**
  * Spacing scale
  * Based on 8px base unit for consistent spacing
+ * 
+ * @example
+ * // Small spacing
+ * const smallPadding = spacing[2]; // 8
+ * 
+ * // Medium spacing
+ * const mediumPadding = spacing[4]; // 16
+ * 
+ * // Large spacing
+ * const largePadding = spacing[8]; // 32
  */
 export const spacing = {
   0: 0,
@@ -172,7 +229,17 @@ export const spacing = {
 
 /**
  * Border radius scale
- * For consistent rounded corners
+ * For consistent rounded corners across the application
+ * 
+ * @example
+ * // Small radius
+ * const smallRadius = borderRadius.sm; // 4
+ * 
+ * // Medium radius
+ * const mediumRadius = borderRadius.md; // 8
+ * 
+ * // Fully rounded
+ * const fullRadius = borderRadius.full; // 9999
  */
 export const borderRadius = {
   none: 0,
@@ -189,7 +256,18 @@ export const borderRadius = {
 
 /**
  * Shadow definitions
- * Elevation-based shadow system for depth
+ * Elevation-based shadow system for depth and visual hierarchy
+ * Includes both iOS (shadowColor, shadowOffset, shadowOpacity, shadowRadius)
+ * and Android (elevation) properties for cross-platform compatibility
+ * 
+ * @example
+ * // Small shadow for subtle depth
+ * const smallShadow = shadows.sm;
+ * // { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, ... }
+ * 
+ * // Large shadow for prominent elements
+ * const largeShadow = shadows.lg;
+ * // { shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, ... }
  */
 export const shadows = {
   none: 'none',
@@ -239,7 +317,17 @@ export const shadows = {
 
 /**
  * Z-index scale
- * For managing stacking context
+ * For managing stacking context and layering of UI elements
+ * 
+ * @example
+ * // Base layer
+ * const baseZIndex = zIndex.base; // 0
+ * 
+ * // Modal overlay
+ * const modalZIndex = zIndex.modal; // 1050
+ * 
+ * // Tooltip (highest)
+ * const tooltipZIndex = zIndex.tooltip; // 1070
  */
 export const zIndex = {
   hide: -1,
@@ -255,6 +343,14 @@ export const zIndex = {
 
 /**
  * Animation/Transition durations (in milliseconds)
+ * Use for consistent animation timing across the app
+ * 
+ * @example
+ * // Fast animation
+ * const fastDuration = animation.fast; // 150ms
+ * 
+ * // Slow animation
+ * const slowDuration = animation.slow; // 300ms
  */
 export const animation = {
   fast: 150,
@@ -266,7 +362,17 @@ export const animation = {
 
 /**
  * Opacity scale
- * For transparency effects
+ * For transparency effects and disabled states
+ * 
+ * @example
+ * // Fully transparent
+ * const transparent = opacity[0]; // 0
+ * 
+ * // Half transparent
+ * const halfTransparent = opacity[50]; // 0.5
+ * 
+ * // Fully opaque
+ * const opaque = opacity[100]; // 1
  */
 export const opacity = {
   0: 0,
@@ -288,7 +394,17 @@ export const opacity = {
 
 /**
  * Breakpoints for responsive design
- * Mobile-first approach
+ * Mobile-first approach for responsive layouts
+ * 
+ * @example
+ * // Mobile
+ * const mobileBreakpoint = breakpoints.xs; // 0
+ * 
+ * // Tablet
+ * const tabletBreakpoint = breakpoints.md; // 768
+ * 
+ * // Desktop
+ * const desktopBreakpoint = breakpoints.lg; // 1024
  */
 export const breakpoints = {
   xs: 0,
@@ -301,7 +417,15 @@ export const breakpoints = {
 
 /**
  * Default theme configuration
- * Can be extended or overridden per theme variant
+ * Combines all design tokens into a single theme object
+ * Can be extended or overridden per theme variant (light/dark)
+ * 
+ * @example
+ * import { defaultTheme } from '@/constants/designTokens';
+ * 
+ * // Access all tokens
+ * const theme = defaultTheme;
+ * const primaryColor = theme.colors.primary.light;
  */
 export const defaultTheme = {
   colors,
@@ -315,4 +439,16 @@ export const defaultTheme = {
   breakpoints,
 };
 
+/**
+ * Type definition for design tokens
+ * Use this type when creating theme variants or custom theme objects
+ * 
+ * @example
+ * import type { DesignTokens } from '@/constants/designTokens';
+ * 
+ * const customTheme: DesignTokens = {
+ *   ...defaultTheme,
+ *   colors: { ...defaultTheme.colors, primary: { ... } },
+ * };
+ */
 export type DesignTokens = typeof defaultTheme;
