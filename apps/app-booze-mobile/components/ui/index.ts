@@ -50,6 +50,7 @@ export {
   type CardHeaderProps,
   type CardBodyProps,
   type CardFooterProps,
+  type CardVariant,
 } from './Card';
 
 // InputField component
