@@ -186,20 +186,54 @@ import { Badge } from '@/components/ui';
 export function BadgeExample() {
   return (
     <>
+      {/* Different variants */}
       <Badge variant="primary">New</Badge>
-      <Badge variant="success" size="md">Active</Badge>
-      <Badge variant="error" size="lg">Error</Badge>
-      <Badge variant="warning">Warning</Badge>
+      <Badge variant="secondary">Featured</Badge>
+      <Badge variant="success">Active</Badge>
+      <Badge variant="error">Critical</Badge>
+      <Badge variant="warning">Pending</Badge>
       <Badge variant="info">Info</Badge>
-      <Badge variant="neutral">Neutral</Badge>
+      <Badge variant="neutral">Default</Badge>
+
+      {/* Different sizes */}
+      <Badge variant="primary" size="sm">Small</Badge>
+      <Badge variant="primary" size="md">Medium</Badge>
+      <Badge variant="primary" size="lg">Large</Badge>
+
+      {/* Custom styling */}
+      <Badge
+        variant="success"
+        size="md"
+        style={{ marginHorizontal: 8 }}
+      >
+        Custom Style
+      </Badge>
     </>
   );
 }
 ```
 
 **Badge Props:**
-- `variant`: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'neutral'
-- `size`: 'sm' | 'md' | 'lg'
+- `variant`: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'neutral' (default: 'primary')
+- `size`: 'sm' | 'md' | 'lg' (default: 'md')
+- `children`: React.ReactNode - Badge content/label
+- `style`: ViewStyle - Custom container style overrides
+- `textStyle`: TextStyle - Custom text style overrides
+- `testID`: string - Test identifier for testing
+
+**Badge Variants:**
+- `primary` - Indigo background, white text (brand color)
+- `secondary` - Pink background, white text
+- `success` - Emerald background, white text (positive/success state)
+- `error` - Red background, white text (error/critical state)
+- `warning` - Amber background, white text (warning state)
+- `info` - Blue background, white text (informational state)
+- `neutral` - Light gray background, dark text (neutral/default state)
+
+**Badge Sizes:**
+- `sm` - Small (12px font, compact padding)
+- `md` - Medium (14px font, standard padding) - default
+- `lg` - Large (16px font, generous padding)
 
 #### Avatar
 
@@ -304,18 +338,16 @@ import { ScreenLayout, Heading, Body, Button } from '@/components/ui';
 
 export function ScreenExample() {
   return (
-    <ScreenLayout scrollable>
+    <ScreenLayout>
       <ScreenLayout.Header>
         <Heading level={1}>Screen Title</Heading>
       </ScreenLayout.Header>
-
       <ScreenLayout.Content>
         <Body>Main content goes here</Body>
       </ScreenLayout.Content>
-
       <ScreenLayout.Footer>
         <Button variant="primary" fullWidth>
-          Continue
+          Action
         </Button>
       </ScreenLayout.Footer>
     </ScreenLayout>
@@ -324,172 +356,80 @@ export function ScreenExample() {
 ```
 
 **ScreenLayout Props:**
-- `scrollable`: boolean (default: true)
-- `padding`: number (default: spacing[4])
+- `children`: React.ReactNode
 - `backgroundColor`: string
-- `useSafeArea`: boolean (default: true)
+- `safeAreaEdges`: ('top' | 'bottom' | 'left' | 'right')[]
 
 ## Design Tokens
 
-All components use centralized design tokens from `constants/designTokens.ts`. This ensures consistency across the application.
+All components use centralized design tokens for consistency:
+
+```typescript
+import {
+  colors,
+  typography,
+  spacing,
+  borderRadius,
+  shadows,
+  zIndex,
+} from '@/constants/designTokens';
+```
 
 ### Colors
 
-```tsx
-import { colors } from '@/constants/designTokens';
-
-// Primary colors
-colors.primary.light    // '#6366F1'
-colors.secondary.light  // '#EC4899'
-
-// Semantic colors
-colors.success.light    // '#10B981'
-colors.error.light      // '#EF4444'
-colors.warning.light    // '#F59E0B'
-colors.info.light       // '#3B82F6'
-
-// Neutral grayscale
-colors.neutral[50]      // '#F9FAFB'
-colors.neutral[900]     // '#111827'
-
-// Text colors
-colors.text.primary     // '#111827'
-colors.text.secondary   // '#6B7280'
-colors.text.inverse     // '#FFFFFF'
-```
+- **Primary**: #6366F1 (Indigo)
+- **Secondary**: #EC4899 (Pink)
+- **Success**: #10B981 (Emerald)
+- **Error**: #EF4444 (Red)
+- **Warning**: #F59E0B (Amber)
+- **Info**: #3B82F6 (Blue)
+- **Neutral**: Grayscale from 50-900
 
 ### Typography
 
-```tsx
-import { typography } from '@/constants/designTokens';
-
-// Font sizes
-typography.fontSize.xs      // 12
-typography.fontSize.base    // 16
-typography.fontSize['4xl']  // 36
-
-// Font weights
-typography.fontWeight.normal      // '400'
-typography.fontWeight.semibold    // '600'
-typography.fontWeight.bold        // '700'
-
-// Line heights
-typography.lineHeight.tight       // 1.2
-typography.lineHeight.normal      // 1.5
-typography.lineHeight.loose       // 2
-```
+- **Font Family**: System (native)
+- **Font Sizes**: xs (12px) → xl (32px)
+- **Font Weights**: regular (400) → bold (700)
+- **Line Heights**: tight (1.2) → relaxed (1.75)
 
 ### Spacing
 
-```tsx
-import { spacing } from '@/constants/designTokens';
+- **Scale**: 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64px
+- **Usage**: padding, margin, gaps
 
-// 8px base unit
-spacing[1]   // 4px
-spacing[2]   // 8px
-spacing[4]   // 16px
-spacing[8]   // 32px
-spacing[16]  // 64px
-```
+### Border Radius
 
-### Shadows
+- **sm**: 4px
+- **md**: 8px
+- **lg**: 12px
+- **xl**: 16px
+- **full**: 9999px (pill-shaped)
 
-```tsx
-import { shadows } from '@/constants/designTokens';
+## Best Practices
 
-// Elevation-based shadows
-shadows.sm    // Small shadow
-shadows.base  // Base shadow
-shadows.md    // Medium shadow
-shadows.lg    // Large shadow
-shadows.xl    // Extra large shadow
-```
+1. **Use Design Tokens**: Always use tokens from `designTokens.ts` for consistency
+2. **TypeScript**: Leverage TypeScript for type safety
+3. **Accessibility**: Use semantic props like `testID`, `accessibilityLabel`
+4. **Composition**: Combine components to build complex UIs
+5. **Styling**: Use `style` prop for custom overrides, not inline styles
+6. **Performance**: Components use React.forwardRef and StyleSheet for optimization
 
-## Accessibility
+## Testing
 
-All components include accessibility features:
-
-- **Semantic roles**: Buttons, headers, etc. have proper roles
-- **ARIA states**: Disabled, busy, and other states are announced
-- **Labels**: All interactive elements have accessible labels
-- **Keyboard support**: Components respond to keyboard navigation
-- **Color contrast**: All text meets WCAG AA standards
-
-### Example with Accessibility
+All components support testing via `testID` prop:
 
 ```tsx
-<Button
-  accessibilityLabel="Submit form"
-  accessibilityRole="button"
-  onPress={handleSubmit}
->
-  Submit
-</Button>
+<Badge testID="badge-success" variant="success">
+  Active
+</Badge>
 ```
-
-## TypeScript Support
-
-All components are fully typed with TypeScript. Props interfaces are exported for use in your components:
-
-```tsx
-import { Button, type ButtonProps } from '@/components/ui';
-
-interface MyButtonProps extends ButtonProps {
-  customProp?: string;
-}
-
-export function MyButton(props: MyButtonProps) {
-  return <Button {...props} />;
-}
-```
-
-## Performance
-
-- **React Native StyleSheet**: All styles use `StyleSheet.create()` for optimal performance
-- **Memoization**: Components use `React.forwardRef` for proper ref handling
-- **No unnecessary re-renders**: Props are carefully designed to minimize re-renders
 
 ## Contributing
 
 When adding new components:
-
-1. Create a new directory under `components/ui/ComponentName/`
-2. Create `ComponentName.tsx` with the component implementation
-3. Create `index.ts` with exports
-4. Add JSDoc comments to all components and props
-5. Use design tokens from `constants/designTokens.ts`
-6. Export from main `components/ui/index.ts`
-7. Add usage examples to this README
-
-## Testing
-
-Components can be tested using React Native Testing Library:
-
-```tsx
-import { render, screen } from '@testing-library/react-native';
-import { Button } from '@/components/ui';
-
-test('renders button with text', () => {
-  render(<Button>Click me</Button>);
-  expect(screen.getByText('Click me')).toBeTruthy();
-});
-```
-
-## Theme Support
-
-The design system is built to support light and dark themes. Theme switching can be implemented by:
-
-1. Creating theme variants in `constants/designTokens.ts`
-2. Using React Context to provide theme values
-3. Updating component styles based on theme context
-
-## Related Documentation
-
-- [Design Tokens](../constants/designTokens.ts)
-- [React Native Documentation](https://reactnative.dev/)
-- [Expo Documentation](https://docs.expo.dev/)
-- [TypeScript Documentation](https://www.typescriptlang.org/)
-
-## License
-
-This component library is part of the app-booze-mobile application.
+1. Create component in `components/ui/ComponentName/`
+2. Export from `components/ui/index.ts`
+3. Add JSDoc documentation
+4. Use design tokens
+5. Support TypeScript strict mode
+6. Add examples to this README
