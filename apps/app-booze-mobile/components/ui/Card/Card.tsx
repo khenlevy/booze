@@ -2,15 +2,15 @@
  * Card Component
  * 
  * A container component for grouping related content with optional header and footer.
- * Provides elevation and consistent spacing.
+ * Supports multiple variants (elevated, outlined, filled) and consistent spacing.
  * 
  * @component
  * @example
  * ```tsx
- * <Card>
- *   <Card.Header>Title</Card.Header>
- *   <Card.Body>Content</Card.Body>
- *   <Card.Footer>Footer</Card.Footer>
+ * <Card variant="elevated">
+ *   <Card.Header testID="card-header">Title</Card.Header>
+ *   <Card.Body testID="card-body">Content</Card.Body>
+ *   <Card.Footer testID="card-footer">Footer</Card.Footer>
  * </Card>
  * ```
  */
@@ -18,6 +18,11 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { colors, spacing, borderRadius, shadows } from '../../constants/designTokens';
+
+/**
+ * Card variant type
+ */
+export type CardVariant = 'elevated' | 'outlined' | 'filled';
 
 /**
  * Card component props
@@ -32,11 +37,14 @@ export interface CardProps {
   /** Padding inside the card */
   padding?: number;
   
-  /** Whether to show shadow */
-  elevated?: boolean;
+  /** Card variant style */
+  variant?: CardVariant;
   
-  /** Background color */
+  /** Background color (overrides variant default) */
   backgroundColor?: string;
+  
+  /** Test identifier for testing */
+  testID?: string;
 }
 
 /**
@@ -48,6 +56,9 @@ export interface CardHeaderProps {
   
   /** Custom style overrides */
   style?: ViewStyle;
+  
+  /** Test identifier for testing */
+  testID?: string;
 }
 
 /**
@@ -59,6 +70,9 @@ export interface CardBodyProps {
   
   /** Custom style overrides */
   style?: ViewStyle;
+  
+  /** Test identifier for testing */
+  testID?: string;
 }
 
 /**
@@ -70,16 +84,20 @@ export interface CardFooterProps {
   
   /** Custom style overrides */
   style?: ViewStyle;
+  
+  /** Test identifier for testing */
+  testID?: string;
 }
 
 /**
  * Card Header component
  */
 const CardHeader = React.forwardRef<View, CardHeaderProps>(
-  ({ children, style }, ref) => (
+  ({ children, style, testID }, ref) => (
     <View
       ref={ref}
       style={[styles.header, style]}
+      testID={testID}
     >
       {children}
     </View>
@@ -92,10 +110,11 @@ CardHeader.displayName = 'Card.Header';
  * Card Body component
  */
 const CardBody = React.forwardRef<View, CardBodyProps>(
-  ({ children, style }, ref) => (
+  ({ children, style, testID }, ref) => (
     <View
       ref={ref}
       style={[styles.body, style]}
+      testID={testID}
     >
       {children}
     </View>
@@ -108,10 +127,11 @@ CardBody.displayName = 'Card.Body';
  * Card Footer component
  */
 const CardFooter = React.forwardRef<View, CardFooterProps>(
-  ({ children, style }, ref) => (
+  ({ children, style, testID }, ref) => (
     <View
       ref={ref}
       style={[styles.footer, style]}
+      testID={testID}
     >
       {children}
     </View>
@@ -119,6 +139,28 @@ const CardFooter = React.forwardRef<View, CardFooterProps>(
 );
 
 CardFooter.displayName = 'Card.Footer';
+
+/**
+ * Get variant-specific styles
+ */
+const getVariantStyles = (variant: CardVariant = 'elevated'): ViewStyle => {
+  switch (variant) {
+    case 'outlined':
+      return {
+        borderWidth: 1,
+        borderColor: colors.border.light,
+      };
+    case 'filled':
+      return {
+        backgroundColor: colors.background.secondary,
+      };
+    case 'elevated':
+    default:
+      return {
+        ...shadows.md,
+      };
+  }
+};
 
 /**
  * Card component
@@ -129,26 +171,33 @@ const Card = React.forwardRef<View, CardProps>(
       children,
       style,
       padding = spacing[4],
-      elevated = true,
-      backgroundColor = colors.background.primary,
+      variant = 'elevated',
+      backgroundColor,
+      testID,
     },
     ref,
-  ) => (
-    <View
-      ref={ref}
-      style={[
-        styles.container,
-        {
-          padding,
-          backgroundColor,
-          ...(elevated && shadows.md),
-        },
-        style,
-      ]}
-    >
-      {children}
-    </View>
-  ),
+  ) => {
+    const variantStyles = getVariantStyles(variant);
+    const bgColor = backgroundColor || colors.background.primary;
+
+    return (
+      <View
+        ref={ref}
+        style={[
+          styles.container,
+          {
+            padding,
+            backgroundColor: bgColor,
+          },
+          variantStyles,
+          style,
+        ]}
+        testID={testID}
+      >
+        {children}
+      </View>
+    );
+  },
 );
 
 Card.displayName = 'Card';
@@ -181,5 +230,5 @@ const styles = StyleSheet.create({
 });
 
 export { Card, CardHeader, CardBody, CardFooter };
-export type { CardProps, CardHeaderProps, CardBodyProps, CardFooterProps };
+export type { CardProps, CardHeaderProps, CardBodyProps, CardFooterProps, CardVariant };
 export default Card;

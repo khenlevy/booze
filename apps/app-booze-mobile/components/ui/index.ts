@@ -106,6 +106,7 @@ export {
   type CardHeaderProps,
   type CardBodyProps,
   type CardFooterProps,
+  type CardVariant,
 } from './Card';
 
 // Screen layout wrapper with safe area handling
