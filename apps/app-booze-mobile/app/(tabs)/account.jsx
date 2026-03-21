@@ -7,18 +7,17 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
-
-const AUTHENTICATED_USER_KEY = 'authenticatedUser';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AccountScreen() {
   const router = useRouter();
+  const { clearAuthenticatedUser, user } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.setItem(AUTHENTICATED_USER_KEY, '');
+      await clearAuthenticatedUser();
       router.replace('/(auth)/login');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -29,7 +28,19 @@ export default function AccountScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.text}>Account</Text>
+        {user?.provider ? (
+          <Text style={styles.subtext}>Signed in via {user.provider}</Text>
+        ) : null}
+        {user?.phone ? (
+          <Text style={styles.subtext}>{user.phone}</Text>
+        ) : null}
       </View>
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={() => router.push('/(tabs)/drink-history')}
+      >
+        <Text style={styles.secondaryButtonText}>Drink history</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>LOG OUT</Text>
       </TouchableOpacity>
@@ -52,6 +63,29 @@ const styles = StyleSheet.create({
   text: {
     ...typography.h1,
     color: colors.text.primary,
+  },
+  subtext: {
+    ...typography.body2,
+    color: colors.text.secondary,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  secondaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background.secondary,
+    paddingVertical: 16,
+    marginHorizontal: 24,
+    marginBottom: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border.default,
+  },
+  secondaryButtonText: {
+    ...typography.button,
+    color: colors.brand.primary,
+    fontSize: 16,
   },
   logoutButton: {
     flexDirection: 'row',

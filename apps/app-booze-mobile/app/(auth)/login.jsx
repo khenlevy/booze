@@ -2,31 +2,24 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, typography } from '@/constants/parcus-theme';
 import SocialButton from '@/components/parcus/SocialButton';
 import PrimaryButton from '@/components/parcus/PrimaryButton';
 import ParcusPiggy from '@/assets/svg/ParcusPiggy';
-
-const AUTHENTICATED_USER_KEY = 'authenticatedUser';
+import { DEV_USER_ID, useAuth } from '@/contexts/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { setAuthenticatedUser } = useAuth();
   const [phone, setPhone] = useState('');
 
   const handleGoogleLogin = async () => {
-    await AsyncStorage.setItem(
-      AUTHENTICATED_USER_KEY,
-      JSON.stringify({ provider: 'google' }),
-    );
+    await setAuthenticatedUser({ provider: 'google', userId: DEV_USER_ID });
     router.replace('/(tabs)');
   };
 
   const handleAppleLogin = async () => {
-    await AsyncStorage.setItem(
-      AUTHENTICATED_USER_KEY,
-      JSON.stringify({ provider: 'apple' }),
-    );
+    await setAuthenticatedUser({ provider: 'apple', userId: DEV_USER_ID });
     router.replace('/(tabs)');
   };
 

@@ -2,24 +2,24 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, typography } from '@/constants/parcus-theme';
 import PrimaryButton from '@/components/parcus/PrimaryButton';
+import { DEV_USER_ID, useAuth } from '@/contexts/AuthContext';
 
-const AUTHENTICATED_USER_KEY = 'authenticatedUser';
 const CELL_COUNT = 6;
 
 export default function VerifyCodeScreen() {
   const router = useRouter();
   const { phone } = useLocalSearchParams();
+  const { setAuthenticatedUser } = useAuth();
   const [value, setValue] = useState('');
 
   const handleVerify = async () => {
     if (value.length === CELL_COUNT) {
-      await AsyncStorage.setItem(
-        AUTHENTICATED_USER_KEY,
-        JSON.stringify({ phone }),
-      );
+      await setAuthenticatedUser({
+        phone,
+        userId: DEV_USER_ID,
+      });
       router.replace('/(tabs)');
     }
   };

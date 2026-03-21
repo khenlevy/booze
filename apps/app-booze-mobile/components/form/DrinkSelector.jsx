@@ -11,18 +11,7 @@ import {
 import { useState, useEffect } from 'react';
 import { colors, typography } from '@/constants/parcus-theme';
 import { MaterialIcons } from '@expo/vector-icons';
-
-// Mock data - replace with API call
-const MOCK_DRINKS = [
-  { id: '1', name: 'Heineken Lager', category: 'Beer', abv: 5.0 },
-  { id: '2', name: 'Guinness Stout', category: 'Beer', abv: 4.2 },
-  { id: '3', name: 'Jameson Irish Whiskey', category: 'Whiskey', abv: 40.0 },
-  { id: '4', name: 'Bacardi Rum', category: 'Rum', abv: 37.5 },
-  { id: '5', name: 'Smirnoff Vodka', category: 'Vodka', abv: 40.0 },
-  { id: '6', name: 'Cabernet Sauvignon', category: 'Wine', abv: 13.5 },
-  { id: '7', name: 'Pinot Grigio', category: 'Wine', abv: 12.0 },
-  { id: '8', name: 'Champagne', category: 'Sparkling', abv: 12.0 },
-];
+import { MOCK_DRINKS } from '@/data/drink-catalog-mock';
 
 export default function DrinkSelector({
   selectedDrinkId,
@@ -32,22 +21,21 @@ export default function DrinkSelector({
 }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [drinks, setDrinks] = useState(MOCK_DRINKS);
-  const [isLoading, setIsLoading] = useState(false);
+  const drinks = MOCK_DRINKS;
+  const [isLoading] = useState(false);
   const [filteredDrinks, setFilteredDrinks] = useState(MOCK_DRINKS);
 
   useEffect(() => {
-    // Filter drinks based on search query
     if (searchQuery.trim() === '') {
       setFilteredDrinks(drinks);
     } else {
       const query = searchQuery.toLowerCase();
       setFilteredDrinks(
         drinks.filter(
-          drink =>
+          (drink) =>
             drink.name.toLowerCase().includes(query) ||
-            drink.category.toLowerCase().includes(query)
-        )
+            drink.category.toLowerCase().includes(query),
+        ),
       );
     }
   }, [searchQuery, drinks]);
@@ -126,7 +114,7 @@ export default function DrinkSelector({
             {/* Drinks List */}
             {isLoading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={colors.primary} />
+                <ActivityIndicator size="large" color={colors.brand.primary} />
               </View>
             ) : (
               <FlatList
@@ -150,7 +138,7 @@ export default function DrinkSelector({
                       <MaterialIcons
                         name="check-circle"
                         size={24}
-                        color={colors.primary}
+                        color={colors.brand.primary}
                       />
                     )}
                   </TouchableOpacity>

@@ -237,6 +237,92 @@ drinkLogSchema.statics.getByDateRange = async function (userId, startDate, endDa
 };
 
 /**
+ * High-rated logs whose taste tags overlap the requested tags (recommendations / by-taste).
+ * @param {string} userId
+ * @param {string[]} tasteTags
+ * @param {number} minRating
+ * @returns {Promise<Array>} lean documents
+ */
+drinkLogSchema.statics.getSimilarHighRatedDrinks = async function (
+  userId,
+  tasteTags = [],
+  minRating = 3,
+) {
+  try {
+    const match = {
+      userId: new mongoose.Types.ObjectId(userId),
+      isArchived: false,
+      rating: { $gte: minRating },
+    };
+    if (tasteTags.length > 0) {
+      match.tasteTags = { $in: tasteTags };
+    }
+    return await this.find(match).sort({ rating: -1, consumedAt: -1 }).lean();
+  } catch (error) {
+    logger.error('Error fetching similar high-rated drinks:', error);
+    throw error;
+  }
+};
+
+/**
+ * Logs in a rating range (recommendations / by-rating).
+ */
+drinkLogSchema.statics.getDrinksByRatingRange = async function (
+  userId,
+  minRating,
+  maxRating,
+) {
+  try {
+    return await this.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      isArchived: false,
+      rating: { $gte: minRating, $lte: maxRating },
+    })
+      .sort({ consumedAt: -1 })
+      .lean();
+  } catch (error) {
+    logger.error('Error fetching drinks by rating range:', error);
+    throw error;
+  }
+};
+
+/**
+ * Summary stats for recommendation readiness UI.
+ */
+drinkLogSchema.statics.getRatingStats = async function (userId) {
+  try {
+    const logs = await this.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      isArchived: false,
+    })
+      .select('rating')
+      .lean();
+
+    const totalLogs = logs.length;
+    if (totalLogs === 0) {
+      return { totalLogs: 0, averageRating: 0, byRating: {} };
+    }
+
+    let sum = 0;
+    const byRating = {};
+    for (const log of logs) {
+      sum += log.rating;
+      const r = log.rating;
+      byRating[r] = (byRating[r] || 0) + 1;
+    }
+
+    return {
+      totalLogs,
+      averageRating: sum / totalLogs,
+      byRating,
+    };
+  } catch (error) {
+    logger.error('Error computing rating stats:', error);
+    throw error;
+  }
+};
+
+/**
  * Instance method: Soft delete (archive) a drink log entry
  */
 drinkLogSchema.methods.archive = async function () {
@@ -273,4 +359,5 @@ drinkLogSchema.virtual('daysSinceConsumption').get(function () {
 
 const DrinkLog = mongoose.model('DrinkLog', drinkLogSchema);
 
+export { DrinkLog };
 export default DrinkLog;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,12 +17,49 @@ import { colors, typography } from '@/constants/parcus-theme';
 import TagLoading from '@/assets/svg/TagLoading';
 import BottomBar from '@/components/parcus/BottomBar';
 import { useDebounce } from '@/hooks/useDebounce';
-import { searchItems } from '../../data/search-mock';
-import ShopIcon from '@/assets/icons/ShopIcon';
-import MoneyIcon from '@/assets/icons/MoneyIcon';
-import TicketIcon from '@/assets/icons/TicketIcon';
+import { searchCatalogDrinks } from '@/data/drink-catalog-mock';
+import { searchDrinksApi } from '@/utils/drinksSearchApi';
 
-const FILTER_OPTIONS = ['All', 'Gift cards', 'Coupons', 'Deals'];
+const FILTER_OPTIONS = ['All', 'Whiskey', 'Wine', 'Spirits', 'Beer'];
+
+function mapApiDrinkToResult(d) {
+  return {
+    id: String(d._id ?? d.id),
+    name: d.name,
+    desc: d.description || d.desc || '',
+    category: d.category || '',
+    abv: d.abv,
+    source: 'api',
+  };
+}
+
+async function searchDrinks(query, categoryFilter) {
+  const q = (query || '').trim();
+  if (!q) return [];
+
+  try {
+    const { data } = await searchDrinksApi({
+      name: q,
+      category: categoryFilter === 'All' ? undefined : categoryFilter,
+      limit: 40,
+      skip: 0,
+    });
+    if (data.length > 0) {
+      return data.map(mapApiDrinkToResult);
+    }
+  } catch {
+    /* fallback below */
+  }
+
+  return searchCatalogDrinks(q, categoryFilter).map((d) => ({
+    id: d.id,
+    name: d.name,
+    desc: d.desc || '',
+    category: d.category,
+    abv: d.abv,
+    source: 'catalog',
+  }));
+}
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -34,32 +71,41 @@ export default function SearchScreen() {
 
   const debouncedSearchText = useDebounce(searchText, 300);
 
-  useEffect(() => {
-    if (!debouncedSearchText) {
+  const runSearch = useCallback(async () => {
+    if (!debouncedSearchText?.trim()) {
       setSearchResults([]);
       return;
     }
     setIsLoading(true);
-    const results = searchItems(debouncedSearchText);
-    setSearchResults(results);
-    setIsLoading(false);
-  }, [debouncedSearchText]);
+    try {
+      const results = await searchDrinks(
+        debouncedSearchText,
+        selectedFilter,
+      );
+      setSearchResults(results);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [debouncedSearchText, selectedFilter]);
+
+  useEffect(() => {
+    runSearch();
+  }, [runSearch]);
 
   const handleFilterSelect = (filter) => setSelectedFilter(filter);
 
   const handleResultPress = (result) => {
     setIsSearchFocused(false);
-    if (result.type === 'business') {
-      router.push({
-        pathname: '/search-results',
-        params: { id: result.id },
-      });
-    } else {
-      router.push({
-        pathname: '/result-view',
-        params: { id: result.id },
-      });
-    }
+    router.push({
+      pathname: '/search-results',
+      params: {
+        id: result.id,
+        name: result.name,
+        desc: result.desc || '',
+        category: result.category || '',
+        abv: result.abv != null ? String(result.abv) : '',
+      },
+    });
   };
 
   const highlightText = (text) => {
@@ -83,61 +129,26 @@ export default function SearchScreen() {
     );
   };
 
-  const getTagStyle = (type) => {
-    switch (type) {
-      case 'business':
-        return styles.businessTag;
-      case 'gift_card':
-        return styles.giftCardTag;
-      case 'coupon':
-        return styles.couponTag;
-      default:
-        return {};
-    }
-  };
-
-  const getTagText = (type) => {
-    switch (type) {
-      case 'business':
-        return 'Business';
-      case 'gift_card':
-        return 'Gift card';
-      case 'coupon':
-        return 'Coupon';
-      default:
-        return '';
-    }
-  };
-
-  const getResultIcon = (type) => {
-    switch (type) {
-      case 'business':
-        return <ShopIcon width={24} height={24} />;
-      case 'gift_card':
-        return <MoneyIcon width={24} height={24} />;
-      case 'coupon':
-        return <TicketIcon width={24} height={24} />;
-      default:
-        return <ShopIcon width={24} height={24} />;
-    }
-  };
-
   const renderSearchResults = () => (
     <ScrollView style={styles.resultsContainer}>
       {searchResults.map((result) => (
         <TouchableOpacity
-          key={result.id}
+          key={`${result.id}-${result.name}`}
           style={styles.resultItem}
           onPress={() => handleResultPress(result)}
         >
-          <View style={styles.resultIcon}>{getResultIcon(result.type)}</View>
+          <View style={styles.resultIcon}>
+            <Ionicons name="wine" size={22} color={colors.brand.primary} />
+          </View>
           <View style={styles.resultContent}>
             <Text style={styles.resultTitle}>{highlightText(result.name)}</Text>
             <Text style={styles.resultDesc}>{highlightText(result.desc)}</Text>
           </View>
-          <View style={[styles.tag, getTagStyle(result.type)]}>
-            <Text style={styles.tagText}>{getTagText(result.type)}</Text>
-          </View>
+          {result.category ? (
+            <View style={styles.tag}>
+              <Text style={styles.tagText}>{result.category}</Text>
+            </View>
+          ) : null}
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -159,7 +170,7 @@ export default function SearchScreen() {
           </TouchableOpacity>
           <TextInput
             style={styles.modalSearchInput}
-            placeholder="Search by anything.."
+            placeholder="Search whiskey, wine, beer…"
             placeholderTextColor={colors.text.secondary}
             value={searchText}
             onChangeText={setSearchText}
@@ -192,14 +203,17 @@ export default function SearchScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
-          {isLoading ? (
-            <View style={styles.searchLoadingContainer}>
-              <TagLoading width={80} height={80} />
-              <Text style={styles.loadingText}>Loading..</Text>
-            </View>
-          ) : (
-            <View style={styles.searchResults} />
-          )}
+          <Text style={styles.screenTitle}>Discover</Text>
+          <Text style={styles.screenSub}>
+            Search the catalog — filters help you focus on whiskey, wine, and
+            more.
+          </Text>
+          <View style={styles.hintBox}>
+            <TagLoading width={64} height={64} />
+            <Text style={styles.hintText}>
+              Tap the search bar below to find whiskey, wine, and more.
+            </Text>
+          </View>
         </View>
       </ScrollView>
 
@@ -237,7 +251,7 @@ export default function SearchScreen() {
           onPress={() => setIsSearchFocused(true)}
         >
           <Ionicons name="search" size={20} color={colors.text.secondary} />
-          <Text style={styles.searchPlaceholder}>Search by anything..</Text>
+          <Text style={styles.searchPlaceholder}>Search drinks…</Text>
         </TouchableOpacity>
       </View>
 
@@ -258,6 +272,31 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+  },
+  screenTitle: {
+    ...typography.h1,
+    color: colors.text.primary,
+    marginBottom: 8,
+  },
+  screenSub: {
+    ...typography.body2,
+    color: colors.text.secondary,
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  hintBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 48,
+    paddingHorizontal: 24,
+  },
+  hintText: {
+    ...typography.body1,
+    color: colors.text.secondary,
+    textAlign: 'center',
+    marginTop: 12,
   },
   bottomContainer: {
     position: 'absolute',
@@ -280,12 +319,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexGrow: 1,
+    paddingHorizontal: 4,
   },
   filterButton: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    minWidth: 80,
+    minWidth: 72,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -317,12 +357,6 @@ const styles = StyleSheet.create({
     ...typography.h2,
     color: colors.text.primary,
     marginTop: 16,
-  },
-  searchResults: {
-    flex: 1,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   modalContainer: {
     flex: 1,
@@ -383,24 +417,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   tag: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 16,
-    minWidth: 80,
-    alignItems: 'center',
-  },
-  businessTag: {
-    backgroundColor: '#020064',
-  },
-  giftCardTag: {
-    backgroundColor: '#BD82EB',
-  },
-  couponTag: {
-    backgroundColor: '#B0D9FF',
+    backgroundColor: colors.brand.primary,
+    maxWidth: 100,
   },
   tagText: {
-    ...typography.body2,
+    ...typography.caption,
     color: colors.text.inverse,
+    fontWeight: '600',
   },
   searchLoadingContainer: {
     flex: 1,

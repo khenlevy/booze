@@ -3,10 +3,12 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
+      <AuthProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -17,7 +19,7 @@ export default function RootLayout() {
             name="search-results"
             options={{
               headerShown: true,
-              title: 'Search Results',
+              title: 'Drink',
               headerStyle: { backgroundColor: '#F9F6FF' },
               headerShadowVisible: false,
             }}
@@ -26,7 +28,7 @@ export default function RootLayout() {
             name="result-view"
             options={{
               headerShown: true,
-              title: 'Result Details',
+              title: 'Drink',
               headerStyle: { backgroundColor: '#F9F6FF' },
               headerShadowVisible: false,
             }}
@@ -34,6 +36,7 @@ export default function RootLayout() {
         </Stack>
         <StatusBar style="dark" />
       </ThemeProvider>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

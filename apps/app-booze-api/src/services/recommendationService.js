@@ -129,7 +129,7 @@ export async function getTasteBasedRecommendations(userId, tasteTags = [], optio
       tasteTags: drink.tasteTags,
       consumedAt: drink.consumedAt,
       recommendationScore: calculateDrinkScore(drink),
-      reason: `Matches your taste preferences: ${drink.tasteTags.join(', ')}`,
+      reason: `Matches your taste preferences: ${(drink.tasteTags || []).join(', ')}`,
     }));
 
     return recommendations.slice(0, limit);

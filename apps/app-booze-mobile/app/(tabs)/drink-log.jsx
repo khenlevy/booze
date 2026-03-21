@@ -1,13 +1,19 @@
 import { View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
 import DrinkLogEntryForm from '@/components/DrinkLogEntryForm';
 import { validateDrinkLogForm } from '@/utils/formValidation';
 import { createDrinkLog, retryWithBackoff } from '@/utils/drinkLogApi';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function DrinkLogScreen() {
+  const router = useRouter();
+  const { userId } = useAuth();
+  const params = useLocalSearchParams();
   const [formData, setFormData] = useState({
     drinkId: '',
     drinkName: '',
@@ -18,6 +24,18 @@ export default function DrinkLogScreen() {
     rating: 0,
     notes: '',
   });
+
+  useEffect(() => {
+    const name = params.drinkName ? String(params.drinkName) : '';
+    const id = params.catalogDrinkId ? String(params.catalogDrinkId) : '';
+    if (name || id) {
+      setFormData((prev) => ({
+        ...prev,
+        drinkId: id || prev.drinkId,
+        drinkName: name || prev.drinkName,
+      }));
+    }
+  }, [params.drinkName, params.catalogDrinkId]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
@@ -52,10 +70,12 @@ export default function DrinkLogScreen() {
 
     setIsSubmitting(true);
     try {
-      // Construct the payload
+      const rawId = formData.drinkId?.trim?.() || '';
+      const drinkId =
+        rawId && /^[a-f0-9]{24}$/i.test(rawId) ? rawId : null;
       const payload = {
-        userId: 'user-123', // TODO: Replace with actual user ID from auth context
-        drinkId: formData.drinkId || null,
+        userId,
+        drinkId,
         drinkName: formData.drinkName,
         consumedAt: new Date(
           formData.date.getFullYear(),
@@ -106,7 +126,7 @@ export default function DrinkLogScreen() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, validationErrors]);
+  }, [formData, userId]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,6 +135,19 @@ export default function DrinkLogScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.topBar}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.backBtn}
+            accessibilityLabel="Go back"
+          >
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={24}
+              color={colors.text.primary}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.header}>
           <Text style={styles.title}>Log a Drink</Text>
           <Text style={styles.subtitle}>Track your drinking and rate your experience</Text>
@@ -143,8 +176,15 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: Platform.select({ ios: 100, android: 80 }),
+  },
+  topBar: {
+    marginBottom: 8,
+  },
+  backBtn: {
+    alignSelf: 'flex-start',
+    padding: 8,
   },
   header: {
     marginBottom: 24,
