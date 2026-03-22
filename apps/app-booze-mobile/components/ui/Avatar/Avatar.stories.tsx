@@ -1,268 +1,385 @@
-/**
- * Avatar Component Stories
- * 
- * Storybook stories for the Avatar component demonstrating all variants,
- * sizes, shapes, and usage patterns.
- * 
- * @module components/ui/Avatar/Avatar.stories
- */
-
 import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import { View, StyleSheet } from 'react-native';
-import { Avatar, type AvatarSize, type AvatarShape } from './Avatar';
-import { colors, spacing } from '../../constants/designTokens';
+import { Avatar } from './Avatar';
+import { Body, Heading } from '../Typography';
+import { spacing, colors } from '../../../constants/designTokens';
 
-/**
- * Story metadata
- */
-export default {
-  title: 'Components/Avatar',
+const meta = {
+  title: 'Avatar',
   component: Avatar,
-  argTypes: {
-    size: {
-      control: { type: 'select' },
-      options: ['xs', 'sm', 'md', 'lg', 'xl'],
-      description: 'Size of the avatar',
-    },
-    shape: {
-      control: { type: 'select' },
-      options: ['circle', 'square'],
-      description: 'Shape of the avatar',
-    },
-    initials: {
-      control: { type: 'text' },
-      description: 'Initials to display as fallback',
-    },
-    backgroundColor: {
-      control: { type: 'color' },
-      description: 'Background color for initials',
-    },
-    textColor: {
-      control: { type: 'color' },
-      description: 'Text color for initials',
-    },
+  decorators: [
+    (Story) => (
+      <View style={styles.container}>
+        <Story />
+      </View>
+    ),
+  ],
+  parameters: {
+    layout: 'fullscreen',
   },
-};
+} satisfies Meta;
 
-/**
- * Default avatar with initials
- */
-export const Default = () => (
-  <Avatar size="md" initials="JD" />
-);
-
-/**
- * Avatar with image source
- */
-export const WithImage = () => (
-  <Avatar
-    size="md"
-    source={{
-      uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-    }}
-  />
-);
-
-/**
- * All avatar sizes
- */
-export const AllSizes = () => {
-  const sizes: AvatarSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
-
-  return (
-    <View style={styles.container}>
-      {sizes.map((size) => (
-        <View key={size} style={styles.sizeRow}>
-          <Avatar size={size} initials="A" />
-        </View>
-      ))}
-    </View>
-  );
-};
-
-/**
- * Avatar shapes
- */
-export const Shapes = () => {
-  const shapes: AvatarShape[] = ['circle', 'square'];
-
-  return (
-    <View style={styles.container}>
-      {shapes.map((shape) => (
-        <View key={shape} style={styles.shapeRow}>
-          <Avatar size="lg" shape={shape} initials="AB" />
-        </View>
-      ))}
-    </View>
-  );
-};
-
-/**
- * Avatar with custom colors
- */
-export const CustomColors = () => (
-  <View style={styles.container}>
-    <View style={styles.colorRow}>
-      <Avatar
-        size="lg"
-        initials="JD"
-        backgroundColor={colors.primary.light}
-        textColor={colors.text.inverse}
-      />
-    </View>
-    <View style={styles.colorRow}>
-      <Avatar
-        size="lg"
-        initials="AB"
-        backgroundColor={colors.success.light}
-        textColor={colors.text.inverse}
-      />
-    </View>
-    <View style={styles.colorRow}>
-      <Avatar
-        size="lg"
-        initials="CD"
-        backgroundColor={colors.error.light}
-        textColor={colors.text.inverse}
-      />
-    </View>
-  </View>
-);
-
-/**
- * Avatar with different initials
- */
-export const DifferentInitials = () => (
-  <View style={styles.container}>
-    <View style={styles.initialsRow}>
-      <Avatar size="md" initials="A" />
-    </View>
-    <View style={styles.initialsRow}>
-      <Avatar size="md" initials="AB" />
-    </View>
-    <View style={styles.initialsRow}>
-      <Avatar size="md" initials="ABC" />
-    </View>
-    <View style={styles.initialsRow}>
-      <Avatar size="md" initials="ABCD" />
-    </View>
-  </View>
-);
-
-/**
- * Avatar in a user profile card layout
- */
-export const InProfileCard = () => (
-  <View style={styles.profileCard}>
-    <Avatar size="lg" initials="JD" />
-    <View style={styles.profileInfo}>
-      <View style={styles.profileName}>John Doe</View>
-      <View style={styles.profileEmail}>john.doe@example.com</View>
-    </View>
-  </View>
-);
-
-/**
- * Multiple avatars in a row
- */
-export const MultipleAvatars = () => (
-  <View style={styles.multipleContainer}>
-    <Avatar size="md" initials="A" backgroundColor={colors.primary.light} />
-    <Avatar size="md" initials="B" backgroundColor={colors.success.light} />
-    <Avatar size="md" initials="C" backgroundColor={colors.warning.light} />
-    <Avatar size="md" initials="D" backgroundColor={colors.error.light} />
-  </View>
-);
-
-/**
- * Avatar with image fallback
- */
-export const ImageWithFallback = () => (
-  <View style={styles.container}>
-    <View style={styles.fallbackRow}>
-      <Avatar
-        size="lg"
-        source={{
-          uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-        }}
-      />
-    </View>
-    <View style={styles.fallbackRow}>
-      <Avatar size="lg" initials="JD" />
-    </View>
-  </View>
-);
-
-/**
- * Avatar interactive example
- */
-export const Interactive = () => {
-  const [size, setSize] = React.useState<AvatarSize>('md');
-  const [shape, setShape] = React.useState<AvatarShape>('circle');
-
-  return (
-    <View style={styles.container}>
-      <Avatar size={size} shape={shape} initials="JD" />
-    </View>
-  );
-};
+export default meta;
 
 const styles = StyleSheet.create({
   container: {
-    padding: spacing[4],
-    gap: spacing[4],
-  },
-  sizeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[2],
-  },
-  shapeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[2],
-  },
-  colorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[2],
-  },
-  initialsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[2],
-  },
-  profileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[3],
-    padding: spacing[4],
-    backgroundColor: colors.neutral[50],
-    borderRadius: 8,
-    marginHorizontal: spacing[4],
-  },
-  profileInfo: {
     flex: 1,
+    padding: spacing[4],
+    backgroundColor: colors.background.primary,
   },
-  profileName: {
+  section: {
+    marginBottom: spacing[6],
+  },
+  sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
+    marginBottom: spacing[3],
     color: colors.text.primary,
-    marginBottom: spacing[1],
   },
-  profileEmail: {
-    fontSize: 14,
+  avatarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing[4],
+  },
+  avatarItem: {
+    alignItems: 'center',
+    marginBottom: spacing[3],
+  },
+  label: {
+    marginTop: spacing[2],
+    fontSize: 12,
     color: colors.text.secondary,
   },
-  multipleContainer: {
+  row: {
     flexDirection: 'row',
+    gap: spacing[3],
     alignItems: 'center',
-    gap: spacing[2],
-    padding: spacing[4],
-  },
-  fallbackRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[2],
+    marginBottom: spacing[4],
   },
 });
+
+// Initials Variants
+export const InitialsSmall: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar initials="JD" size="sm" />
+      <Body style={styles.label}>Small</Body>
+    </View>
+  ),
+};
+
+export const InitialsMedium: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar initials="JD" size="md" />
+      <Body style={styles.label}>Medium</Body>
+    </View>
+  ),
+};
+
+export const InitialsLarge: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar initials="JD" size="lg" />
+      <Body style={styles.label}>Large</Body>
+    </View>
+  ),
+};
+
+export const InitialsExtraLarge: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar initials="JD" size="xl" />
+      <Body style={styles.label}>Extra Large</Body>
+    </View>
+  ),
+};
+
+// Image Variants
+export const ImageSmall: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar 
+        source={{ uri: 'https://via.placeholder.com/40' }} 
+        size="sm" 
+      />
+      <Body style={styles.label}>Small</Body>
+    </View>
+  ),
+};
+
+export const ImageMedium: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar 
+        source={{ uri: 'https://via.placeholder.com/56' }} 
+        size="md" 
+      />
+      <Body style={styles.label}>Medium</Body>
+    </View>
+  ),
+};
+
+export const ImageLarge: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar 
+        source={{ uri: 'https://via.placeholder.com/80' }} 
+        size="lg" 
+      />
+      <Body style={styles.label}>Large</Body>
+    </View>
+  ),
+};
+
+export const ImageExtraLarge: StoryObj = {
+  render: () => (
+    <View style={styles.avatarItem}>
+      <Avatar 
+        source={{ uri: 'https://via.placeholder.com/120' }} 
+        size="xl" 
+      />
+      <Body style={styles.label}>Extra Large</Body>
+    </View>
+  ),
+};
+
+// All Sizes with Initials
+export const AllSizesInitials: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Avatar Sizes (Initials)</View>
+        <View style={styles.avatarGrid}>
+          <View style={styles.avatarItem}>
+            <Avatar initials="SM" size="sm" />
+            <Body style={styles.label}>Small</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="MD" size="md" />
+            <Body style={styles.label}>Medium</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="LG" size="lg" />
+            <Body style={styles.label}>Large</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="XL" size="xl" />
+            <Body style={styles.label}>Extra Large</Body>
+          </View>
+        </View>
+      </View>
+    </View>
+  ),
+};
+
+// Avatar Group
+export const AvatarGroup: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Avatar Group</View>
+        <View style={styles.row}>
+          <Avatar initials="JD" size="md" />
+          <Avatar initials="AB" size="md" />
+          <Avatar initials="CD" size="md" />
+          <Avatar initials="EF" size="md" />
+        </View>
+      </View>
+    </View>
+  ),
+};
+
+// Placeholder State
+export const PlaceholderState: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Placeholder States</View>
+        <View style={styles.avatarGrid}>
+          <View style={styles.avatarItem}>
+            <Avatar initials="?" size="lg" />
+            <Body style={styles.label}>Unknown</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="+" size="lg" />
+            <Body style={styles.label}>Add User</Body>
+          </View>
+        </View>
+      </View>
+    </View>
+  ),
+};
+
+// Different Initials
+export const DifferentInitials: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Different Initials</View>
+        <View style={styles.avatarGrid}>
+          <View style={styles.avatarItem}>
+            <Avatar initials="JD" size="lg" />
+            <Body style={styles.label}>JD</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="AB" size="lg" />
+            <Body style={styles.label}>AB</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="CD" size="lg" />
+            <Body style={styles.label}>CD</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="EF" size="lg" />
+            <Body style={styles.label}>EF</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="GH" size="lg" />
+            <Body style={styles.label}>GH</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <Avatar initials="IJ" size="lg" />
+            <Body style={styles.label}>IJ</Body>
+          </View>
+        </View>
+      </View>
+    </View>
+  ),
+};
+
+// Avatar in User List
+export const AvatarInUserList: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>User List</View>
+        
+        {[
+          { name: 'John Doe', initials: 'JD' },
+          { name: 'Alice Brown', initials: 'AB' },
+          { name: 'Charlie Davis', initials: 'CD' },
+        ].map((user, index) => (
+          <View key={index} style={{ 
+            flexDirection: 'row', 
+            alignItems: 'center',
+            paddingVertical: spacing[2],
+            borderBottomWidth: index < 2 ? 1 : 0,
+            borderBottomColor: colors.border.light,
+          }}>
+            <Avatar initials={user.initials} size="md" />
+            <Body style={{ marginLeft: spacing[3] }}>{user.name}</Body>
+          </View>
+        ))}
+      </View>
+    </View>
+  ),
+};
+
+// Avatar Sizes Comparison
+export const AvatarSizesComparison: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Size Comparison</View>
+        
+        <View style={{ marginBottom: spacing[4] }}>
+          <Body style={{ marginBottom: spacing[2], fontWeight: '600' }}>Initials</Body>
+          <View style={styles.row}>
+            <Avatar initials="SM" size="sm" />
+            <Avatar initials="MD" size="md" />
+            <Avatar initials="LG" size="lg" />
+            <Avatar initials="XL" size="xl" />
+          </View>
+        </View>
+
+        <View>
+          <Body style={{ marginBottom: spacing[2], fontWeight: '600' }}>Images</Body>
+          <View style={styles.row}>
+            <Avatar 
+              source={{ uri: 'https://via.placeholder.com/40' }} 
+              size="sm" 
+            />
+            <Avatar 
+              source={{ uri: 'https://via.placeholder.com/56' }} 
+              size="md" 
+            />
+            <Avatar 
+              source={{ uri: 'https://via.placeholder.com/80' }} 
+              size="lg" 
+            />
+            <Avatar 
+              source={{ uri: 'https://via.placeholder.com/120' }} 
+              size="xl" 
+            />
+          </View>
+        </View>
+      </View>
+    </View>
+  ),
+};
+
+// Avatar with Status Indicator
+export const AvatarWithStatus: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Avatar with Status</View>
+        <View style={styles.avatarGrid}>
+          <View style={styles.avatarItem}>
+            <View style={{ position: 'relative' }}>
+              <Avatar initials="JD" size="lg" />
+              <View style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: 16,
+                height: 16,
+                borderRadius: 8,
+                backgroundColor: colors.success.primary,
+                borderWidth: 2,
+                borderColor: colors.background.primary,
+              }} />
+            </View>
+            <Body style={styles.label}>Online</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <View style={{ position: 'relative' }}>
+              <Avatar initials="AB" size="lg" />
+              <View style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: 16,
+                height: 16,
+                borderRadius: 8,
+                backgroundColor: colors.warning.primary,
+                borderWidth: 2,
+                borderColor: colors.background.primary,
+              }} />
+            </View>
+            <Body style={styles.label}>Away</Body>
+          </View>
+          <View style={styles.avatarItem}>
+            <View style={{ position: 'relative' }}>
+              <Avatar initials="CD" size="lg" />
+              <View style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: 16,
+                height: 16,
+                borderRadius: 8,
+                backgroundColor: colors.text.secondary,
+                borderWidth: 2,
+                borderColor: colors.background.primary,
+              }} />
+            </View>
+            <Body style={styles.label}>Offline</Body>
+          </View>
+        </View>
+      </View>
+    </View>
+  ),
+};

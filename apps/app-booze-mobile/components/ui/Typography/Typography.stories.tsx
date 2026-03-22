@@ -1,372 +1,159 @@
-/**
- * Typography Component Stories
- * 
- * Storybook stories for Typography components demonstrating all variants,
- * sizes, colors, and usage patterns.
- * 
- * @module components/ui/Typography/Typography.stories
- */
-
-import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import { View, StyleSheet } from 'react-native';
 import { Heading, Body, Caption, Label } from './Typography';
-import { colors, spacing, typography } from '../../constants/designTokens';
+import { spacing, colors } from '../../../constants/designTokens';
 
-/**
- * Story metadata
- */
-export default {
+const meta = {
   title: 'Typography',
   component: Heading,
-};
-
-/**
- * Heading Levels Story
- * Demonstrates all heading levels (H1-H6) with their respective sizes and weights
- */
-export function HeadingLevels() {
-  return (
-    <View style={styles.container}>
-      <Heading level={1}>Heading Level 1 (H1)</Heading>
-      <Caption>fontSize: 36px, fontWeight: 800, lineHeight: 1.2</Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={2}>Heading Level 2 (H2)</Heading>
-      <Caption>fontSize: 30px, fontWeight: 700, lineHeight: 1.2</Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={3}>Heading Level 3 (H3)</Heading>
-      <Caption>fontSize: 24px, fontWeight: 700, lineHeight: 1.2</Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4}>Heading Level 4 (H4)</Heading>
-      <Caption>fontSize: 20px, fontWeight: 600, lineHeight: 1.5</Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={5}>Heading Level 5 (H5)</Heading>
-      <Caption>fontSize: 18px, fontWeight: 600, lineHeight: 1.5</Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={6}>Heading Level 6 (H6)</Heading>
-      <Caption>fontSize: 16px, fontWeight: 600, lineHeight: 1.5</Caption>
-    </View>
-  );
-}
-
-/**
- * Body Text Story
- * Demonstrates body text with various content lengths and line heights
- */
-export function BodyText() {
-  return (
-    <View style={styles.container}>
-      <Heading level={2}>Body Text</Heading>
-      
-      <View style={styles.spacer} />
-      
-      <Body>
-        This is standard body text. It uses a base font size of 16px with normal font weight (400) and a line height of 1.5 for optimal readability.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body>
-        Body text can span multiple lines and maintains consistent spacing. It's the primary text style for content, descriptions, and longer form text throughout the application.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body numberOfLines={1}>
-        This body text is limited to a single line and will truncate with an ellipsis if it exceeds the available width.
-      </Body>
-    </View>
-  );
-}
-
-/**
- * Caption Text Story
- * Demonstrates caption text for secondary information and metadata
- */
-export function CaptionText() {
-  return (
-    <View style={styles.container}>
-      <Heading level={2}>Caption Text</Heading>
-      
-      <View style={styles.spacer} />
-      
-      <Caption>
-        This is caption text. It's smaller (14px) and typically used for secondary information, helper text, or metadata.
-      </Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Caption>
-        Captions are often used below images, for form hints, or to provide additional context without drawing focus.
-      </Caption>
-      
-      <View style={styles.spacer} />
-      
-      <Caption numberOfLines={1}>
-        This caption is limited to a single line and will truncate if needed.
-      </Caption>
-    </View>
-  );
-}
-
-/**
- * Label Text Story
- * Demonstrates label text for form fields and UI labels
- */
-export function LabelText() {
-  return (
-    <View style={styles.container}>
-      <Heading level={2}>Label Text</Heading>
-      
-      <View style={styles.spacer} />
-      
-      <Label>Email Address</Label>
-      <View style={styles.inputPlaceholder} />
-      
-      <View style={styles.spacer} />
-      
-      <Label>Password</Label>
-      <View style={styles.inputPlaceholder} />
-      
-      <View style={styles.spacer} />
-      
-      <Label>Confirm Password</Label>
-      <View style={styles.inputPlaceholder} />
-    </View>
-  );
-}
-
-/**
- * Text Colors Story
- * Demonstrates typography with different color variants
- */
-export function TextColors() {
-  return (
-    <View style={styles.container}>
-      <Heading level={2}>Text Colors</Heading>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4} color={colors.text.primary}>
-        Primary Text
-      </Heading>
-      <Body color={colors.text.primary}>
-        This is primary text color, used for main content.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4} color={colors.text.secondary}>
-        Secondary Text
-      </Heading>
-      <Body color={colors.text.secondary}>
-        This is secondary text color, used for less important information.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4} color={colors.text.tertiary}>
-        Tertiary Text
-      </Heading>
-      <Body color={colors.text.tertiary}>
-        This is tertiary text color, used for hints and disabled states.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4} color={colors.success.light}>
-        Success Text
-      </Heading>
-      <Body color={colors.success.light}>
-        This is success text color, used for positive messages.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4} color={colors.error.light}>
-        Error Text
-      </Heading>
-      <Body color={colors.error.light}>
-        This is error text color, used for error messages.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Heading level={4} color={colors.warning.light}>
-        Warning Text
-      </Heading>
-      <Body color={colors.warning.light}>
-        This is warning text color, used for warning messages.
-      </Body>
-    </View>
-  );
-}
-
-/**
- * Font Weights Story
- * Demonstrates different font weights applied to body text
- */
-export function FontWeights() {
-  return (
-    <View style={styles.container}>
-      <Heading level={2}>Font Weights</Heading>
-      
-      <View style={styles.spacer} />
-      
-      <Body style={{ fontWeight: typography.fontWeight.light }}>
-        Light (300) - This text uses a light font weight
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body style={{ fontWeight: typography.fontWeight.normal }}>
-        Normal (400) - This text uses a normal font weight
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body style={{ fontWeight: typography.fontWeight.medium }}>
-        Medium (500) - This text uses a medium font weight
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body style={{ fontWeight: typography.fontWeight.semibold }}>
-        Semibold (600) - This text uses a semibold font weight
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body style={{ fontWeight: typography.fontWeight.bold }}>
-        Bold (700) - This text uses a bold font weight
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Body style={{ fontWeight: typography.fontWeight.extrabold }}>
-        Extrabold (800) - This text uses an extrabold font weight
-      </Body>
-    </View>
-  );
-}
-
-/**
- * Accessibility Story
- * Demonstrates accessibility features like labels and roles
- */
-export function Accessibility() {
-  return (
-    <View style={styles.container}>
-      <Heading level={2}>Accessibility Features</Heading>
-      
-      <View style={styles.spacer} />
-      
-      <Heading
-        level={3}
-        accessibilityLabel="Main page heading"
-        testID="main-heading"
-      >
-        Accessible Heading
-      </Heading>
-      <Body accessibilityLabel="Description of the page content">
-        This heading has an accessibility label and test ID for better testing and screen reader support.
-      </Body>
-      
-      <View style={styles.spacer} />
-      
-      <Label accessibilityLabel="Email input label">
-        Email Address
-      </Label>
-      <View style={styles.inputPlaceholder} />
-      
-      <View style={styles.spacer} />
-      
-      <Caption accessibilityLabel="Helper text for email field">
-        We'll never share your email with anyone else.
-      </Caption>
-    </View>
-  );
-}
-
-/**
- * Real-world Usage Story
- * Demonstrates typography in a realistic UI context
- */
-export function RealWorldUsage() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <Heading level={2}>Welcome Back!</Heading>
-        
-        <View style={styles.spacer} />
-        
-        <Body>
-          Sign in to your account to continue exploring and tracking your favorite beverages.
-        </Body>
-        
-        <View style={styles.spacer} />
-        
-        <Label>Email Address</Label>
-        <View style={styles.inputPlaceholder} />
-        
-        <View style={styles.spacer} />
-        
-        <Label>Password</Label>
-        <View style={styles.inputPlaceholder} />
-        
-        <View style={styles.spacer} />
-        
-        <View style={styles.buttonPlaceholder} />
-        
-        <View style={styles.spacer} />
-        
-        <Caption>
-          Don't have an account? Sign up here.
-        </Caption>
+  decorators: [
+    (Story) => (
+      <View style={styles.container}>
+        <Story />
       </View>
-    </View>
-  );
-}
+    ),
+  ],
+  parameters: {
+    layout: 'fullscreen',
+  },
+} satisfies Meta;
 
-/**
- * Styles for stories
- */
+export default meta;
+
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: spacing[4],
     backgroundColor: colors.background.primary,
   },
-  spacer: {
-    height: spacing[4],
+  section: {
+    marginBottom: spacing[6],
   },
-  card: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: 8,
-    padding: spacing[4],
-    borderWidth: 1,
-    borderColor: colors.border.light,
-  },
-  inputPlaceholder: {
-    height: 40,
-    backgroundColor: colors.background.tertiary,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-    marginTop: spacing[2],
-  },
-  buttonPlaceholder: {
-    height: 44,
-    backgroundColor: colors.primary.light,
-    borderRadius: 4,
-    marginTop: spacing[2],
+  sectionTitle: {
+    marginBottom: spacing[3],
+    fontWeight: '600',
   },
 });
+
+// Heading Stories
+export const Heading1: StoryObj = {
+  render: () => <Heading level={1}>Heading Level 1</Heading>,
+};
+
+export const Heading2: StoryObj = {
+  render: () => <Heading level={2}>Heading Level 2</Heading>,
+};
+
+export const Heading3: StoryObj = {
+  render: () => <Heading level={3}>Heading Level 3</Heading>,
+};
+
+export const Heading4: StoryObj = {
+  render: () => <Heading level={4}>Heading Level 4</Heading>,
+};
+
+export const Heading5: StoryObj = {
+  render: () => <Heading level={5}>Heading Level 5</Heading>,
+};
+
+export const Heading6: StoryObj = {
+  render: () => <Heading level={6}>Heading Level 6</Heading>,
+};
+
+// Body Stories
+export const BodyDefault: StoryObj = {
+  render: () => <Body>This is default body text. It's used for regular content and descriptions.</Body>,
+};
+
+export const BodyLarge: StoryObj = {
+  render: () => <Body size="lg">This is large body text. Use it for emphasis or important content.</Body>,
+};
+
+export const BodySmall: StoryObj = {
+  render: () => <Body size="sm">This is small body text. Use it for secondary information.</Body>,
+};
+
+// Caption Stories
+export const CaptionDefault: StoryObj = {
+  render: () => <Caption>This is caption text. Use it for helper text and metadata.</Caption>,
+};
+
+// Label Stories
+export const LabelDefault: StoryObj = {
+  render: () => <Label>Form Label</Label>,
+};
+
+export const LabelRequired: StoryObj = {
+  render: () => <Label required>Required Field Label</Label>,
+};
+
+// All Typography Components
+export const AllTypography: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <Body style={styles.sectionTitle}>Headings</Body>
+        <Heading level={1}>Heading 1</Heading>
+        <Heading level={2}>Heading 2</Heading>
+        <Heading level={3}>Heading 3</Heading>
+        <Heading level={4}>Heading 4</Heading>
+        <Heading level={5}>Heading 5</Heading>
+        <Heading level={6}>Heading 6</Heading>
+      </View>
+
+      <View style={styles.section}>
+        <Body style={styles.sectionTitle}>Body Text</Body>
+        <Body>Default body text</Body>
+        <Body size="lg">Large body text</Body>
+        <Body size="sm">Small body text</Body>
+      </View>
+
+      <View style={styles.section}>
+        <Body style={styles.sectionTitle}>Captions</Body>
+        <Caption>Caption text for helper information</Caption>
+      </View>
+
+      <View style={styles.section}>
+        <Body style={styles.sectionTitle}>Labels</Body>
+        <Label>Form Label</Label>
+        <Label required>Required Label</Label>
+      </View>
+    </View>
+  ),
+};
+
+// Typography System Showcase
+export const TypographySystem: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <Heading level={1}>Typography System</Heading>
+      <Body style={{ marginTop: spacing[4], marginBottom: spacing[3] }}>
+        Complete typography system for the design system
+      </Body>
+
+      <View style={styles.section}>
+        <Heading level={3}>Heading Hierarchy</Heading>
+        <Heading level={1}>H1 - Main Title</Heading>
+        <Heading level={2}>H2 - Section Title</Heading>
+        <Heading level={3}>H3 - Subsection Title</Heading>
+        <Heading level={4}>H4 - Minor Heading</Heading>
+        <Heading level={5}>H5 - Small Heading</Heading>
+        <Heading level={6}>H6 - Smallest Heading</Heading>
+      </View>
+
+      <View style={styles.section}>
+        <Heading level={3}>Body Text Variants</Heading>
+        <Body>Default body text for regular content</Body>
+        <Body size="lg">Large body text for emphasis</Body>
+        <Body size="sm">Small body text for secondary info</Body>
+      </View>
+
+      <View style={styles.section}>
+        <Heading level={3}>Form Elements</Heading>
+        <Label>Standard Label</Label>
+        <Label required>Required Field Label</Label>
+        <Caption>Helper text below form fields</Caption>
+      </View>
+    </View>
+  ),
+};

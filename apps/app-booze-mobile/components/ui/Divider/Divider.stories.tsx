@@ -1,350 +1,253 @@
-/**
- * Divider Component Stories
- * 
- * Storybook stories for the Divider component demonstrating
- * all variants, orientations, and customization options.
- * 
- * @module components/ui/Divider/Divider.stories
- */
-
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import type { Meta, StoryObj } from '@storybook/react-native';
+import { View, StyleSheet } from 'react-native';
 import { Divider } from './Divider';
-import { colors, spacing } from '../../constants/designTokens';
+import { Body, Heading } from '../Typography';
+import { spacing, colors } from '../../../constants/designTokens';
 
-/**
- * Divider component stories for Storybook
- */
-export default {
-  title: 'Components/Divider',
+const meta = {
+  title: 'Divider',
   component: Divider,
-  argTypes: {
-    orientation: {
-      control: { type: 'select', options: ['horizontal', 'vertical'] },
-      description: 'Orientation of the divider',
-      defaultValue: 'horizontal',
-    },
-    color: {
-      control: { type: 'color' },
-      description: 'Color of the divider',
-      defaultValue: colors.border.light,
-    },
-    thickness: {
-      control: { type: 'number', min: 1, max: 10, step: 1 },
-      description: 'Thickness of the divider in pixels',
-      defaultValue: 1,
-    },
-    margin: {
-      control: { type: 'number', min: 0, max: 40, step: 4 },
-      description: 'Margin around the divider',
-      defaultValue: spacing[4],
-    },
+  decorators: [
+    (Story) => (
+      <View style={styles.container}>
+        <Story />
+      </View>
+    ),
+  ],
+  parameters: {
+    layout: 'fullscreen',
   },
-};
+} satisfies Meta;
 
-/**
- * Default horizontal divider story
- */
-export const Horizontal = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Above</Text>
-      </View>
-      <Divider orientation="horizontal" />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Vertical divider story
- */
-export const Vertical = {
-  render: () => (
-    <View style={styles.verticalContainer}>
-      <View style={styles.verticalContent}>
-        <Text style={styles.label}>Left</Text>
-      </View>
-      <Divider orientation="vertical" />
-      <View style={styles.verticalContent}>
-        <Text style={styles.label}>Right</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider with custom color story
- */
-export const CustomColor = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Primary Color Divider</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.primary.light}
-        thickness={2}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider with custom thickness story
- */
-export const CustomThickness = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Thin Divider (1px)</Text>
-      </View>
-      <Divider orientation="horizontal" thickness={1} />
-      <View style={styles.content}>
-        <Text style={styles.label}>Medium Divider (2px)</Text>
-      </View>
-      <Divider orientation="horizontal" thickness={2} />
-      <View style={styles.content}>
-        <Text style={styles.label}>Thick Divider (4px)</Text>
-      </View>
-      <Divider orientation="horizontal" thickness={4} />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider with custom margin story
- */
-export const CustomMargin = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Small Margin (8px)</Text>
-      </View>
-      <Divider orientation="horizontal" margin={spacing[2]} />
-      <View style={styles.content}>
-        <Text style={styles.label}>Medium Margin (16px)</Text>
-      </View>
-      <Divider orientation="horizontal" margin={spacing[4]} />
-      <View style={styles.content}>
-        <Text style={styles.label}>Large Margin (32px)</Text>
-      </View>
-      <Divider orientation="horizontal" margin={spacing[8]} />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider with semantic colors story
- */
-export const SemanticColors = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Success Color</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.success.light}
-        thickness={2}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Error Color</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.error.light}
-        thickness={2}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Warning Color</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.warning.light}
-        thickness={2}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Info Color</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.info.light}
-        thickness={2}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider with neutral colors story
- */
-export const NeutralColors = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Light Border</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.border.light}
-        thickness={1}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Medium Border</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.border.medium}
-        thickness={1}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Dark Border</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.border.dark}
-        thickness={1}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider in a list-like layout story
- */
-export const InList = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.listItem}>
-        <Text style={styles.label}>Item 1</Text>
-      </View>
-      <Divider orientation="horizontal" margin={0} />
-      <View style={styles.listItem}>
-        <Text style={styles.label}>Item 2</Text>
-      </View>
-      <Divider orientation="horizontal" margin={0} />
-      <View style={styles.listItem}>
-        <Text style={styles.label}>Item 3</Text>
-      </View>
-      <Divider orientation="horizontal" margin={0} />
-      <View style={styles.listItem}>
-        <Text style={styles.label}>Item 4</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider with custom styling story
- */
-export const CustomStyling = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Custom Styled Divider</Text>
-      </View>
-      <Divider
-        orientation="horizontal"
-        color={colors.primary.light}
-        thickness={2}
-        style={styles.customDivider}
-      />
-      <View style={styles.content}>
-        <Text style={styles.label}>Content Below</Text>
-      </View>
-    </View>
-  ),
-};
-
-/**
- * Divider responsive layout story
- */
-export const ResponsiveLayout = {
-  render: () => (
-    <View style={styles.container}>
-      <View style={styles.responsiveRow}>
-        <View style={styles.responsiveColumn}>
-          <Text style={styles.label}>Column 1</Text>
-        </View>
-        <Divider orientation="vertical" margin={spacing[4]} />
-        <View style={styles.responsiveColumn}>
-          <Text style={styles.label}>Column 2</Text>
-        </View>
-      </View>
-      <Divider orientation="horizontal" margin={spacing[4]} />
-      <View style={styles.responsiveRow}>
-        <View style={styles.responsiveColumn}>
-          <Text style={styles.label}>Column 3</Text>
-        </View>
-        <Divider orientation="vertical" margin={spacing[4]} />
-        <View style={styles.responsiveColumn}>
-          <Text style={styles.label}>Column 4</Text>
-        </View>
-      </View>
-    </View>
-  ),
-};
+export default meta;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: spacing[4],
     backgroundColor: colors.background.primary,
+  },
+  section: {
+    marginBottom: spacing[6],
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: spacing[3],
+    color: colors.text.primary,
   },
   content: {
-    paddingVertical: spacing[4],
-    paddingHorizontal: spacing[3],
+    padding: spacing[3],
+    backgroundColor: colors.background.secondary,
+    borderRadius: 8,
   },
-  label: {
-    color: colors.text.primary,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  verticalContainer: {
-    flexDirection: 'row',
-    height: 200,
-    padding: spacing[4],
-    backgroundColor: colors.background.primary,
-  },
-  verticalContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: spacing[3],
-  },
-  listItem: {
-    paddingVertical: spacing[3],
-    paddingHorizontal: spacing[4],
-  },
-  customDivider: {
-    opacity: 0.7,
-  },
-  responsiveRow: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  responsiveColumn: {
-    flex: 1,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[4],
+    gap: spacing[3],
   },
 });
+
+// Horizontal Divider
+export const HorizontalDivider: StoryObj = {
+  render: () => (
+    <View style={styles.section}>
+      <Body style={{ marginBottom: spacing[3] }}>Content above</Body>
+      <Divider orientation="horizontal" />
+      <Body style={{ marginTop: spacing[3] }}>Content below</Body>
+    </View>
+  ),
+};
+
+// Vertical Divider
+export const VerticalDivider: StoryObj = {
+  render: () => (
+    <View style={styles.row}>
+      <Body>Left content</Body>
+      <Divider orientation="vertical" style={{ height: 40 }} />
+      <Body>Right content</Body>
+    </View>
+  ),
+};
+
+// Horizontal with Spacing
+export const HorizontalWithSpacing: StoryObj = {
+  render: () => (
+    <View style={styles.section}>
+      <Body style={{ marginBottom: spacing[4] }}>Content with spacing</Body>
+      <Divider orientation="horizontal" spacing="lg" />
+      <Body style={{ marginTop: spacing[4] }}>More content below</Body>
+    </View>
+  ),
+};
+
+// Vertical with Spacing
+export const VerticalWithSpacing: StoryObj = {
+  render: () => (
+    <View style={styles.row}>
+      <Body>Left</Body>
+      <Divider orientation="vertical" style={{ height: 60 }} spacing="md" />
+      <Body>Right</Body>
+    </View>
+  ),
+};
+
+// Divider Separating Content
+export const DividerSeparatingContent: StoryObj = {
+  render: () => (
+    <View style={styles.section}>
+      <View style={styles.content}>
+        <Heading level={4}>Section 1</Heading>
+        <Body style={{ marginTop: spacing[2] }}>First section content</Body>
+      </View>
+      <Divider orientation="horizontal" spacing="md" />
+      <View style={styles.content}>
+        <Heading level={4}>Section 2</Heading>
+        <Body style={{ marginTop: spacing[2] }}>Second section content</Body>
+      </View>
+    </View>
+  ),
+};
+
+// Multiple Horizontal Dividers
+export const MultipleHorizontalDividers: StoryObj = {
+  render: () => (
+    <View style={styles.section}>
+      <View style={styles.content}>
+        <Body>Item 1</Body>
+      </View>
+      <Divider orientation="horizontal" spacing="sm" />
+      <View style={styles.content}>
+        <Body>Item 2</Body>
+      </View>
+      <Divider orientation="horizontal" spacing="sm" />
+      <View style={styles.content}>
+        <Body>Item 3</Body>
+      </View>
+    </View>
+  ),
+};
+
+// Vertical Dividers in Row
+export const VerticalDividersInRow: StoryObj = {
+  render: () => (
+    <View style={styles.row}>
+      <View style={{ flex: 1 }}>
+        <Body>Column 1</Body>
+      </View>
+      <Divider orientation="vertical" style={{ height: 80 }} />
+      <View style={{ flex: 1 }}>
+        <Body>Column 2</Body>
+      </View>
+      <Divider orientation="vertical" style={{ height: 80 }} />
+      <View style={{ flex: 1 }}>
+        <Body>Column 3</Body>
+      </View>
+    </View>
+  ),
+};
+
+// Different Spacing Values
+export const DifferentSpacingValues: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Spacing Variations</View>
+        
+        <Body style={{ marginBottom: spacing[2] }}>Small spacing</Body>
+        <Divider orientation="horizontal" spacing="sm" />
+        <Body style={{ marginTop: spacing[2], marginBottom: spacing[3] }}>Content</Body>
+
+        <Body style={{ marginBottom: spacing[2] }}>Medium spacing</Body>
+        <Divider orientation="horizontal" spacing="md" />
+        <Body style={{ marginTop: spacing[2], marginBottom: spacing[3] }}>Content</Body>
+
+        <Body style={{ marginBottom: spacing[2] }}>Large spacing</Body>
+        <Divider orientation="horizontal" spacing="lg" />
+        <Body style={{ marginTop: spacing[2] }}>Content</Body>
+      </View>
+    </View>
+  ),
+};
+
+// All Divider Types
+export const AllDividerTypes: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Horizontal Dividers</View>
+        
+        <Body style={{ marginBottom: spacing[2] }}>Default</Body>
+        <Divider orientation="horizontal" />
+        <Body style={{ marginTop: spacing[3], marginBottom: spacing[3] }}>Content</Body>
+
+        <Body style={{ marginBottom: spacing[2] }}>Small spacing</Body>
+        <Divider orientation="horizontal" spacing="sm" />
+        <Body style={{ marginTop: spacing[3], marginBottom: spacing[3] }}>Content</Body>
+
+        <Body style={{ marginBottom: spacing[2] }}>Large spacing</Body>
+        <Divider orientation="horizontal" spacing="lg" />
+        <Body style={{ marginTop: spacing[3] }}>Content</Body>
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Vertical Dividers</View>
+        <View style={styles.row}>
+          <Body>Left</Body>
+          <Divider orientation="vertical" style={{ height: 60 }} />
+          <Body>Right</Body>
+        </View>
+      </View>
+    </View>
+  ),
+};
+
+// List Separator Pattern
+export const ListSeparatorPattern: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>List Items</View>
+        
+        {[1, 2, 3, 4].map((item, index) => (
+          <View key={item}>
+            <View style={styles.content}>
+              <Heading level={5}>Item {item}</Heading>
+              <Body style={{ marginTop: spacing[1] }}>Description for item {item}</Body>
+            </View>
+            {index < 3 && <Divider orientation="horizontal" spacing="sm" />}
+          </View>
+        ))}
+      </View>
+    </View>
+  ),
+};
+
+// Form Section Divider
+export const FormSectionDivider: StoryObj = {
+  render: () => (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <View style={styles.sectionTitle as any}>Form Sections</View>
+        
+        <View>
+          <Heading level={4}>Personal Information</Heading>
+          <Body style={{ marginTop: spacing[2] }}>Name, email, phone</Body>
+        </View>
+        <Divider orientation="horizontal" spacing="md" />
+
+        <View>
+          <Heading level={4}>Address Information</Heading>
+          <Body style={{ marginTop: spacing[2] }}>Street, city, state, zip</Body>
+        </View>
+        <Divider orientation="horizontal" spacing="md" />
+
+        <View>
+          <Heading level={4}>Additional Details</Heading>
+          <Body style={{ marginTop: spacing[2] }}>Notes and preferences</Body>
+        </View>
+      </View>
+    </View>
+  ),
+};
