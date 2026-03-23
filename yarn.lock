@@ -1248,6 +1248,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@booze/cl-form-rn@workspace:*, @booze/cl-form-rn@workspace:packages/client/cl-form-rn":
+  version: 0.0.0-use.local
+  resolution: "@booze/cl-form-rn@workspace:packages/client/cl-form-rn"
+  dependencies:
+    "@booze/dv-prettier-lint": "workspace:*"
+  peerDependencies:
+    react: ">=18.0.0"
+    react-native: ">=0.76.0"
+  languageName: unknown
+  linkType: soft
+
 "@booze/cl-http-priority-queue-client@workspace:*, @booze/cl-http-priority-queue-client@workspace:packages/client/cl-http-priority-queue-client":
   version: 0.0.0-use.local
   resolution: "@booze/cl-http-priority-queue-client@workspace:packages/client/cl-http-priority-queue-client"
@@ -1412,6 +1423,20 @@ __metadata:
 "@booze/iso-js@workspace:packages/iso/iso-js":
   version: 0.0.0-use.local
   resolution: "@booze/iso-js@workspace:packages/iso/iso-js"
+  languageName: unknown
+  linkType: soft
+
+"@booze/mb-form-expo@workspace:*, @booze/mb-form-expo@workspace:packages/mobile/mb-form-expo":
+  version: 0.0.0-use.local
+  resolution: "@booze/mb-form-expo@workspace:packages/mobile/mb-form-expo"
+  dependencies:
+    "@booze/cl-form-rn": "workspace:*"
+    "@booze/dv-prettier-lint": "workspace:*"
+  peerDependencies:
+    "@expo/vector-icons": ">=14.0.0"
+    expo: ">=52.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.76.0"
   languageName: unknown
   linkType: soft
 
@@ -4394,6 +4419,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.24.0"
     "@booze/dv-prettier-lint": "workspace:*"
+    "@booze/mb-form-expo": "workspace:*"
     "@eslint/eslintrc": "npm:^3.3.3"
     "@eslint/js": "npm:^10.0.1"
     "@expo/vector-icons": "npm:^15.0.3"
@@ -4408,6 +4434,7 @@ __metadata:
     eslint-config-prettier: "npm:^10.1.8"
     eslint-import-resolver-alias: "npm:^1.1.2"
     expo: "npm:~54.0.33"
+    expo-camera: "npm:~17.0.10"
     expo-constants: "npm:~18.0.13"
     expo-font: "npm:~14.0.11"
     expo-haptics: "npm:~15.0.8"
@@ -6882,6 +6909,23 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/303b7e08126edbddd3235a6803ffa6ff98b1cc0fb7bfa019d1ad891560bbbe9a9b84db7275ced33011330a8f4f225175d3780f4771a925d8e1c3782a343b9796
+  languageName: node
+  linkType: hard
+
+"expo-camera@npm:~17.0.10":
+  version: 17.0.10
+  resolution: "expo-camera@npm:17.0.10"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+    react-native-web: "*"
+  peerDependenciesMeta:
+    react-native-web:
+      optional: true
+  checksum: 10c0/7b43443f5a158845e7a5333f0bd5ddbf05315df9e5fc1ded1bed620d0b82a373147cf0f1b9a73d53a517b9ecf7e5588c15032c503c0eb57484aab8aa70e96127
   languageName: node
   linkType: hard
 
@@ -12038,39 +12082,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.2, semver@npm:^7.3.5, semver@npm:^7.5.4":
+"semver@npm:7.7.2":
   version: 7.7.2
   resolution: "semver@npm:7.7.2"
   bin:
     semver: bin/semver.js
   checksum: 10c0/aca305edfbf2383c22571cb7714f48cadc7ac95371b4b52362fb8eeffdfbc0de0669368b82b2b15978f8848f01d7114da65697e56cd8c37b0dab8c58e543f9ea
-  languageName: node
-  linkType: hard
-
-"semver@npm:^6.0.0, semver@npm:^6.3.0, semver@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "semver@npm:6.3.1"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/e3d79b609071caa78bcb6ce2ad81c7966a46a7431d9d58b8800cfa9cb6a63699b3899a0e4bcce36167a284578212d9ae6942b6929ba4aa5015c079a67751d42d
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.1.3, semver@npm:^7.6.0, semver@npm:^7.7.1, semver@npm:^7.7.3":
-  version: 7.7.4
-  resolution: "semver@npm:7.7.4"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/5215ad0234e2845d4ea5bb9d836d42b03499546ddafb12075566899fc617f68794bb6f146076b6881d755de17d6c6cc73372555879ec7dce2c2feee947866ad2
-  languageName: node
-  linkType: hard
-
-"semver@npm:~7.6.3":
-  version: 7.6.3
-  resolution: "semver@npm:7.6.3"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
   languageName: node
   linkType: hard
 

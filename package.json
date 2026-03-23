@@ -22,5 +22,8 @@
     "start:mobile": "lsof -ti:8081 | xargs kill -9 2>/dev/null; sleep 1 && yarn workspace app-booze-mobile run start",
     "start:mobile:ios": "lsof -ti:8081 | xargs kill -9 2>/dev/null; sleep 1 && yarn workspace app-booze-mobile run ios"
   },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.9.2",
+  "resolutions": {
+    "semver": "7.7.2"
+  }
 }
