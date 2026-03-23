@@ -1,0 +1,32 @@
+{
+  "name": "@booze/mb-form-expo",
+  "version": "1.0.0",
+  "description": "Expo / Material Icons extensions for @booze/cl-form-rn (Booze mobile)",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "prettier-lint": "dv-prettier-lint-runner"
+  },
+  "keywords": [
+    "expo",
+    "react-native",
+    "form",
+    "mobile"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@booze/cl-form-rn": "workspace:*"
+  },
+  "peerDependencies": {
+    "@expo/vector-icons": ">=14.0.0",
+    "expo": ">=52.0.0",
+    "react": ">=18.0.0",
+    "react-native": ">=0.76.0"
+  },
+  "devDependencies": {
+    "@booze/dv-prettier-lint": "workspace:*"
+  }
+}

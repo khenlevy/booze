@@ -8,6 +8,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { colors, typography } from '@/constants/parcus-theme';
+import {
+  ratingToSentiment,
+  sentimentLabel,
+} from '@/utils/buildDrinkLogPayload';
 
 /**
  * DrinkHistoryListItem Component
@@ -102,11 +106,45 @@ const DrinkHistoryListItem = ({
           <Text style={styles.date}>{formatDate(drinkLog.consumedAt)}</Text>
         </View>
 
-        {/* Rating */}
-        <View style={styles.ratingContainer}>
-          <View style={styles.stars}>{renderStars(drinkLog.rating)}</View>
-          <Text style={styles.ratingText}>{drinkLog.rating}/5</Text>
-        </View>
+        {/* Purchase vs taste */}
+        {drinkLog.entryType === 'purchase' || drinkLog.rating == null ? (
+          <View style={styles.badgeRow}>
+            <View
+              style={[
+                styles.badge,
+                drinkLog.entryType === 'purchase'
+                  ? styles.badgePurchase
+                  : styles.badgeTaste,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.badgeText,
+                  drinkLog.entryType === 'purchase'
+                    ? styles.badgeTextLight
+                    : styles.badgeTextDark,
+                ]}
+              >
+                {drinkLog.entryType === 'purchase'
+                  ? 'Purchase'
+                  : 'Collection'}
+              </Text>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.ratingContainer}>
+            {ratingToSentiment(drinkLog.rating) ? (
+              <Text style={styles.sentimentText}>
+                {sentimentLabel(ratingToSentiment(drinkLog.rating))}
+              </Text>
+            ) : (
+              <>
+                <View style={styles.stars}>{renderStars(drinkLog.rating)}</View>
+                <Text style={styles.ratingText}>{drinkLog.rating}/5</Text>
+              </>
+            )}
+          </View>
+        )}
 
         {/* Quantity and ABV */}
         <View style={styles.detailsRow}>
@@ -200,6 +238,37 @@ const styles = StyleSheet.create({
   date: {
     ...typography.body2,
     color: colors.text.secondary,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  badge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  badgePurchase: {
+    backgroundColor: colors.text.primary,
+  },
+  badgeTaste: {
+    backgroundColor: colors.brand.background,
+  },
+  badgeText: {
+    ...typography.caption,
+    fontWeight: '700',
+  },
+  badgeTextLight: {
+    color: colors.text.inverse,
+  },
+  badgeTextDark: {
+    color: colors.brand.primary,
+  },
+  sentimentText: {
+    ...typography.body1,
+    fontWeight: '700',
+    color: colors.brand.primary,
   },
   ratingContainer: {
     flexDirection: 'row',

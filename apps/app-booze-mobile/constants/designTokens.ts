@@ -45,77 +45,73 @@
  * // Neutral grayscale
  * const borderColor = colors.neutral[300]; // '#D1D5DB'
  */
+/**
+ * Aligned with app brand (parcus-theme / Booze UI).
+ * Use these from `components/ui/*` and Storybook so kits match production screens.
+ */
 export const colors = {
-  // Primary brand colors
   primary: {
-    light: '#6366F1', // Indigo
-    dark: '#818CF8',
+    light: '#5572C3',
+    dark: '#6B83CE',
   },
-  
-  // Secondary brand colors
+
   secondary: {
-    light: '#EC4899', // Pink
-    dark: '#F472B6',
+    light: '#7C6BA8',
+    dark: '#9285B8',
   },
-  
-  // Semantic colors
+
   success: {
-    light: '#10B981', // Emerald
-    dark: '#34D399',
+    light: '#4CAF50',
+    dark: '#66BB6A',
   },
-  
+
   error: {
-    light: '#EF4444', // Red
-    dark: '#F87171',
+    light: '#F44336',
+    dark: '#EF5350',
   },
-  
+
   warning: {
-    light: '#F59E0B', // Amber
-    dark: '#FBBF24',
+    light: '#FFC107',
+    dark: '#FFD54F',
   },
-  
+
   info: {
-    light: '#3B82F6', // Blue
-    dark: '#60A5FA',
+    light: '#2196F3',
+    dark: '#42A5F5',
   },
-  
-  // Neutral colors (grayscale)
+
   neutral: {
-    50: '#F9FAFB',
-    100: '#F3F4F6',
-    200: '#E5E7EB',
-    300: '#D1D5DB',
-    400: '#9CA3AF',
-    500: '#6B7280',
-    600: '#4B5563',
-    700: '#374151',
-    800: '#1F2937',
-    900: '#111827',
+    50: '#FAF8FF',
+    100: '#F5F3FA',
+    200: '#E8E6ED',
+    300: '#D1CFD9',
+    400: '#9E9E9E',
+    500: '#757575',
+    600: '#616161',
+    700: '#424242',
+    800: '#32303A',
+    900: '#1A1820',
   },
-  
-  // Transparent variants
+
   transparent: 'transparent',
-  
-  // Text colors
+
   text: {
-    primary: '#111827',
-    secondary: '#6B7280',
-    tertiary: '#9CA3AF',
+    primary: '#32253C',
+    secondary: '#666666',
+    tertiary: '#999999',
     inverse: '#FFFFFF',
   },
-  
-  // Background colors
+
   background: {
-    primary: '#FFFFFF',
-    secondary: '#F9FAFB',
-    tertiary: '#F3F4F6',
+    primary: '#F9F6FF',
+    secondary: '#FFFFFF',
+    tertiary: '#F0F0F0',
   },
-  
-  // Border colors
+
   border: {
-    light: '#E5E7EB',
-    medium: '#D1D5DB',
-    dark: '#9CA3AF',
+    light: '#F0F0F0',
+    medium: '#E0E0E0',
+    dark: '#CCCCCC',
   },
 };
 

@@ -1,0 +1,26 @@
+{
+  "name": "@booze/cl-form-rn",
+  "version": "1.0.0",
+  "description": "React Native form primitives (no Expo) — theme via context",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "prettier-lint": "dv-prettier-lint-runner"
+  },
+  "keywords": [
+    "react-native",
+    "form",
+    "client"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.76.0"
+  },
+  "devDependencies": {
+    "@booze/dv-prettier-lint": "workspace:*"
+  }
+}

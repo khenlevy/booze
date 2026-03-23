@@ -30,6 +30,29 @@ const drinkLogSchema = new mongoose.Schema(
       index: true,
     },
 
+    /** taste_log (default) | purchase (in-store buy, no sentiment) */
+    entryType: {
+      type: String,
+      enum: ['taste_log', 'purchase'],
+      default: 'taste_log',
+      index: true,
+    },
+
+    /** Mock / app catalog slug (e.g. wine-cab-001); not Mongo Drink _id */
+    catalogDrinkId: {
+      type: String,
+      default: null,
+      trim: true,
+      index: true,
+    },
+
+    /** Raw barcode from camera scan */
+    scanUpc: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
     // When the drink was consumed
     consumedAt: {
       type: Date,
@@ -37,10 +60,11 @@ const drinkLogSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Quantity consumed
+    // Quantity consumed (default 1 bottle for simple logs)
     quantity: {
       type: Number,
       required: true,
+      default: 1,
       min: 0.1,
       validate: {
         validator: function (v) {
@@ -57,18 +81,25 @@ const drinkLogSchema = new mongoose.Schema(
       enum: ['ml', 'oz', 'l', 'shot', 'glass', 'pint', 'bottle'],
     },
 
-    // User's rating of the drink (1-5 stars)
+    // User's rating (1-5); null for purchase-only rows
     rating: {
       type: Number,
-      required: true,
+      default: null,
       min: 1,
       max: 5,
       index: true,
       validate: {
         validator: function (v) {
-          return Number.isInteger(v) && v >= 1 && v <= 5;
+          const type = this.entryType || 'taste_log';
+          if (type === 'purchase') {
+            return v == null;
+          }
+          return (
+            v != null && Number.isInteger(v) && v >= 1 && v <= 5
+          );
         },
-        message: 'Rating must be an integer between 1 and 5',
+        message:
+          'taste_log requires integer rating 1-5; purchase must omit rating',
       },
     },
 
@@ -149,6 +180,16 @@ drinkLogSchema.index({ userId: 1, rating: -1 });
 drinkLogSchema.index({ userId: 1, isArchived: 1 });
 drinkLogSchema.index({ userId: 1, tasteTags: 1 });
 drinkLogSchema.index({ drinkName: 1, rating: -1 });
+drinkLogSchema.index({ userId: 1, entryType: 1 });
+
+/** Logs that contribute to taste/recommendation stats (exclude purchases). */
+function tasteStatsMatch(userId) {
+  return {
+    userId: new mongoose.Types.ObjectId(userId),
+    isArchived: false,
+    rating: { $exists: true, $nin: [null], $gte: 1, $lte: 5 },
+  };
+}
 
 /**
  * Get average rating for a user
@@ -159,10 +200,7 @@ drinkLogSchema.statics.getAverageRating = async function (userId) {
   try {
     const result = await this.aggregate([
       {
-        $match: {
-          userId: new mongoose.Types.ObjectId(userId),
-          isArchived: false,
-        },
+        $match: tasteStatsMatch(userId),
       },
       {
         $group: {
@@ -189,10 +227,7 @@ drinkLogSchema.statics.getTopRatedDrinks = async function (userId, limit = 10) {
   try {
     return await this.aggregate([
       {
-        $match: {
-          userId: new mongoose.Types.ObjectId(userId),
-          isArchived: false,
-        },
+        $match: tasteStatsMatch(userId),
       },
       {
         $group: {
@@ -252,7 +287,7 @@ drinkLogSchema.statics.getSimilarHighRatedDrinks = async function (
     const match = {
       userId: new mongoose.Types.ObjectId(userId),
       isArchived: false,
-      rating: { $gte: minRating },
+      rating: { $exists: true, $nin: [null], $gte: minRating, $lte: 5 },
     };
     if (tasteTags.length > 0) {
       match.tasteTags = { $in: tasteTags };
@@ -276,7 +311,12 @@ drinkLogSchema.statics.getDrinksByRatingRange = async function (
     return await this.find({
       userId: new mongoose.Types.ObjectId(userId),
       isArchived: false,
-      rating: { $gte: minRating, $lte: maxRating },
+      rating: {
+        $exists: true,
+        $nin: [null],
+        $gte: minRating,
+        $lte: maxRating,
+      },
     })
       .sort({ consumedAt: -1 })
       .lean();
@@ -291,16 +331,22 @@ drinkLogSchema.statics.getDrinksByRatingRange = async function (
  */
 drinkLogSchema.statics.getRatingStats = async function (userId) {
   try {
-    const logs = await this.find({
-      userId: new mongoose.Types.ObjectId(userId),
-      isArchived: false,
-    })
+    const logs = await this.find(tasteStatsMatch(userId))
       .select('rating')
       .lean();
 
-    const totalLogs = logs.length;
-    if (totalLogs === 0) {
-      return { totalLogs: 0, averageRating: 0, byRating: {} };
+    const tasteLogs = logs.length;
+    if (tasteLogs === 0) {
+      const allCount = await this.countDocuments({
+        userId: new mongoose.Types.ObjectId(userId),
+        isArchived: false,
+      });
+      return {
+        totalLogs: allCount,
+        tasteLogs: 0,
+        averageRating: 0,
+        byRating: {},
+      };
     }
 
     let sum = 0;
@@ -311,9 +357,15 @@ drinkLogSchema.statics.getRatingStats = async function (userId) {
       byRating[r] = (byRating[r] || 0) + 1;
     }
 
+    const allCount = await this.countDocuments({
+      userId: new mongoose.Types.ObjectId(userId),
+      isArchived: false,
+    });
+
     return {
-      totalLogs,
-      averageRating: sum / totalLogs,
+      totalLogs: allCount,
+      tasteLogs,
+      averageRating: sum / tasteLogs,
       byRating,
     };
   } catch (error) {

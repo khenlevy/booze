@@ -51,6 +51,15 @@ export const createDrinkLog = async (drinkLogData) => {
     return data.data;
   } catch (error) {
     console.error('Error creating drink log:', error);
+    const msg = error?.message || '';
+    if (
+      msg === 'Network request failed' ||
+      (error?.name === 'TypeError' && msg.includes('fetch'))
+    ) {
+      throw new Error(
+        `Cannot reach API (${API_BASE_URL}). Start the booze API, and on a physical device set EXPO_PUBLIC_API_URL to your machine's LAN URL (not localhost).`,
+      );
+    }
     throw error;
   }
 };

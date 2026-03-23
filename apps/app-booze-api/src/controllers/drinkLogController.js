@@ -3,6 +3,12 @@ import { getModel } from '@booze/se-db';
 
 const DrinkLog = getModel('drink_logs');
 
+const SENTIMENT_TO_RATING = {
+  love: 5,
+  ok: 3,
+  dislike: 1,
+};
+
 /**
  * Create a new drink log entry
  * POST /api/v1/drink-logs
@@ -14,9 +20,10 @@ export const createDrinkLog = async (req, res) => {
       drinkId,
       drinkName,
       consumedAt,
-      quantity,
-      quantityUnit = 'ml',
-      rating,
+      quantity: qtyIn,
+      quantityUnit: unitIn,
+      rating: ratingIn,
+      sentiment,
       notes,
       abv,
       tasteTags,
@@ -24,25 +31,31 @@ export const createDrinkLog = async (req, res) => {
       socialContext,
       mood,
       photoUrl,
+      entryType: entryIn,
+      catalogDrinkId,
+      scanUpc,
     } = req.body;
 
-    // Validate required fields
-    if (!userId || !drinkName || !consumedAt || !quantity || !rating) {
+    const entryType = entryIn === 'purchase' ? 'purchase' : 'taste_log';
+    const quantity = qtyIn !== undefined && qtyIn !== null ? qtyIn : 1;
+    const quantityUnit = unitIn || 'bottle';
+
+    let rating = ratingIn;
+    if (entryType === 'taste_log' && sentiment && SENTIMENT_TO_RATING[sentiment] != null) {
+      rating = SENTIMENT_TO_RATING[sentiment];
+    }
+
+    if (entryType === 'purchase') {
+      rating = null;
+    }
+
+    if (entryType === 'taste_log' && (rating == null || !Number.isInteger(rating))) {
       return res.status(400).json({
         error: 'Validation Error',
-        message: 'Missing required fields: userId, drinkName, consumedAt, quantity, rating',
+        message: 'taste_log requires a valid rating or sentiment',
       });
     }
 
-    // Validate rating is between 1-5
-    if (rating < 1 || rating > 5 || !Number.isInteger(rating)) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Rating must be an integer between 1 and 5',
-      });
-    }
-
-    // Validate quantity is positive
     if (quantity <= 0) {
       return res.status(400).json({
         error: 'Validation Error',
@@ -50,7 +63,6 @@ export const createDrinkLog = async (req, res) => {
       });
     }
 
-    // Validate ABV if provided
     if (abv !== undefined && (abv < 0 || abv > 100)) {
       return res.status(400).json({
         error: 'Validation Error',
@@ -58,11 +70,13 @@ export const createDrinkLog = async (req, res) => {
       });
     }
 
-    // Create new drink log
     const drinkLog = new DrinkLog({
       userId,
-      drinkId,
+      drinkId: drinkId || null,
       drinkName,
+      entryType,
+      catalogDrinkId: catalogDrinkId || null,
+      scanUpc: scanUpc || null,
       consumedAt: new Date(consumedAt),
       quantity,
       quantityUnit,
@@ -82,6 +96,7 @@ export const createDrinkLog = async (req, res) => {
     logger.info(`Drink log created for user ${userId}`, {
       drinkLogId: drinkLog._id,
       drinkName,
+      entryType,
       rating,
     });
 
@@ -430,43 +445,47 @@ export const getDrinkLogStats = async (req, res) => {
       });
     }
 
-    // Build query
-    const query = {
+    const baseQuery = {
       userId,
       isArchived: false,
     };
 
-    // Add date range filter if provided
     if (startDate || endDate) {
-      query.consumedAt = {};
+      baseQuery.consumedAt = {};
       if (startDate) {
-        query.consumedAt.$gte = new Date(startDate);
+        baseQuery.consumedAt.$gte = new Date(startDate);
       }
       if (endDate) {
-        query.consumedAt.$lte = new Date(endDate);
+        baseQuery.consumedAt.$lte = new Date(endDate);
       }
     }
 
-    // Get statistics
-    const stats = await DrinkLog.aggregate([
-      { $match: query },
-      {
-        $group: {
-          _id: null,
-          totalLogs: { $sum: 1 },
-          averageRating: { $avg: '$rating' },
-          minRating: { $min: '$rating' },
-          maxRating: { $max: '$rating' },
-          totalQuantity: { $sum: '$quantity' },
-          averageQuantity: { $avg: '$quantity' },
-          averageAbv: { $avg: '$abv' },
+    const tasteQuery = {
+      ...baseQuery,
+      rating: { $exists: true, $nin: [null], $gte: 1, $lte: 5 },
+    };
+
+    const [totalAll, stats] = await Promise.all([
+      DrinkLog.countDocuments(baseQuery),
+      DrinkLog.aggregate([
+        { $match: tasteQuery },
+        {
+          $group: {
+            _id: null,
+            tasteLogs: { $sum: 1 },
+            averageRating: { $avg: '$rating' },
+            minRating: { $min: '$rating' },
+            maxRating: { $max: '$rating' },
+            totalQuantity: { $sum: '$quantity' },
+            averageQuantity: { $avg: '$quantity' },
+            averageAbv: { $avg: '$abv' },
+          },
         },
-      },
+      ]),
     ]);
 
-    // Get top rated drinks
     const topDrinks = await DrinkLog.aggregate([
-      { $match: query },
+      { $match: tasteQuery },
       {
         $group: {
           _id: '$drinkName',
@@ -478,9 +497,8 @@ export const getDrinkLogStats = async (req, res) => {
       { $limit: 10 },
     ]);
 
-    // Get rating distribution
     const ratingDistribution = await DrinkLog.aggregate([
-      { $match: query },
+      { $match: tasteQuery },
       {
         $group: {
           _id: '$rating',
@@ -490,14 +508,16 @@ export const getDrinkLogStats = async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
 
-    const summary = stats.length > 0 ? stats[0] : {
-      totalLogs: 0,
-      averageRating: 0,
-      minRating: 0,
-      maxRating: 0,
-      totalQuantity: 0,
-      averageQuantity: 0,
-      averageAbv: 0,
+    const tasteAgg = stats.length > 0 ? stats[0] : null;
+    const summary = {
+      totalLogs: totalAll,
+      tasteLogs: tasteAgg?.tasteLogs ?? 0,
+      averageRating: tasteAgg?.averageRating ?? 0,
+      minRating: tasteAgg?.minRating ?? 0,
+      maxRating: tasteAgg?.maxRating ?? 0,
+      totalQuantity: tasteAgg?.totalQuantity ?? 0,
+      averageQuantity: tasteAgg?.averageQuantity ?? 0,
+      averageAbv: tasteAgg?.averageAbv ?? 0,
     };
 
     res.json({

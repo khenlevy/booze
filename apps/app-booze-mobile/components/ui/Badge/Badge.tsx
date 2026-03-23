@@ -14,7 +14,12 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { colors, spacing, typography, borderRadius } from '../../constants/designTokens';
+import {
+  colors,
+  spacing,
+  typography,
+  borderRadius,
+} from '@/constants/designTokens';
 
 /**
  * Badge variant types

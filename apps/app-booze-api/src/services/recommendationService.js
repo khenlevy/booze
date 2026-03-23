@@ -201,7 +201,8 @@ export async function getRecommendationStats(userId) {
         averageRating: parseFloat(drink.averageRating.toFixed(2)),
         timesConsumed: drink.count,
       })),
-      recommendationReadiness: ratingStats && ratingStats.totalLogs >= 3,
+      recommendationReadiness:
+        ratingStats && (ratingStats.tasteLogs ?? ratingStats.totalLogs) >= 3,
     };
   } catch (error) {
     logger.error('Error getting recommendation stats:', error);

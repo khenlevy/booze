@@ -7,6 +7,8 @@ export default function TabsLayout() {
       <Stack.Screen name="search" />
       <Stack.Screen name="drink-history" />
       <Stack.Screen name="drink-log" />
+      <Stack.Screen name="scan-log" />
+      <Stack.Screen name="log-sentiment" />
       <Stack.Screen name="account" />
     </Stack>
   );

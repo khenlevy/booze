@@ -15,7 +15,7 @@
 
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, spacing } from '../../constants/designTokens';
+import { colors, spacing } from '@/constants/designTokens';
 
 /**
  * Icon size types

@@ -4,10 +4,12 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { MbFormProvider } from '@booze/mb-form-expo';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
+      <MbFormProvider>
       <AuthProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
@@ -37,6 +39,7 @@ export default function RootLayout() {
         <StatusBar style="dark" />
       </ThemeProvider>
       </AuthProvider>
+      </MbFormProvider>
     </SafeAreaProvider>
   );
 }

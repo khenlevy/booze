@@ -17,7 +17,12 @@
 
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, spacing, borderRadius, shadows } from '../../constants/designTokens';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  shadows,
+} from '@/constants/designTokens';
 
 /**
  * Card variant type

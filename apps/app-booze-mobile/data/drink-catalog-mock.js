@@ -1,84 +1,66 @@
 /**
- * Catalog fallback until Drink model + /api/v1/drinks/search returns data.
- * Shared by DrinkSelector, Search, and drink detail screens.
+ * Flat catalog: 15 mock SKUs per primary shelf (Wine, Whiskey, Beer, Spirits).
+ * Rich shape from catalogDrinkSchema — ready for search, cold-start, and AI/RAG.
  */
 
+import { MOCK_WINES } from './mock-drinks-wine';
+import { MOCK_WHISKEYS } from './mock-drinks-whiskey';
+import { MOCK_BEERS } from './mock-drinks-beer';
+import { MOCK_SPIRITS } from './mock-drinks-spirits';
+
+/** Assign deterministic 13-digit mock UPCs per shelf for barcode scan demos. */
+function attachMockUpcs(items, shelfNum) {
+  const shelf = String(shelfNum).padStart(3, '0');
+  return items.map((d, i) => {
+    const seq = String(i + 1).padStart(4, '0');
+    const upc = (`850${shelf}${seq}00` + '0').slice(0, 13);
+    return {
+      ...d,
+      retailer: {
+        sku: d.retailer?.sku ?? d.id,
+        upc,
+      },
+    };
+  });
+}
+
+/** @type {import('./catalogDrinkSchema').CatalogDrink[]} */
 export const MOCK_DRINKS = [
-  {
-    id: '1',
-    name: 'Heineken Lager',
-    category: 'Beer',
-    abv: 5.0,
-    tasteTags: ['Crisp', 'Bitter'],
-    brand: 'Heineken',
-    desc: 'Classic pale lager with a mild hop character.',
-  },
-  {
-    id: '2',
-    name: 'Guinness Stout',
-    category: 'Beer',
-    abv: 4.2,
-    tasteTags: ['Roasty', 'Smooth', 'Caramel'],
-    brand: 'Guinness',
-    desc: 'Irish dry stout with creamy mouthfeel.',
-  },
-  {
-    id: '3',
-    name: 'Jameson Irish Whiskey',
-    category: 'Whiskey',
-    abv: 40.0,
-    tasteTags: ['Smooth', 'Vanilla', 'Oak'],
-    brand: 'Jameson',
-    desc: 'Triple-distilled Irish whiskey — easy sipper for newcomers.',
-  },
-  {
-    id: '4',
-    name: 'Bacardi Rum',
-    category: 'Rum',
-    abv: 37.5,
-    tasteTags: ['Sweet', 'Citrus'],
-    brand: 'Bacardi',
-    desc: 'Light white rum, great for cocktails.',
-  },
-  {
-    id: '5',
-    name: 'Smirnoff Vodka',
-    category: 'Vodka',
-    abv: 40.0,
-    tasteTags: ['Crisp', 'Neutral'],
-    brand: 'Smirnoff',
-    desc: 'Clean neutral spirit.',
-  },
-  {
-    id: '6',
-    name: 'Cabernet Sauvignon',
-    category: 'Wine',
-    abv: 13.5,
-    tasteTags: ['Dry', 'Oak', 'Blackberry'],
-    brand: 'Various',
-    desc: 'Full-bodied red with tannic structure.',
-  },
-  {
-    id: '7',
-    name: 'Pinot Grigio',
-    category: 'Wine',
-    abv: 12.0,
-    tasteTags: ['Crisp', 'Citrus', 'Dry'],
-    brand: 'Various',
-    desc: 'Light white wine, refreshing and food-friendly.',
-  },
-  {
-    id: '8',
-    name: 'Champagne',
-    category: 'Sparkling',
-    abv: 12.0,
-    tasteTags: ['Crisp', 'Fruity', 'Dry'],
-    brand: 'Various',
-    desc: 'Traditional method sparkling wine.',
-  },
+  ...attachMockUpcs(MOCK_WINES, 101),
+  ...attachMockUpcs(MOCK_WHISKEYS, 102),
+  ...attachMockUpcs(MOCK_BEERS, 103),
+  ...attachMockUpcs(MOCK_SPIRITS, 104),
 ];
 
-const SPIRIT_CATEGORIES = ['Whiskey', 'Rum', 'Vodka', 'Liqueur', 'Spirits'];
+/**
+ * Spirit subtypes when user picks "Spirits" as primary category.
+ * Gin & Tequila included for realistic aisle coverage.
+ */
+export const SPIRIT_CATEGORIES = [
+  'Whiskey',
+  'Rum',
+  'Vodka',
+  'Gin',
+  'Tequila',
+  'Liqueur',
+  'Spirits',
+];
+
+/**
+ * Used by search, cold-start picks, and onboarding.
+ * @param {{ category: string }} drink
+ * @param {string} primaryCategory Wine | Whiskey | Beer | Spirits | Not sure
+ */
+export function drinkMatchesPrimaryCategory(drink, primaryCategory) {
+  if (!primaryCategory || primaryCategory === 'Not sure') return true;
+  if (primaryCategory === 'Spirits') {
+    return SPIRIT_CATEGORIES.includes(drink.category);
+  }
+  if (primaryCategory === 'Wine') {
+    return drink.category === 'Wine' || drink.category === 'Sparkling';
+  }
+  return drink.category === primaryCategory;
+}
 
 /**
  * @param {string} query
@@ -90,21 +72,48 @@ export function searchCatalogDrinks(query, categoryFilter = 'All') {
   if (categoryFilter && categoryFilter !== 'All') {
     if (categoryFilter === 'Spirits') {
       list = list.filter((d) => SPIRIT_CATEGORIES.includes(d.category));
+    } else if (categoryFilter === 'Wine') {
+      list = list.filter(
+        (d) => d.category === 'Wine' || d.category === 'Sparkling',
+      );
     } else {
       list = list.filter((d) => d.category === categoryFilter);
     }
   }
   if (!q) return list;
-  return list.filter(
-    (d) =>
-      d.name.toLowerCase().includes(q) ||
-      d.category.toLowerCase().includes(q) ||
-      (d.brand && d.brand.toLowerCase().includes(q)) ||
-      (d.desc && d.desc.toLowerCase().includes(q)) ||
-      (d.tasteTags || []).some((t) => t.toLowerCase().includes(q)),
-  );
+  return list.filter((d) => {
+    const hay = [
+      d.name,
+      d.brand,
+      d.category,
+      d.subcategory,
+      d.style,
+      d.desc,
+      d.aiSummary,
+      d.aiContext,
+      ...(d.tasteTags || []),
+      ...(d.pairingHints || []),
+      ...(d.occasionTags || []),
+      d.origin?.country,
+      d.origin?.region,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return hay.includes(q);
+  });
 }
 
 export function getCatalogDrinkById(id) {
   return MOCK_DRINKS.find((d) => d.id === String(id)) ?? null;
+}
+
+/** @returns {Record<string, import('./catalogDrinkSchema').CatalogDrink[]>} */
+export function getMockDrinksByShelfCategory() {
+  return {
+    Wine: MOCK_WINES,
+    Whiskey: MOCK_WHISKEYS,
+    Beer: MOCK_BEERS,
+    Spirits: MOCK_SPIRITS,
+  };
 }

@@ -13,8 +13,10 @@ app-booze-mobile/
 │   ├── index.jsx             # Entry / redirect logic
 │   ├── (onboarding)/         # Onboarding flow group
 │   │   ├── _layout.jsx
-│   │   ├── entrance.jsx
-│   │   ├── community-intro.jsx
+│   │   ├── welcome.jsx
+│   │   ├── taste-category.jsx
+│   │   ├── taste-tags.jsx
+│   │   ├── budget-or-occasion.jsx
 │   │   └── ...
 │   ├── (auth)/               # Auth flow group
 │   │   ├── _layout.jsx
@@ -28,23 +30,23 @@ app-booze-mobile/
 │   ├── search-results.jsx     # Standalone screens
 │   └── result-view.jsx
 ├── components/               # App-specific components
-│   ├── parcus/               # Feature/domain components
+│   ├── primitives/           # AppButton, SelectableCard, ChoiceChip (parcus-theme)
+│   ├── onboarding/           # OnboardingChrome shared layout
+│   ├── parcus/               # Tab bar, auth buttons (legacy shell)
 │   │   ├── BottomBar.jsx
-│   │   ├── PrimaryButton.jsx
+│   │   ├── PrimaryButton.jsx → wraps AppButton
 │   │   └── SocialButton.jsx
-│   ├── ui/                   # Generic UI primitives
-│   │   ├── icon-symbol.jsx
-│   │   └── collapsible.jsx
-│   ├── themed-text.jsx
-│   └── themed-view.jsx
+│   ├── ui/                   # Design-system kit + Storybook (designTokens)
+│   │   └── Button/, Card/, Typography/, …
 ├── hooks/                    # Custom hooks
-│   ├── useDebounce.js
-│   ├── use-theme-color.js
-│   └── use-color-scheme.js
+│   └── useDebounce.js
 ├── constants/                # Theme, colors, config
-│   ├── parcus-theme.js       # App theme (colors, typography)
+│   ├── parcus-theme.js       # App brand: colors, typography, spacing, radius, shadows, navigation
+│   ├── designTokens.ts       # Extended tokens (aligned colors; used by components/ui)
 │   └── theme.js              # Base theme (light/dark)
-├── data/                      # Mock data, fixtures (optional)
+├── docs/
+│   └── DESIGN_SYSTEM.md      # When to use primitives vs ui vs parcus-theme
+├── data/                      # Mock data (e.g. drink-catalog-mock.js)
 ├── assets/
 │   ├── icons/                # Icon components (react-native-svg)
 │   │   ├── LiHome.jsx
@@ -138,7 +140,7 @@ router.replace('/(auth)/login');  // Replace (no back)
 
 | Group        | Purpose                    | Screens                          |
 |--------------|----------------------------|----------------------------------|
-| `(onboarding)`| First-time user flow       | entrance, community-intro, etc. |
+| `(onboarding)`| First-time store flow      | welcome, taste questions, budget |
 | `(auth)`     | Login, verify code         | login, verify-code               |
 | `(tabs)`     | Main app (with BottomBar)  | index, search, account           |
 
@@ -228,7 +230,7 @@ Place in `components/` when used only in this app:
 ```
 components/
 ├── parcus/          # Feature components (Parcus domain)
-├── ui/              # Generic UI (icon-symbol, collapsible)
+├── ui/              # Design-system components (designTokens)
 ```
 
 **Pattern:**
@@ -360,24 +362,11 @@ export function useDebounce(value, delay) {
 }
 ```
 
-### Theme Hook
-
-```javascript
-// hooks/use-theme-color.js
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export function useThemeColor(props, colorName) {
-  const theme = useColorScheme() ?? 'light';
-  return props[theme] ?? Colors[theme][colorName];
-}
-```
-
 ### When to Create a Hook
 
 - Reusable state logic
 - Debounce, throttle, form state
-- Theme/color scheme
+- Theme: prefer `react-native`’s `useColorScheme` and tokens in `@/constants/parcus-theme` / `@/constants/designTokens`
 - API/data fetching (consider `useEffect` + state or a data library)
 
 ---
@@ -453,17 +442,7 @@ title: {
 
 ### Data & Mocks
 
-For mock data or fixtures, use `data/`:
-
-```javascript
-// data/search-mock.js
-export const MOCK_SEARCH_DATA = [...];
-export const searchItems = [...];
-```
-
-```jsx
-import { MOCK_SEARCH_DATA, searchItems } from '@/data/search-mock';
-```
+For mock catalogs or fixtures, use `data/` (e.g. `drink-catalog-mock.js` for offline search / cold-start).
 
 ### Adding Constants
 

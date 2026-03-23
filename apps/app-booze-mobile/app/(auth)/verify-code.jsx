@@ -5,12 +5,13 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors, typography } from '@/constants/parcus-theme';
 import PrimaryButton from '@/components/parcus/PrimaryButton';
 import { DEV_USER_ID, useAuth } from '@/contexts/AuthContext';
+import { AFTER_LOGIN_SCAN_PARAM } from '@/utils/onboardingScanSkip';
 
 const CELL_COUNT = 6;
 
 export default function VerifyCodeScreen() {
   const router = useRouter();
-  const { phone } = useLocalSearchParams();
+  const { phone, afterLogin } = useLocalSearchParams();
   const { setAuthenticatedUser } = useAuth();
   const [value, setValue] = useState('');
 
@@ -20,7 +21,11 @@ export default function VerifyCodeScreen() {
         phone,
         userId: DEV_USER_ID,
       });
-      router.replace('/(tabs)');
+      const nextPath =
+        afterLogin === AFTER_LOGIN_SCAN_PARAM
+          ? '/(tabs)/scan-log'
+          : '/(tabs)';
+      router.replace(nextPath);
     }
   };
 

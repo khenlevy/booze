@@ -1,5 +1,7 @@
 # Drink Log Entry Form Implementation
 
+> **Note:** The default logging UX is now **scan → Loved / OK / Did not love it** (`scan-log` + `log-sentiment`) or **catalog pick → sentiment**. This document describes the **optional detailed form** (expand “Detailed log” on the Log tab).
+
 ## Overview
 This document describes the Drink Log Entry Form feature for the app-booze-mobile application. The form allows users to log drinks they've consumed, including details about the drink, when they consumed it, quantity, and their rating.
 
@@ -24,30 +26,36 @@ This document describes the Drink Log Entry Form feature for the app-booze-mobil
 - Provides consistent styling and layout
 
 **Props:**
+- `catalogItems`: Array of catalog rows (`id`, `name`, `category`, `abv`) passed from the app (e.g. `MOCK_DRINKS`)
 - `formData`: Current form state object
 - `onFormChange`: Callback to update form field
 - `isSubmitting`: Boolean indicating submission state
 - `onSubmit`: Callback for form submission
 - `validationErrors`: Object containing field-level errors
 
-### Form Components
+The Log tab also uses **`CatalogSelector`** from `@booze/mb-form-expo` with the same `items` source.
 
-#### 1. DrinkSelector (`components/form/DrinkSelector.jsx`)
+Shared primitives live in **`@booze/cl-form-rn`** (no Expo); the mobile app wraps the tree with **`MbFormProvider`** from `@booze/mb-form-expo` in `app/_layout.jsx`.
+
+### Form Components (packages)
+
+#### 1. CatalogSelector (`@booze/mb-form-expo`)
 Allows users to select a drink from a searchable list.
 
 **Features:**
-- Searchable drink database (mock data)
+- Searchable list from app-supplied `items`
 - Modal-based selection interface
 - Displays drink category and ABV
 - Visual feedback for selected drink
 
 **Props:**
+- `items`: Catalog rows from the app (not imported inside the package)
 - `selectedDrinkId`: Currently selected drink ID
 - `selectedDrinkName`: Currently selected drink name
 - `onSelectDrink`: Callback when drink is selected
 - `hasError`: Boolean for error state styling
 
-#### 2. DateTimePicker (`components/form/DateTimePicker.jsx`)
+#### 2. DateTimePicker (`@booze/mb-form-expo` → `@booze/cl-form-rn`)
 Allows users to select date and time of consumption.
 
 **Features:**
@@ -64,7 +72,7 @@ Allows users to select date and time of consumption.
 - `onTimeChange`: Callback for time changes
 - `hasError`: Boolean for error state styling
 
-#### 3. QuantityInput (`components/form/QuantityInput.jsx`)
+#### 3. QuantityInput (`@booze/mb-form-expo` → `@booze/cl-form-rn`)
 Allows users to enter quantity and select unit.
 
 **Features:**
@@ -88,7 +96,7 @@ Allows users to enter quantity and select unit.
 - `onUnitChange`: Callback for unit changes
 - `hasError`: Boolean for error state styling
 
-#### 4. RatingSelector (`components/form/RatingSelector.jsx`)
+#### 4. RatingSelector (`@booze/mb-form-expo` → `@booze/cl-form-rn`)
 Allows users to rate the drink on a 5-star scale.
 
 **Features:**

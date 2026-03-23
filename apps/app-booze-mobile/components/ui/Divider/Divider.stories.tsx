@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { View, StyleSheet } from 'react-native';
 import { Divider } from './Divider';
 import { Body, Heading } from '../Typography';
-import { spacing, colors } from '../../../constants/designTokens';
+import { colors, spacing } from '@/constants/designTokens';
 
 const meta = {
   title: 'Divider',

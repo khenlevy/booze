@@ -23,7 +23,13 @@ import {
   ActivityIndicator,
   View,
 } from 'react-native';
-import { colors, spacing, typography, borderRadius, shadows } from '../../constants/designTokens';
+import {
+  colors,
+  spacing,
+  typography,
+  borderRadius,
+  shadows,
+} from '@/constants/designTokens';
 
 /**
  * Button variant types

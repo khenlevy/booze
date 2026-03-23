@@ -19,6 +19,10 @@ import BottomBar from '@/components/parcus/BottomBar';
 import { useDebounce } from '@/hooks/useDebounce';
 import { searchCatalogDrinks } from '@/data/drink-catalog-mock';
 import { searchDrinksApi } from '@/utils/drinksSearchApi';
+import {
+  loadPreferenceProfile,
+  primaryCategoryToSearchFilter,
+} from '@/utils/preferenceProfile';
 
 const FILTER_OPTIONS = ['All', 'Whiskey', 'Wine', 'Spirits', 'Beer'];
 
@@ -65,6 +69,21 @@ export default function SearchScreen() {
   const router = useRouter();
   const [searchText, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const profile = await loadPreferenceProfile();
+      if (cancelled || !profile?.primaryCategory) return;
+      const mapped = primaryCategoryToSearchFilter(profile.primaryCategory);
+      if (FILTER_OPTIONS.includes(mapped)) {
+        setSelectedFilter(mapped);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);

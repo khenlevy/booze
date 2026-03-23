@@ -2,8 +2,8 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { View, StyleSheet } from 'react-native';
 import { Avatar } from './Avatar';
-import { Body, Heading } from '../Typography';
-import { spacing, colors } from '../../../constants/designTokens';
+import { Body } from '../Typography';
+import { colors, spacing } from '@/constants/designTokens';
 
 const meta = {
   title: 'Avatar',

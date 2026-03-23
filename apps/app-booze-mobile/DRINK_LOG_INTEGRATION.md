@@ -6,10 +6,13 @@ This document describes the complete integration of the Track Drinking Screen wi
 ## Architecture
 
 ### Frontend (React Native)
-- **Screen**: `app/(tabs)/drink-log.jsx` - Main drink logging screen
-- **Form Component**: `components/DrinkLogEntryForm.jsx` - Form UI
-- **API Client**: `utils/drinkLogApi.js` - API communication layer
-- **Validation**: `utils/formValidation.js` - Form validation logic
+- **Screen**: `app/(tabs)/drink-log.jsx` - Entry: scan, catalog pick, or detailed log
+- **Scan**: `app/(tabs)/scan-log.jsx` - Barcode → `log-sentiment.jsx` (Loved / OK / Did not love it)
+- **Sentiment**: `app/(tabs)/log-sentiment.jsx` - Quick taste log (server maps sentiment → rating 5 / 3 / 1)
+- **Form (advanced)**: `components/DrinkLogEntryForm.jsx` - Date, quantity, star rating, notes
+- **API Client**: `utils/drinkLogApi.js` - POST body includes `entryType`, optional `catalogDrinkId`, `scanUpc`, `sentiment`
+- **Payload helpers**: `utils/buildDrinkLogPayload.js` - `buildTasteLogPayload`, `buildPurchasePayload`
+- **Barcode lookup**: `utils/resolveBarcodeToCatalog.js` - mock `retailer.upc` on catalog drinks
 
 ### Backend (Node.js/Express)
 - **Routes**: `apps/app-booze-api/src/routes/drinkLogs.js` - API endpoints
@@ -24,12 +27,49 @@ POST /api/v1/drink-logs
 ```
 Creates a new drink log entry with validation.
 
-**Request:**
+**Fields**
+- `entryType`: `"taste_log"` (default) or `"purchase"`.
+- **Taste log**: send **`rating`** (1–5 integer) **or** **`sentiment`**: `love` | `ok` | `dislike` (mapped to 5 / 3 / 1). Omit `rating` when using `sentiment`.
+- **Purchase**: `entryType`: `"purchase"`, no `rating` / `sentiment`. Optional `catalogDrinkId`, `abv`, `tasteTags`.
+- **Defaults**: `quantity` defaults to `1`, `quantityUnit` defaults to `bottle` when omitted.
+- **Catalog / scan**: optional `catalogDrinkId` (mock slug), `scanUpc` (raw barcode).
+
+**Request (quick taste via sentiment):**
+```json
+{
+  "userId": "507f1f77bcf86cd799439011",
+  "drinkName": "Atlas Peak Cabernet",
+  "entryType": "taste_log",
+  "sentiment": "love",
+  "consumedAt": "2024-01-15T19:30:00.000Z",
+  "quantity": 1,
+  "quantityUnit": "bottle",
+  "catalogDrinkId": "wine-cab-001",
+  "scanUpc": "8501010001000"
+}
+```
+
+**Request (in-store purchase):**
+```json
+{
+  "userId": "507f1f77bcf86cd799439011",
+  "drinkName": "Atlas Peak Cabernet",
+  "entryType": "purchase",
+  "consumedAt": "2024-01-15T19:30:00.000Z",
+  "quantity": 1,
+  "quantityUnit": "bottle",
+  "catalogDrinkId": "wine-cab-001",
+  "abv": 14.2
+}
+```
+
+**Request (legacy detailed taste log):**
 ```json
 {
   "userId": "user-123",
   "drinkId": "drink-456",
   "drinkName": "Craft IPA",
+  "entryType": "taste_log",
   "consumedAt": "2024-01-15T19:30:00Z",
   "quantity": 500,
   "quantityUnit": "ml",

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { Text, StyleSheet, TextStyle } from 'react-native';
-import { colors, typography } from '../../constants/designTokens';
+import { colors, typography } from '@/constants/designTokens';
 
 /**
  * Base typography component props

@@ -1,11 +1,21 @@
 import logger from '@booze/se-logger';
 
+const SENTIMENT_VALUES = ['love', 'ok', 'dislike'];
+
 /**
  * Validate drink log creation request
  */
 export const validateCreateDrinkLog = (req, res, next) => {
   try {
-    const { userId, drinkName, consumedAt, quantity, rating } = req.body;
+    const {
+      userId,
+      drinkName,
+      consumedAt,
+      quantity,
+      rating,
+      entryType,
+      sentiment,
+    } = req.body;
 
     // Check required fields
     if (!userId || typeof userId !== 'string' || userId.trim() === '') {
@@ -38,32 +48,52 @@ export const validateCreateDrinkLog = (req, res, next) => {
       });
     }
 
-    if (quantity === undefined || quantity === null) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'quantity is required',
-      });
+    const type = entryType === 'purchase' ? 'purchase' : 'taste_log';
+
+    if (type === 'purchase') {
+      if (rating !== undefined && rating !== null) {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message: 'purchase entries must not include rating',
+        });
+      }
+      if (sentiment !== undefined && sentiment !== null && sentiment !== '') {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message: 'purchase entries must not include sentiment',
+        });
+      }
+    } else {
+      const hasRating =
+        rating !== undefined &&
+        rating !== null &&
+        Number.isInteger(rating) &&
+        rating >= 1 &&
+        rating <= 5;
+      const hasSentiment =
+        typeof sentiment === 'string' && SENTIMENT_VALUES.includes(sentiment);
+      if (!hasRating && !hasSentiment) {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message:
+            'taste_log requires rating (1-5) or sentiment (love, ok, dislike)',
+        });
+      }
+      if (hasRating && hasSentiment) {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message: 'send either rating or sentiment, not both',
+        });
+      }
     }
 
-    if (typeof quantity !== 'number' || quantity <= 0) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'quantity must be a positive number',
-      });
-    }
-
-    if (!rating) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'rating is required',
-      });
-    }
-
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'rating must be an integer between 1 and 5',
-      });
+    if (quantity !== undefined && quantity !== null) {
+      if (typeof quantity !== 'number' || quantity <= 0) {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message: 'quantity must be a positive number',
+        });
+      }
     }
 
     // Validate optional fields if provided
@@ -100,6 +130,35 @@ export const validateCreateDrinkLog = (req, res, next) => {
         return res.status(400).json({
           error: 'Validation Error',
           message: 'tasteTags must be an array',
+        });
+      }
+    }
+
+    if (
+      req.body.entryType !== undefined &&
+      req.body.entryType !== null &&
+      !['taste_log', 'purchase'].includes(req.body.entryType)
+    ) {
+      return res.status(400).json({
+        error: 'Validation Error',
+        message: 'entryType must be taste_log or purchase',
+      });
+    }
+
+    if (req.body.catalogDrinkId !== undefined && req.body.catalogDrinkId !== null) {
+      if (typeof req.body.catalogDrinkId !== 'string') {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message: 'catalogDrinkId must be a string',
+        });
+      }
+    }
+
+    if (req.body.scanUpc !== undefined && req.body.scanUpc !== null) {
+      if (typeof req.body.scanUpc !== 'string') {
+        return res.status(400).json({
+          error: 'Validation Error',
+          message: 'scanUpc must be a string',
         });
       }
     }

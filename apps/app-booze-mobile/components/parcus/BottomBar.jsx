@@ -6,13 +6,13 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
-import { colors } from '@/constants/parcus-theme';
+import { colors, navigation, typography } from '@/constants/parcus-theme';
 import LiHome from '@/assets/icons/LiHome';
 import LiSearch from '@/assets/icons/LiSearch';
 import LiUser from '@/assets/icons/LiUser';
 
 const ACTIVE_COLOR = colors.brand.primary;
-const INACTIVE_COLOR = '#A6A6A6';
+const INACTIVE_COLOR = navigation.tabBarInactive;
 
 const TABS = [
   { name: 'My Cards', icon: LiHome, route: '/(tabs)' },
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     flexDirection: 'row',
     height: Platform.select({ ios: 85, android: 60 }),
-    backgroundColor: '#3C3C3C',
+    backgroundColor: navigation.tabBarBackground,
     paddingBottom: Platform.select({ ios: 25, android: 0 }),
     position: 'absolute',
     bottom: 0,
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabText: {
-    fontSize: 16,
+    ...typography.body2,
+    fontSize: 13,
     marginTop: 6,
     fontWeight: '400',
   },

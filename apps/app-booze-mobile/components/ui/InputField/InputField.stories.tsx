@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { View, StyleSheet } from 'react-native';
 import { InputField } from './InputField';
 import { Label, Body } from '../Typography';
-import { spacing, colors } from '../../../constants/designTokens';
+import { spacing, colors } from '@/constants/designTokens';
 
 const meta = {
   title: 'InputField',

@@ -23,7 +23,7 @@ import {
   ScrollViewProps,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, spacing } from '../../constants/designTokens';
+import { colors, spacing } from '@/constants/designTokens';
 
 /**
  * ScreenLayout component props

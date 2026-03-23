@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -13,11 +14,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
+import { AppButton } from '@/components/primitives';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   getPersonalizedRecommendations,
   getRecommendationStats,
 } from '@/utils/recommendationsApi';
+import { loadPreferenceProfile } from '@/utils/preferenceProfile';
+import { getColdStartPicks } from '@/utils/coldStartPicks';
 
 export default function MyCardsScreen() {
   const router = useRouter();
@@ -27,6 +31,18 @@ export default function MyCardsScreen() {
   const [recs, setRecs] = useState([]);
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
+  const [coldPicks, setColdPicks] = useState([]);
+
+  const refreshPreferencePicks = useCallback(async () => {
+    const profile = await loadPreferenceProfile();
+    setColdPicks(getColdStartPicks(profile, 8));
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshPreferencePicks();
+    }, [refreshPreferencePicks]),
+  );
 
   const load = useCallback(async () => {
     setError(null);
@@ -61,7 +77,8 @@ export default function MyCardsScreen() {
   }, [load]);
 
   const totalLogs = stats?.ratingStats?.totalLogs ?? 0;
-  const showEmpty = !loading && recs.length === 0;
+  const showColdStart = !loading && recs.length === 0 && coldPicks.length > 0;
+  const showEmpty = !loading && recs.length === 0 && coldPicks.length === 0;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -79,24 +96,32 @@ export default function MyCardsScreen() {
       >
         <Text style={styles.heroTitle}>For you</Text>
         <Text style={styles.heroSub}>
-          Whiskey & wine picks based on what you have rated.
+          {recs.length > 0
+            ? 'Whiskey & wine picks based on what you have rated.'
+            : 'Your next bottle, tuned to your taste.'}
         </Text>
 
         <View style={styles.actionsRow}>
-          <TouchableOpacity
-            style={styles.actionPrimary}
-            onPress={() => router.push('/(tabs)/drink-log')}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.actionPrimaryText}>Log a drink</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionSecondary}
-            onPress={() => router.push('/(tabs)/drink-history')}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.actionSecondaryText}>History</Text>
-          </TouchableOpacity>
+          <View style={styles.actionFlex}>
+            <AppButton
+              variant="primary"
+              fullWidth
+              size="md"
+              onPress={() => router.push('/(tabs)/drink-log')}
+            >
+              Log a drink
+            </AppButton>
+          </View>
+          <View style={styles.actionFlex}>
+            <AppButton
+              variant="secondary"
+              fullWidth
+              size="md"
+              onPress={() => router.push('/(tabs)/drink-history')}
+            >
+              History
+            </AppButton>
+          </View>
         </View>
 
         {loading ? (
@@ -110,12 +135,57 @@ export default function MyCardsScreen() {
           <Text style={styles.warn}>{error}</Text>
         ) : null}
 
+        {showColdStart ? (
+          <>
+            <Text style={styles.sectionTitle}>Starter picks for you</Text>
+            <Text style={styles.sectionSub}>
+              Based on your onboarding answers — tap a bottle for details.
+            </Text>
+            {coldPicks.map((d) => (
+              <TouchableOpacity
+                key={d.id}
+                style={styles.recCard}
+                activeOpacity={0.9}
+                onPress={() =>
+                  router.push({
+                    pathname: '/search-results',
+                    params: {
+                      id: d.id,
+                      name: d.name,
+                      desc: d.desc || '',
+                      category: d.category || '',
+                      abv: d.abv != null ? String(d.abv) : '',
+                    },
+                  })
+                }
+              >
+                <Text style={styles.recName}>{d.name}</Text>
+                <Text style={styles.recMeta}>
+                  {d.category} · {d.abv}% ABV
+                </Text>
+                <Text style={styles.recReason}>{d._matchReason}</Text>
+                {(d.tasteTags?.length ?? 0) > 0 ? (
+                  <Text style={styles.tags}>
+                    {(d.tasteTags || []).join(' · ')}
+                  </Text>
+                ) : null}
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              onPress={() => router.push('/(tabs)/search')}
+              style={styles.linkBtn}
+            >
+              <Text style={styles.linkBtnText}>Search the full catalog</Text>
+            </TouchableOpacity>
+          </>
+        ) : null}
+
         {showEmpty && !loading ? (
           <View style={styles.emptyCard}>
             <Text style={styles.emptyTitle}>Start your journey</Text>
             <Text style={styles.emptyBody}>
-              Log a few drinks you have tried — we will surface your favorites
-              and similar pours here.
+              Complete onboarding for starter picks, or log drinks you have
+              tried — we will surface your favorites here.
             </Text>
             <TouchableOpacity
               onPress={() => router.push('/(tabs)/search')}
@@ -195,31 +265,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginBottom: 24,
+    alignItems: 'stretch',
   },
-  actionPrimary: {
+  actionFlex: {
     flex: 1,
-    backgroundColor: colors.brand.primary,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  actionPrimaryText: {
-    ...typography.button,
-    color: colors.text.inverse,
-  },
-  actionSecondary: {
-    flex: 1,
-    backgroundColor: colors.background.secondary,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border.default,
-  },
-  actionSecondaryText: {
-    ...typography.body1,
-    color: colors.brand.primary,
-    fontWeight: '600',
   },
   centerBlock: {
     alignItems: 'center',
@@ -264,7 +313,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     ...typography.h3,
     color: colors.text.primary,
-    marginBottom: 12,
+    marginBottom: 8,
+  },
+  sectionSub: {
+    ...typography.body2,
+    color: colors.text.secondary,
+    marginBottom: 14,
+    lineHeight: 20,
   },
   sectionMeta: {
     ...typography.body2,

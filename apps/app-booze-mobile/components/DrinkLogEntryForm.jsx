@@ -11,12 +11,15 @@ import {
 import { useState } from 'react';
 import { colors, typography } from '@/constants/parcus-theme';
 import { MaterialIcons } from '@expo/vector-icons';
-import DrinkSelector from './form/DrinkSelector';
-import DateTimePicker from './form/DateTimePicker';
-import QuantityInput from './form/QuantityInput';
-import RatingSelector from './form/RatingSelector';
+import {
+  CatalogSelector,
+  DateTimePicker,
+  QuantityInput,
+  RatingSelector,
+} from '@booze/mb-form-expo';
 
 export default function DrinkLogEntryForm({
+  catalogItems,
   formData,
   onFormChange,
   isSubmitting,
@@ -41,7 +44,8 @@ export default function DrinkLogEntryForm({
             <Text style={styles.errorText}>{getErrorMessage('drinkId')}</Text>
           )}
         </View>
-        <DrinkSelector
+        <CatalogSelector
+          items={catalogItems}
           selectedDrinkId={formData.drinkId}
           selectedDrinkName={formData.drinkName}
           onSelectDrink={(drinkId, drinkName) => {

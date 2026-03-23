@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -5,16 +6,29 @@ import {
   Platform,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { colors, typography } from '@/constants/parcus-theme';
 import BottomBar from '@/components/parcus/BottomBar';
 import { getCatalogDrinkById } from '@/data/drink-catalog-mock';
+import { useAuth } from '@/contexts/AuthContext';
+import { createDrinkLog, retryWithBackoff } from '@/utils/drinkLogApi';
+import { buildPurchasePayload } from '@/utils/buildDrinkLogPayload';
 
 export default function SearchResultsScreen() {
   const router = useRouter();
-  const { id, name, desc, category, abv } = useLocalSearchParams();
+  const { userId } = useAuth();
+  const { id, name, desc, category, abv, fromOnboarding } =
+    useLocalSearchParams();
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+
+  const isInStore =
+    fromOnboarding === '1' ||
+    fromOnboarding === 'true' ||
+    fromOnboarding === 'yes';
 
   const fromParams =
     name || desc || category || abv
@@ -34,11 +48,18 @@ export default function SearchResultsScreen() {
         ...fromParams,
         tasteTags: catalog?.tasteTags || [],
         brand: catalog?.brand,
-        desc: fromParams.desc || catalog?.desc || '',
+        desc: fromParams.desc || catalog?.desc || catalog?.aiSummary || '',
         abv:
           fromParams.abv != null && !Number.isNaN(fromParams.abv)
             ? fromParams.abv
             : catalog?.abv ?? null,
+        style: catalog?.style,
+        subcategory: catalog?.subcategory,
+        priceBand: catalog?.priceBand,
+        pairingHints: catalog?.pairingHints,
+        occasionTags: catalog?.occasionTags,
+        origin: catalog?.origin,
+        aiSummary: catalog?.aiSummary,
       }
     : catalog;
 
@@ -57,6 +78,48 @@ export default function SearchResultsScreen() {
   }
 
   const tagLine = (drink.tasteTags || []).filter(Boolean).join(' · ');
+
+  const catalogId = String(drink.id || id || '');
+  const abvNum =
+    drink.abv != null && !Number.isNaN(Number(drink.abv))
+      ? Number(drink.abv)
+      : null;
+
+  const goLogTaste = () => {
+    router.push({
+      pathname: '/(tabs)/log-sentiment',
+      params: {
+        catalogDrinkId: catalogId,
+        drinkName: drink.name,
+        abv: abvNum != null ? String(abvNum) : '',
+      },
+    });
+  };
+
+  const recordPurchase = async () => {
+    setPurchaseLoading(true);
+    try {
+      await retryWithBackoff(
+        () =>
+          createDrinkLog(
+            buildPurchasePayload({
+              userId,
+              drinkName: drink.name,
+              catalogDrinkId: catalogId,
+              abv: abvNum,
+              tasteTags: drink.tasteTags,
+            }),
+          ),
+        3,
+        1000,
+      );
+      Alert.alert('Saved', 'Purchase recorded.');
+    } catch (e) {
+      Alert.alert('Error', e?.message || 'Could not save.');
+    } finally {
+      setPurchaseLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,26 +140,84 @@ export default function SearchResultsScreen() {
           {drink.abv != null ? (
             <Text style={styles.abv}>{drink.abv}% ABV</Text>
           ) : null}
+          {drink.style || drink.subcategory ? (
+            <Text style={styles.styleLine}>
+              {[drink.style, drink.subcategory].filter(Boolean).join(' · ')}
+            </Text>
+          ) : null}
+          {drink.priceBand ? (
+            <Text style={styles.priceBand}>Tier: {drink.priceBand}</Text>
+          ) : null}
+          {drink.origin?.country ? (
+            <Text style={styles.origin}>
+              {drink.origin.region
+                ? `${drink.origin.region}, ${drink.origin.country}`
+                : drink.origin.country}
+            </Text>
+          ) : null}
           {drink.desc ? (
             <Text style={styles.description}>{drink.desc}</Text>
           ) : null}
+          {drink.aiSummary && drink.aiSummary !== drink.desc ? (
+            <Text style={styles.aiBlock}>{drink.aiSummary}</Text>
+          ) : null}
           {tagLine ? <Text style={styles.tags}>{tagLine}</Text> : null}
+          {(drink.pairingHints?.length ?? 0) > 0 ? (
+            <Text style={styles.pairing}>
+              Pairs with: {drink.pairingHints.join(', ')}
+            </Text>
+          ) : null}
+          {(drink.occasionTags?.length ?? 0) > 0 ? (
+            <Text style={styles.occasion}>
+              Occasions: {drink.occasionTags.join(', ')}
+            </Text>
+          ) : null}
 
-          <TouchableOpacity
-            style={styles.cta}
-            onPress={() =>
-              router.push({
-                pathname: '/(tabs)/drink-log',
-                params: {
-                  drinkName: drink.name,
-                  catalogDrinkId: String(drink.id || id || ''),
-                },
-              })
-            }
-            activeOpacity={0.9}
-          >
-            <Text style={styles.ctaText}>Log this drink</Text>
-          </TouchableOpacity>
+          {isInStore ? (
+            <>
+              <TouchableOpacity
+                style={styles.cta}
+                onPress={recordPurchase}
+                disabled={purchaseLoading}
+                activeOpacity={0.9}
+              >
+                {purchaseLoading ? (
+                  <ActivityIndicator color={colors.text.inverse} />
+                ) : (
+                  <Text style={styles.ctaText}>I purchased this</Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.ctaSecondary}
+                onPress={goLogTaste}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.ctaSecondaryText}>Log how it tasted</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={styles.cta}
+                onPress={goLogTaste}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.ctaText}>Log how it tasted</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.ctaSecondary}
+                onPress={recordPurchase}
+                disabled={purchaseLoading}
+                activeOpacity={0.9}
+              >
+                {purchaseLoading ? (
+                  <ActivityIndicator color={colors.brand.primary} />
+                ) : (
+                  <Text style={styles.ctaSecondaryText}>Record purchase</Text>
+                )}
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </ScrollView>
       <BottomBar />
@@ -145,6 +266,23 @@ const styles = StyleSheet.create({
     ...typography.body1,
     color: colors.text.primary,
     fontWeight: '600',
+    marginBottom: 8,
+  },
+  styleLine: {
+    ...typography.body2,
+    color: colors.text.secondary,
+    marginBottom: 6,
+  },
+  priceBand: {
+    ...typography.caption,
+    color: colors.brand.primary,
+    fontWeight: '600',
+    marginBottom: 6,
+    textTransform: 'capitalize',
+  },
+  origin: {
+    ...typography.caption,
+    color: colors.text.tertiary,
     marginBottom: 12,
   },
   description: {
@@ -156,6 +294,23 @@ const styles = StyleSheet.create({
   tags: {
     ...typography.body2,
     color: colors.brand.primary,
+    marginBottom: 12,
+  },
+  aiBlock: {
+    ...typography.body2,
+    color: colors.text.secondary,
+    lineHeight: 22,
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  pairing: {
+    ...typography.body2,
+    color: colors.text.primary,
+    marginBottom: 8,
+  },
+  occasion: {
+    ...typography.caption,
+    color: colors.text.secondary,
     marginBottom: 28,
   },
   cta: {
@@ -167,5 +322,18 @@ const styles = StyleSheet.create({
   ctaText: {
     ...typography.button,
     color: colors.text.inverse,
+  },
+  ctaSecondary: {
+    marginTop: 12,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.brand.primary,
+    backgroundColor: colors.background.primary,
+  },
+  ctaSecondaryText: {
+    ...typography.button,
+    color: colors.brand.primary,
   },
 });

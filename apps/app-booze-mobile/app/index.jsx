@@ -3,8 +3,11 @@ import { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '@/constants/parcus-theme';
-
-const ONBOARDING_COMPLETED_KEY = 'onboardingCompleted';
+import {
+  ONBOARDING_COMPLETED_KEY,
+  loadPreferenceProfile,
+  clearOnboardingDraft,
+} from '@/utils/preferenceProfile';
 const AUTHENTICATED_USER_KEY = 'authenticatedUser';
 
 export default function IndexScreen() {
@@ -13,20 +16,23 @@ export default function IndexScreen() {
   useEffect(() => {
     async function redirect() {
       try {
-        const hasOnboarded = await AsyncStorage.getItem(
-          ONBOARDING_COMPLETED_KEY,
-        );
+        const hasOnboarded =
+          (await AsyncStorage.getItem(ONBOARDING_COMPLETED_KEY)) === 'true';
+        const profile = await loadPreferenceProfile();
         const user = await AsyncStorage.getItem(AUTHENTICATED_USER_KEY);
 
-        if (!hasOnboarded) {
-          router.replace('/(onboarding)/entrance');
+        // First launch = in-store flow: go straight to question 1 (skip marketing welcome).
+        if (!hasOnboarded || !profile) {
+          await clearOnboardingDraft();
+          router.replace('/(onboarding)/taste-category');
         } else if (!user || user === '') {
           router.replace('/(auth)/login');
         } else {
           router.replace('/(tabs)');
         }
       } catch {
-        router.replace('/(onboarding)/entrance');
+        await clearOnboardingDraft();
+        router.replace('/(onboarding)/taste-category');
       }
     }
     redirect();

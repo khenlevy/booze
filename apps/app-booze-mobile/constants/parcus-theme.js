@@ -102,7 +102,65 @@ export const typography = {
   },
 };
 
-export const parcusTheme = {
+/**
+ * Spacing scale (4px base). Use for padding/margin/gaps across the app.
+ */
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  xxl: 24,
+  xxxl: 32,
+};
+
+/**
+ * Corner radii — prefer these over magic numbers in screens.
+ */
+export const radius = {
+  sm: 8,
+  md: 12,
+  lg: 14,
+  xl: 16,
+  pill: 999,
+};
+
+/**
+ * Shared shadows (iOS + Android elevation).
+ */
+export const shadows = {
+  button: {
+    shadowColor: colors.common.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  card: {
+    shadowColor: colors.common.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+};
+
+/** Bottom navigation — keeps tab bar off hardcoded grays */
+export const navigation = {
+  tabBarBackground: '#32303A',
+  tabBarInactive: '#A6A6A6',
+};
+
+export const appTheme = {
   colors,
   typography,
+  spacing,
+  radius,
+  shadows,
+  navigation,
 };
+
+export const parcusTheme = appTheme;
+
+export default appTheme;

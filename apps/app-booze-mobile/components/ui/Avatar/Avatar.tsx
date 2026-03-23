@@ -22,7 +22,12 @@ import {
   TextStyle,
   ImageSourcePropType,
 } from 'react-native';
-import { colors, spacing, typography, borderRadius } from '../../constants/designTokens';
+import {
+  colors,
+  spacing,
+  typography,
+  borderRadius,
+} from '@/constants/designTokens';
 
 /**
  * Avatar size types
